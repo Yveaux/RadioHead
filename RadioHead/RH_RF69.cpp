@@ -116,7 +116,7 @@ bool RH_RF69::init()
     // PACKETCONFIG 2 is default 
     spiWrite(RH_RF69_REG_6F_TESTDAGC, RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAOFF);
 
-    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr>
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
 #if defined (__MK20DX128__) || defined (__MK20DX256__)
     // ARM M4 requires the below. else pin interrupt doesn't work properly.
     pinMode(_interruptPin, INPUT); 

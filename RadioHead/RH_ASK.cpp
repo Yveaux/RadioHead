@@ -7,7 +7,12 @@
 
 // Arduino 1.0 includes crc16.h, so use it else can get clashes with other libraries
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (ARDUINO >= 100)
- #include <util/crc16.h>
+ #if defined (__MK20DX128__) || defined (__MK20DX256__)
+  // Teensyduino for Arduino 1.0.5 does not have crc16.h
+  #include <RHutil/crc16.h>
+ #else
+  #include <util/crc16.h>
+ #endif
 #else
  #include <RHutil/crc16.h>
 #endif
@@ -174,6 +179,7 @@ void RH_ASK::timerSetup()
  #elif defined(__arm__) && defined(CORE_TEENSY)
     // on Teensy 3.0 (32 bit ARM), use an interval timer
     IntervalTimer *t = new IntervalTimer();
+    void TIMER1_COMPA_vect(void); // External?
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
  #else // ARDUINO
@@ -409,8 +415,14 @@ uint8_t RH_ASK::maxMessageLength()
  #define _COMB(a,b,c) __COMB(a,b,c)
  #define RH_ASK_TIMER_VECTOR _COMB(TIMER,RH_ASK_TIMER_INDEX,_COMPA_vect)
 #endif
-	
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
+
+#if defined(__arm__) && defined(CORE_TEENSY)	
+void TIMER1_COMPA_vect(void)
+{
+    thisASKDriver->handleTimerInterrupt();
+}
+
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
 // This is the interrupt service routine called when timer1 overflows
 // Its job is to output the next bit from the transmitter (every 8 calls)
 // and to call the PLL code if the receiver is enabled

@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.10 2014/04/23 00:23:47 mikem Exp $
+// $Id: RH_RF22.h,v 1.11 2014/04/28 10:43:48 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -517,6 +517,22 @@
 ///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
 ///                           \--RX_ANT (RX antenna control in)
 /// \endcode
+/// For Teensy 3.1
+/// \code
+///                 Arduino      RFM-22B
+///                 GND----------GND-\ (ground in)
+///                              SDN-/ (shutdown in)
+///                 3V3----------VCC   (3.3V in)
+/// interrupt 0 pin D0-----------NIRQ  (interrupt request out)
+///          SS pin D10----------NSEL  (chip select in)
+///         SCK pin D13----------SCK   (SPI clock in)
+///        MOSI pin D11----------SDI   (SPI Data in)
+///        MISO pin D12----------SDO   (SPI data out)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT
+///                           \--TX_ANT (TX antenna control in)
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
+///                           \--RX_ANT (RX antenna control in)
+/// \endcode
 ///
 /// and you can then use the default constructor RH_RF22(). 
 /// You can override the default settings for the SS pin and the interrupt 
@@ -660,6 +676,7 @@
 /// RH_RF22 driver;
 /// RHReliableDatagram rf22(driver, CLIENT_ADDRESS);
 /// \endcode
+/// and any instance of RF22_MAX_MESSAGE_LEN to RH_RF22_MAX_MESSAGE_LEN
 class RH_RF22 : public RHSPIDriver
 {
 public:
@@ -756,11 +773,11 @@ public:
     /// \param[in] interruptPin The interrupt Pin number that is connected to the RF22 NIRQ interrupt line. 
     /// Caution: on Arduino boards, you have to pass the interrupt number of the
     /// interrupt pin you want to use. See http://arduino.cc/en/Reference/attachInterrupt, for example 
-    /// on Arduino Uno, pass interrupt = 0 to get interrupts on Arduino pin 2. On Chipkit Uno32, 
+    /// on Arduino Uno, pass interruptPin = 0 to get interrupts on Arduino pin 2. On Chipkit Uno32, 
     /// pass the interrupt number (Caution: on Uno32, the mapping from interrupt number to pin is different. 
-    /// For interrupts on pin 2, pass interrupt pin 1)
+    /// For interrupts on pin 2, pass interruptPin = 1)
     /// On other platforms, pass the actual pin number that is attached to the RF22 interrupt line. For
-    /// example, on Maple or Flymaple, pass pin 2 for interrutps on digitla pin 2
+    /// example, on Teensy, Maple or Flymaple, pass interruptPin = 2 for interrupts on digital pin 2
     /// \param[in] spi Pointer to the SPI interface object to use. 
     ///                Defaults to the standard Arduino hardware SPI interface
     RH_RF22(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 0, RHGenericSPI& spi = hardware_spi);
@@ -949,8 +966,8 @@ public:
     /// \param[in] promiscuous true if you wish to receive messages with any TO address
     virtual void   setPromiscuous(bool promiscuous);
 
-    /// Sets the CRC polynomial top be used to generare the CRC for both receive and transmit
-    /// Must be called before init(), otherwise the default of CRC_16_IBM will be used.
+    /// Sets the CRC polynomial to be used to generate the CRC for both receive and transmit
+    /// otherwise the default of CRC_16_IBM will be used.
     /// \param[in] polynomial One of RH_RF22::CRCPolynomial choices CRC_*
     /// \return true if polynomial is a valid option for this radio.
     bool setCRCPolynomial(CRCPolynomial polynomial);
@@ -962,7 +979,7 @@ public:
     /// However, some RF22 modules, such as HAB-RFM22B-BOA HAB-RFM22B-BO, also Si4432 sold by Dorji.com via Tindie.com
     /// have these GPIO pins reversed, so that GPIO0 is connected to RX_ANT.
     /// Call this function with a true argument after init() and before transmitting
-    /// in order to configure the module for reversed GPIO pins
+    /// in order to configure the module for reversed GPIO pins.
     /// \param[in] gpioReversed Set to true if your RF22 module has reversed GPIO antenna switch connections.
     void setGpioReversed(bool gpioReversed = false);
 

@@ -4,7 +4,7 @@
 // with the RHReliableDatagram class, using the RH_RF22 driver to control a RF22 radio.
 // It is designed to work with the other example rf22_reliable_datagram_client
 // Tested on Duemilanove with Sparkfun RFM22 wireless shield
-
+// Tested on Teensy 3.1 with Sparkfun RFM22 wireless shield
 
 #include <RHReliableDatagram.h>
 #include <RH_RF22.h>

@@ -75,6 +75,7 @@ bool RHMesh::doArp(uint8_t address)
 		return true;
 	    }
 	}
+	YIELD;
     }
     return false;
 }

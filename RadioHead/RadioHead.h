@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.3.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.4.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -104,7 +104,7 @@
 /// 
 /// A range of platforms is supported:
 ///
-/// - Arduino and the Arduino IDE
+/// - Arduino and the Arduino IDE (version 1.0 to 1.5.5 and later)
 /// Including Diecimila, Uno, Mega, Leonardo, Yun etc. http://arduino.cc/, Also similar boards such as 
 /// Moteino http://lowpowerlab.com/moteino/ etc.
 ///
@@ -113,6 +113,9 @@
 ///
 /// - Maple and Flymaple boards with libmaple and the Maple-IDE development environment
 /// http://leaflabs.com/devices/maple/ and http://www.open-drone.org/flymaple
+///
+/// - Teensy http://www.pjrc.com/teensy including Teensy 3.1 built using Arduino IDE 1.0.5 with 
+///   teensyduino addon 1.18 and later.
 ///
 /// Other platforms are partially supported, such a the Teensy3, Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
@@ -160,8 +163,7 @@
 /// and to provide free support. If this library has helped you save time or money, please consider donating at
 /// http://www.airspayce.com or here:
 ///
-/// \htmlonly <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations" /> <input type="hidden" name="business" value="mikem@airspayce.com" /> <input type="hidden" name="lc" value="AU" /> <input type="hidden" name="item_name" value="Airspayce" /> <input type="hidden" name="item_number" value="mainpage" /> <input type="hidden" name="currency_code" value="USD" /> <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" /> <input type="image" alt="PayPal — The safer, easier way to pay online." name="submit" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" /> <img alt="" src="https://www.paypalobjects.com/en_AU/i/scr/pixel.gif" width="1" height="1" border="0" /></form> \endhtmlonly
-/// 
+/// \htmlonly <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations" /> <input type="hidden" name="business" value="mikem@airspayce.com" /> <input type="hidden" name="lc" value="AU" /> <input type="hidden" name="item_name" value="Airspayce" /> <input type="hidden" name="item_number" value="RadioHead" /> <input type="hidden" name="currency_code" value="USD" /> <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" /> <input type="image" alt="PayPal — The safer, easier way to pay online." name="submit" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" /> <img alt="" src="https://www.paypalobjects.com/en_AU/i/scr/pixel.gif" width="1" height="1" border="0" /></form> \endhtmlonly
 /// 
 /// \par Trademarks
 ///
@@ -190,22 +192,36 @@
 /// application. Contact info@airspayce.com for details.
 ///
 /// \par Revision History
-/// \version 1.1 Initial public release
-/// \version 1.2 Fixed various typos. 
-///              Added links to compatible Anarduino products.
+/// \version 1.1 2014-04-14<br>
+///              Initial public release
+/// \version 1.2 2014-04-23<br>
+///              Fixed various typos. <br>
+///              Added links to compatible Anarduino products.<br>
 ///              Added RHNRFSPIDriver, RH_NRF24 classes to support Nordic NRF24 based radios.
-/// \version 1.3 Various documentation fixups.
-///              RHDatagram::setThisAddress() did not set the local copy of thisAddress. Reported by Steve Childress.
-///              Fixed a problem on Teensy with RF22 and RF69, where the interrupt pin needs to be set for input, 
+/// \version 1.3 2014-04-28<br>
+///              Various documentation fixups.<br>
+///              RHDatagram::setThisAddress() did not set the local copy of thisAddress. Reported by Steve Childress.<br>
+///              Fixed a problem on Teensy with RF22 and RF69, where the interrupt pin needs to be set for input, <br>
 ///              else pin interrupt doesn't work properly. Reported by Steve Childress and patched by 
-///              Adrien van den Bossche. Thanks.
-///              Fixed a problem that prevented RF22 honouring setPromiscuous(true). Reported by Steve Childress.
+///              Adrien van den Bossche. Thanks.<br>
+///              Fixed a problem that prevented RF22 honouring setPromiscuous(true). Reported by Steve Childress.<br>
 ///              Updated documentation to clarify some issues to do with maximum message lengths 
-///              reported by Steve Childress.
+///              reported by Steve Childress.<br>
 ///              Added support for yield() on systems that support it (currently Arduino 1.5.5 and later)
-///              so that spin-loops can suport multitasking. Suggested by Steve Childress.
+///              so that spin-loops can suport multitasking. Suggested by Steve Childress.<br>
 ///              Added RH_RF22::setGpioReversed() so the reversal it can be configured at run-time after
-///              radio initialisation. It must now be called _after_ init(). Suggested by Steve Childress.
+///              radio initialisation. It must now be called _after_ init(). Suggested by Steve Childress.<br>
+/// \version 1.4 2014-04-29<br>
+///              Fixed further problems with Teensy compatibility for RH_RF22. Tested on Teensy 3.1.
+///              The example/rf22_* examples now run out of the box with the wiring connections as documented for Teensy
+///              in RH_RF22.<br>
+///              Added YIELDs to spin-loops in RHRouter, RHMesh and RHReliableDatagram, RH_NRF24.<br>
+///              Tested RH_Serial examples with Teensy 3.1: they now run out of the box.<br>
+///              Tested RH_ASK examples with Teensy 3.1: they now run out of the box.<br>
+///              Reduced default SPI speed for NRF24 from 8MHz to 1MHz on Teensy, to improve reliability when
+///              poor wiring is in use.<br>
+///              on some devices such as Teensy.<br>
+///              Tested RH_NRF24 examples with Teensy 3.1: they now run out of the box.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

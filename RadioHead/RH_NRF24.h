@@ -203,7 +203,7 @@
 /// The examples below assume the Sparkfun WRL-00691 module
 ///
 /// Connect the nRF24L01 to most Arduino's like this (Caution, Arduino Mega has different pins for SPI, 
-/// see below), 
+/// see below). Use these same connections for Teensy 3.1.
 /// \code
 ///                 Arduino      Sparkfun WRL-00691
 ///                 3V3 or 5V----VCC   (3.3V to 7V in)

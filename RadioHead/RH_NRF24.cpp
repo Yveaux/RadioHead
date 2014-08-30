@@ -15,7 +15,11 @@ RH_NRF24::RH_NRF24(uint8_t chipEnablePin, uint8_t slaveSelectPin, RHGenericSPI& 
 
 bool RH_NRF24::init()
 {
+#if defined (__MK20DX128__) || defined (__MK20DX256__)
+    _spi.setFrequency(RHGenericSPI::Frequency1MHz);
+#else
     _spi.setFrequency(RHGenericSPI::Frequency8MHz);
+#endif
     if (!RHNRFSPIDriver::init())
 	return false;
 
@@ -172,7 +176,7 @@ bool RH_NRF24::waitPacketSent()
     // We dont actually use auto-ack, so prob dont expect to see RH_NRF24_MAX_RT
     uint8_t status;
     while (!((status = statusRead()) & (RH_NRF24_TX_DS | RH_NRF24_MAX_RT)))
-	;
+	YIELD;
 
     // Must clear RH_NRF24_MAX_RT if it is set, else no further comm
     spiWriteRegister(RH_NRF24_REG_07_STATUS, RH_NRF24_TX_DS | RH_NRF24_MAX_RT);

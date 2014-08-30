@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.11 2014/04/13 11:31:05 mikem Exp $
+// $Id: RH_RF22.cpp,v 1.12 2014/04/28 10:43:48 mikem Exp mikem $
 
 #include <RH_RF22.h>
 
@@ -83,6 +83,17 @@ bool RH_RF22::init()
 	return false;
     }
 
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
+#if defined (__MK20DX128__) || defined (__MK20DX256__)
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    pinMode(_interruptPin, INPUT); 
+#endif
+
+    // Enable interrupt output on the radio. Interrupt line will now go high until
+    // an interrupt occurs
+    spiWrite(RH_RF22_REG_05_INTERRUPT_ENABLE1, RH_RF22_ENTXFFAEM | RH_RF22_ENRXFFAFULL | RH_RF22_ENPKSENT | RH_RF22_ENPKVALID | RH_RF22_ENCRCERROR | RH_RF22_ENFFERR);
+    spiWrite(RH_RF22_REG_06_INTERRUPT_ENABLE2, RH_RF22_ENPREAVAL);
+
     // Set up interrupt handler
     // Since there are a limited number of interrupt glue functions isr*() available,
     // we can only support a limited number of devices simultaneously
@@ -139,15 +150,6 @@ bool RH_RF22::init()
     setHeaderId(0);
     setHeaderFlags(0);
 
-    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr>
-#if defined (__MK20DX128__) || defined (__MK20DX256__)
-    // ARM M4 requires the below. else pin interrupt doesn't work properly.
-    pinMode(_interruptPin, INPUT); 
-#endif
-
-    // Enable interrupts
-    spiWrite(RH_RF22_REG_05_INTERRUPT_ENABLE1, RH_RF22_ENTXFFAEM | RH_RF22_ENRXFFAFULL | RH_RF22_ENPKSENT | RH_RF22_ENPKVALID | RH_RF22_ENCRCERROR | RH_RF22_ENFFERR);
-    spiWrite(RH_RF22_REG_06_INTERRUPT_ENABLE2, RH_RF22_ENPREAVAL);
 
     // Set some defaults. An innocuous ISM frequency, and reasonable pull-in
     setFrequency(434.0, 0.05);
@@ -165,6 +167,7 @@ bool RH_RF22::init()
 // C++ level interrupt handler for this instance
 void RH_RF22::handleInterrupt()
 {
+    digitalWrite(2, HIGH);
     uint8_t _lastInterruptFlags[2];
     // Read the interrupt flags which clears the interrupt
     spiBurstRead(RH_RF22_REG_03_INTERRUPT_STATUS1, _lastInterruptFlags, 2);

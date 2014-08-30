@@ -8,9 +8,14 @@
 
 // Arduino 1.0 includes crc16.h, so use it else can get clashes with other libraries
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (ARDUINO >= 100)
-#include <util/crc16.h>
+ #if defined (__MK20DX128__) || defined (__MK20DX256__)
+  // Teensyduino for Arduino 1.0.5 does not have crc16.h
+  #include <RHutil/crc16.h>
+ #else
+  #include <util/crc16.h>
+ #endif
 #else
-#include <RHutil/crc16.h>
+ #include <RHutil/crc16.h>
 #endif
 
 RH_Serial::RH_Serial(HardwareSerial& serial)

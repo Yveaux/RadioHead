@@ -53,7 +53,12 @@ void RHHardwareSPI::begin()
 	dataMode = SPI_MODE3;
     else
 	dataMode = SPI_MODE0;
+#if defined(__arm__) && defined(CORE_TEENSY)
+    // Temporary work-around due to problem where avr_emulation.h does not work properly for the setDataMode() cal
+    SPCR &= ~SPI_MODE_MASK;
+#else
     SPI.setDataMode(dataMode);
+#endif
 
     uint8_t bitOrder;
     if (_bitOrder == BitOrderLSBFirst)

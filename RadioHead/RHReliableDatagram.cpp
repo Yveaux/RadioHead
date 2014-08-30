@@ -86,8 +86,10 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 		// Else discard it
 	    }
 	    // Not the one we are waiting for, maybe keep waiting until timeout exhausted
+	    YIELD;
 	}
 	// Timeout exhausted, maybe retry
+	YIELD;
     }
     return false;
 }
