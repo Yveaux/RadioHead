@@ -1,7 +1,7 @@
 // RF22Datagram.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.h,v 1.12 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RHDatagram.h,v 1.12 2014/07/23 09:40:42 mikem Exp $
 
 #ifndef RHDatagram_h
 #define RHDatagram_h

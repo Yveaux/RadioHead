@@ -145,6 +145,27 @@
 ///                                   ANT |- connect to your antenna syetem
 /// \endcode
 ///
+/// RH_ASK works with ATTiny85, using Arduino 1.0.5 and tinycore from
+/// https://code.google.com/p/arduino-tiny/downloads/detail?name=arduino-tiny-0100-0018.zip
+/// Tested with the examples ask_transmitter and ask_receiver on ATTiny85.
+/// Caution: The RAM memory requirements on an ATTiny85 are *very* tight. Even the bare bones
+/// ask_transmitter sketch barely fits in eh RAM available on the ATTiny85. Its unlikely to work on 
+/// smaller ATTinys such as the ATTiny45 etc. If you have wierd behaviour, consider
+/// reducing the size of RH_ASK_MAX_PAYLOAD_LEN to the minimum you can work with.
+/// Caution: the default internal clock speed on an ATTiny85 is 1MHz. You MUST set the internal clock speed
+/// to 8MHz. You can do this with Arduino IDE, tineycore and ArduinoISP by setting the board type to "ATtiny85@8MHz',
+/// setting theProgrammer to 'Arduino as ISP' and selecting Tools->Burn Bootloader. This does not actually burn a
+/// bootloader into the tiny, it just changes the fuses so the chip runs at 8MHz. 
+/// If you run the chip at 1MHz, you will get RK_ASK speeds 1/8th of the expected.
+///
+/// Initialise RH_ASK for ATTiny85 like this:
+/// // #include <SPI.h> // comment this out, not needed
+/// RH_ASK driver(2000, 4, 3); // 200bps, TX on D3 (pin 2), RX on D4 (pin 3)
+/// then:
+/// Connect D3 (pin 2) as the output to the transmitter
+/// Connect D4 (pin 3) as the input from the receiver.
+/// 
+///
 /// For testing purposes you can connect 2 Arduino RH_ASK instances directly, by
 /// connecting pin 12 of one to 11 of the other and vice versa, like this for a duplex connection:
 ///
@@ -174,7 +195,8 @@
 class RH_ASK : public RHGenericDriver
 {
 public:
-    /// Constructor
+    /// Constructor.
+    /// At present only one instance of RH_ASK per sketch is supported.
     /// \param[in] speed The desired bit rate in bits per second
     /// \param[in] rxPin The pin that is used to get data from the receiver
     /// \param[in] txPin The pin that is used to send data to the transmitter
@@ -330,7 +352,7 @@ protected:
     /// Sample number for the transmitter. Runs 0 to 7 during one bit interval
     uint8_t _txSample;
 
-    /// The trasnmitter buffer in _symbols_ not data octets
+    /// The transmitter buffer in _symbols_ not data octets
     uint8_t _txBuf[(RH_ASK_MAX_PAYLOAD_LEN * 2) + RH_ASK_PREAMBLE_LEN];
 
     /// Number of symbols in _txBuf to be sent;

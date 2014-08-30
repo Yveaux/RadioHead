@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.16 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.17 2014/08/10 20:55:17 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -65,6 +65,11 @@ RH_RF69::RH_RF69(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
 {
     _interruptPin = interruptPin;
     _idleMode = RH_RF69_OPMODE_MODE_STDBY;
+}
+
+void RH_RF69::setIdleMode(uint8_t idleMode)
+{
+    _idleMode = idleMode;
 }
 
 bool RH_RF69::init()
@@ -135,7 +140,7 @@ bool RH_RF69::init()
     // Set up default configuration
     uint8_t syncwords[] = { 0x2d, 0xd4 };
     setSyncWords(syncwords, sizeof(syncwords)); // Same as RF22's
-    // Reasnably fast and reliable default speed and modulation
+    // Reasonably fast and reliable default speed and modulation
     setModemConfig(GFSK_Rb250Fd250);
     // 3 would be sufficient, but this is the same as RF22's
     setPreambleLength(4);
@@ -161,6 +166,7 @@ void RH_RF69::handleInterrupt()
     {
 	// A transmitter message has been fully sent
 	setModeIdle(); // Clears FIFO
+	_txGood++;
 //	Serial.println("PACKETSENT");
     }
     // Must look for PAYLOADREADY, not CRCOK, since only PAYLOADREADY occurs _after_ AES decryption
@@ -239,7 +245,7 @@ int8_t RH_RF69::temperatureRead()
     spiWrite(RH_RF69_REG_4E_TEMP1, RH_RF69_TEMP1_TEMPMEASSTART); // Start the measurement
     while (spiRead(RH_RF69_REG_4E_TEMP1) & RH_RF69_TEMP1_TEMPMEASRUNNING)
 	; // Wait for the measurement to complete
-    return -(int8_t)spiRead(RH_RF69_REG_4F_TEMP2) - 40;
+    return 166 - spiRead(RH_RF69_REG_4F_TEMP2); // Very approximate, based on observation
 }
 
 bool RH_RF69::setFrequency(float centre, float afcPullInRange)
@@ -469,4 +475,29 @@ bool RH_RF69::send(const uint8_t* data, uint8_t len)
 uint8_t RH_RF69::maxMessageLength()
 {
     return RH_RF69_MAX_MESSAGE_LEN;
+}
+
+bool RH_RF69::printRegisters()
+{  
+    uint8_t i;
+    for (i = 0; i < 0x50; i++)
+    {
+	Serial.print(i, HEX);
+	Serial.print(" ");
+	Serial.println(spiRead(i), HEX);
+    }
+    // 0x58
+    Serial.print(0x58, HEX);
+    Serial.print(" ");
+    Serial.println(spiRead(0x58), HEX);
+    // 0x6f
+    Serial.print(0x6f, HEX);
+    Serial.print(" ");
+    Serial.println(spiRead(0x6f), HEX);
+    // 0x71
+    Serial.print(0x71, HEX);
+    Serial.print(" ");
+    Serial.println(spiRead(0x71), HEX);
+    
+    return true;
 }

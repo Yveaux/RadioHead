@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.19 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RH_RF22.cpp,v 1.19 2014/07/23 09:40:42 mikem Exp $
 
 #include <RH_RF22.h>
 
@@ -63,6 +63,11 @@ RH_RF22::RH_RF22(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
     _interruptPin = interruptPin;
     _idleMode = RH_RF22_XTON; // Default idle state is READY mode
     _polynomial = CRC_16_IBM; // Historical
+}
+
+void RH_RF22::setIdleMode(uint8_t idleMode)
+{
+    _idleMode = idleMode;
 }
 
 bool RH_RF22::init()

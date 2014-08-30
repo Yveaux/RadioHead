@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.32 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.33 2014/08/10 20:55:17 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.25.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.26.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -95,7 +95,7 @@
 /// - RH_TCP
 /// For use with simulated sketches compiled and running on Linux.
 /// Works with tools/etherSimulator.pl to pass messages between simulated sketches, allowing
-/// testing of Manager classes on Linuix and without need for real radios or other transport hardware.
+/// testing of Manager classes on Linux and without need for real radios or other transport hardware.
 ///
 /// Drivers can be used on their own to provide unaddressed, unreliable datagrams. 
 /// All drivers have the same identical API.
@@ -375,6 +375,24 @@
 ///              with new sendtoWait() with optional flags.<br>
 ///              RHMEsh and RHRouter already supported end-to-end application layer flags, but RHMesh::sendtoWait() 
 ///              and RHRouter::sendToWait have now been extended to expose a way to send optional application layer flags.
+/// \version 1.26 2014-08-12
+///              Fixed a Teensy 2.0 compile problem due yield() not available on Teensy < 3.0. <br>
+///              Adjusted the algorithm of RH_RF69::temperatureRead() to more closely reflect reality.<br>
+///              Added functions to RHGenericDriver to get driver packet statistics: rxBad(), rxGood(), txGood().<br>
+///              Added RH_RF69::printRegisters().<br>
+///              RH_RF95::printRegisters() was incorrectly printing the register index instead of the address.
+///              Reported by Phang Moh Lim.<br>
+///              RH_RF95, added definitions for some more registers that are usable in LoRa mode.<br>
+///              RH_RF95::setTxPower now uses RH_RF95_PA_DAC_ENABLE to achieve 21, 22 and 23dBm.<br>
+///              RH_RF95, updated power output measurements.<br>
+///              Testing RH_RF69 on Teensy 3.1 with RF69 on PJRC breakout board. OK.<br>
+///              Improvements so RadioHead will build under Arduino where SPI is not supported, such as 
+///              ATTiny.<br>
+///              Improvements so RadioHead will build for ATTiny using Arduino IDE and tinycore arduino-tiny-0100-0018.zip.<br>
+///              Testing RH_ASK on ATTiny85. Reduced RAM footprint. 
+///              Added helpful documentation. Caution: RAM memory is *very* tight on this platform.<br>
+///              RH_RF22 and RH_RF69, added setIdleMode() function to allow the idle mode radio operating state
+///              to be controlled for lower idle power consumption at the expense of slower transitions to TX and RX.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -383,16 +401,16 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 25
+#define RH_VERSION_MINOR 26
 
 // Symbolic names for currently supported platform types
-#define RH_PLATFORM_ARDUINO      1
-#define RH_PLATFORM_MSP430       2
-#define RH_PLATFORM_STM32        3
-#define RH_PLATFORM_GENERIC_AVR8 4
-#define RH_PLATFORM_UNO32        5
-#define RH_PLATFORM_SIMULATOR    6
-#define RH_PLATFORM_STM32STD     7
+#define RH_PLATFORM_ARDUINO          1
+#define RH_PLATFORM_MSP430           2
+#define RH_PLATFORM_STM32            3
+#define RH_PLATFORM_GENERIC_AVR8     4
+#define RH_PLATFORM_UNO32            5
+#define RH_PLATFORM_SIMULATOR        6
+#define RH_PLATFORM_STM32STD         7
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -414,6 +432,10 @@
  #endif
 #endif
 
+#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__)
+ #define RH_PLATFORM_ATTINY
+#endif
+
 ////////////////////////////////////////////////////
 // Platform specific headers:
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
@@ -422,20 +444,31 @@
  #else
   #include <wiring.h>
  #endif
-
+ #ifdef RH_PLATFORM_ATTINY
+  #warning Arduino TinyCore does not support hardware SPI. Use software SPI instead.
+ #else
+  #include <SPI.h>
+  #define RH_HAVE_HARDWARE_SPI
+ #endif
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"
  #include "Energia.h"
+ #include <SPI.h>
+ #define RH_HAVE_HARDWARE_SPI
 
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
  #include <WProgram.h>
  #include <string.h>
+ #include <SPI.h>
+ #define RH_HAVE_HARDWARE_SPI
  #define memcpy_P memcpy
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple, Flymaple etc
  #include <wirish.h>	
  #include <stdint.h>
  #include <string.h>
+ #include <HardwareSPI.h>
+ #define RH_HAVE_HARDWARE_SPI
  // Defines which timer to use on Maple
  #define MAPLE_TIMER 1
  #define PROGMEM
@@ -448,6 +481,8 @@
  #include <stdint.h>
  #include <string.h>
  #include <math.h>
+ #include <HardwareSPI.h>
+ #define RH_HAVE_HARDWARE_SPI
  #define Serial SerialUSB
 
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) 
@@ -456,6 +491,8 @@
  #include <util/delay.h>
  #include <string.h>
  #include <stdbool.h>
+ #define RH_HAVE_HARDWARE_SPI
+ #include <SPI.h>
 
 #elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
  // Simulate the sketch on Linux
@@ -487,7 +524,8 @@
 ////////////////////////////////////////////////////
 // Try to be compatible with systems that support yield() and multitasking
 // instead of spin-loops
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (TEENSYDUINO)
+// Recent Arduino IDE or Teensy 3 has yield()
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (TEENSYDUINO && defined(__MK20DX128__))
  #define YIELD yield();
 #else
  #define YIELD

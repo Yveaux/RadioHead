@@ -1,7 +1,7 @@
 // RHGenericDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.h,v 1.12 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RHGenericDriver.h,v 1.13 2014/08/10 20:55:17 mikem Exp mikem $
 
 #ifndef RHGenericDriver_h
 #define RHGenericDriver_h
@@ -179,6 +179,23 @@ public:
     /// \param[in] buf Location of the buffer to print
     /// \param[in] len Length of the buffer in octets.
     static void    printBuffer(const char* prompt, const uint8_t* buf, uint8_t len);
+
+    /// Returns the count of the number of bad received packets (ie packets with bad lengths, checksum etc)
+    /// which were rejected and not delivered to the application.
+    /// Caution: not all drivers can correctly report this count. Some underlying hardware only report
+    /// good packets.
+    /// \return The number of bad packets received.
+    uint16_t       rxBad();
+
+    /// Returns the count of the number of 
+    /// good received packets
+    /// \return The number of good packets received.
+    uint16_t       rxGood();
+
+    /// Returns the count of the number of 
+    /// packets successfully transmitted (though not necessarily received by the destination)
+    /// \return The number of packets successfully transmitted
+    uint16_t       txGood();
 
 protected:
 

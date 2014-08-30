@@ -2,9 +2,14 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
 // Contributed by Joanna Rutkowska
-// $Id: RHHardwareSPI.cpp,v 1.10 2014/07/23 07:49:42 mikem Exp $
+// $Id: RHHardwareSPI.cpp,v 1.10 2014/07/23 07:49:42 mikem Exp mikem $
 
 #include <RHHardwareSPI.h>
+
+// Declare a single default instance of the hardware SPI interface class
+RHHardwareSPI hardware_spi;
+
+#ifdef RH_HAVE_HARDWARE_SPI
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 // Declare an SPI interface to use
@@ -26,9 +31,6 @@ HardwareSPI SPI(1);
  #define SPI_CLOCK_DIV2  (VARIANT_MCK/10500000) // 8MHz
  #define SPI_CLOCK_DIV1  (VARIANT_MCK/5250000)  // 16MHz
 #endif
-
-// Declare a single default instance of the hardware SPI interface class
-RHHardwareSPI hardware_spi;
 
 RHHardwareSPI::RHHardwareSPI(Frequency frequency, BitOrder bitOrder, DataMode dataMode)
     :
@@ -230,4 +232,6 @@ void RHHardwareSPI::end()
 {
     return SPI.end();
 }
+
+#endif
 

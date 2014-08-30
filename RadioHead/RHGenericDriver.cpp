@@ -1,7 +1,7 @@
 // RHGenericDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.cpp,v 1.13 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RHGenericDriver.cpp,v 1.14 2014/08/10 20:55:17 mikem Exp mikem $
 
 #include <RHGenericDriver.h>
 
@@ -150,3 +150,26 @@ void RHGenericDriver::printBuffer(const char* prompt, const uint8_t* buf, uint8_
     Serial.println(' ');
 }
 
+uint16_t RHGenericDriver::rxBad()
+{
+    return _rxBad;
+}
+
+uint16_t RHGenericDriver::rxGood()
+{
+    return _rxGood;
+}
+
+uint16_t RHGenericDriver::txGood()
+{
+    return _txGood;
+}
+
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(RH_PLATFORM_ATTINY)
+// Tinycore does not have __cxa_pure_virtual, so without this we
+// get linking complaints from the default code generated for pure virtual functions
+extern "C" void __cxa_pure_virtual()
+{
+    while (1);
+}
+#endif

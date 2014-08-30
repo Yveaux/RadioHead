@@ -34,7 +34,7 @@ class RHNRFSPIDriver : public RHGenericDriver
 {
 public:
     /// Constructor
-    /// \param[in] slaveSelectPin The controler pin to use to select the desired SPI device. This pin will be driven LOW
+    /// \param[in] slaveSelectPin The controller pin to use to select the desired SPI device. This pin will be driven LOW
     /// during SPI communications with the SPI device that uis iused by this Driver.
     /// \param[in] spi Reference to the SPI interface to use. The default is to use a default built-in Hardware interface.
     RHNRFSPIDriver(uint8_t slaveSelectPin = SS, RHGenericSPI& spi = hardware_spi);

@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.20 2014/07/23 07:49:42 mikem Exp $
+// $Id: RH_RF69.h,v 1.21 2014/08/10 20:55:17 mikem Exp mikem $
 //
 ///
 
@@ -506,6 +506,8 @@
 /// \endcode
 /// (Caution: we dont claim laboratory accuracy for these measurements)
 /// You would not expect to get anywhere near these powers to air with a simple 1/4 wavelength wire antenna.
+/// Caution: although the RFM69 appears to have a PC antenna on board, you will get much better power and range even 
+/// with just a 1/4 wave wire antenna.
 ///
 /// \par Performance
 ///
@@ -611,7 +613,7 @@ public:
 
     /// Reads the on-chip temperature sensor.
     /// The RF69 must be in Idle mode (= RF69 Standby) to measure temperature.
-    /// The measurement is uncalibrated and without calibration, you can expectit to be far from
+    /// The measurement is uncalibrated and without calibration, you can expect it to be far from
     /// correct.
     /// \return The measured temperature, in degrees C from -40 to 85 (uncalibrated)
     int8_t        temperatureRead();   
@@ -727,6 +729,20 @@ public:
     /// The maximum message length supported by this driver
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
+
+    /// Prints the value of all the RF69 registers to Serial.
+    /// For debugging/testing only
+    /// \return true if successful
+    bool printRegisters();
+
+    /// Sets the radio operating mode for the case when the driver is idle (ie not
+    /// transmitting or receiving), allowing you to control the idle mode power requirements
+    /// at the expense of slower transitions to transmit and receive modes.
+    /// By default, the idle mode is RH_RF69_OPMODE_MODE_STDBY,
+    /// but eg setIdleMode(RH_RF69_OPMODE_MODE_SLEEP) will provide a much lower
+    /// idle current but slower transitions. Call this function after init().
+    /// \param[in] idleMode The chip operating mode to use when the driver is idle. One of RH_RF69_OPMODE_*
+    void setIdleMode(uint8_t idleMode);
 
 protected:
     /// This is a low level function to handle the interrupts for one instance of RF69.

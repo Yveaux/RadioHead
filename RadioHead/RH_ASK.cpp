@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.12 2014/07/23 09:40:42 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.12 2014/07/23 09:40:42 mikem Exp $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -67,12 +67,25 @@ bool RH_ASK::init()
     pinMode(_rxPin, INPUT);
     pinMode(_pttPin, OUTPUT);
 #endif
-    writeTx(LOW);
-    writePtt(LOW);
+
+    // Ready to go
+    setModeIdle();
+
     timerSetup();
 
     return true;
 }
+
+// Put these prescaler structs in PROGMEM, not on the stack
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
+ #if defined(RH_ASK_ARDUINO_USE_TIMER2)
+ // Timer 2 has different prescalers
+ PROGMEM static const uint16_t prescalers[] = {0, 1, 8, 32, 64, 128, 256, 3333}; 
+ #else
+ PROGMEM static const uint16_t prescalers[] = {0, 1, 8, 64, 256, 1024, 3333}; 
+ #endif
+ #define NUM_PRESCALERS (sizeof(prescalers) / sizeof( uint16_t))
+#endif
 
 // Common function for setting timer ticks @ prescaler values for speed
 // Returns prescaler index into {0, 1, 8, 64, 256, 1024} array
@@ -82,14 +95,7 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
 {
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
     // Clock divider (prescaler) values - 0/3333: error flag
- #if defined(RH_ASK_ARDUINO_USE_TIMER2)
-    // Timer 2 has different prescalers
-    uint16_t prescalers[] = {0, 1, 8, 32, 64, 128, 256, 3333}; 
- #else
-    uint16_t prescalers[] = {0, 1, 8, 64, 256, 1024, 3333}; 
- #endif
-    #define NUM_PRESCALERS sizeof(prescalers) / sizeof( uint16_t)
-    uint8_t prescaler=0; // index into array & return bit value
+    uint8_t prescaler;     // index into array & return bit value
     unsigned long ulticks; // calculate by ntick overflow
 
     // Div-by-zero protection
@@ -101,23 +107,25 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
     }
 
     // test increasing prescaler (divisor), decreasing ulticks until no overflow
+    // 1/Fraction of second needed to xmit one bit
+    unsigned long inv_bit_time = ((unsigned long)speed) * 8;
     for (prescaler=1; prescaler < NUM_PRESCALERS; prescaler += 1)
     {
 	// Integer arithmetic courtesy Jim Remington
 	// 1/Amount of time per CPU clock tick (in seconds)
-        unsigned long inv_clock_time = F_CPU / ((unsigned long)prescalers[prescaler]);
-        // 1/Fraction of second needed to xmit one bit
-        unsigned long inv_bit_time = ((unsigned long)speed) * 8;
+	uint16_t prescalerValue;
+	memcpy_P(&prescalerValue, &prescalers[prescaler], sizeof(uint16_t));
+        unsigned long inv_clock_time = F_CPU / ((unsigned long)prescalerValue);
         // number of prescaled ticks needed to handle bit time @ speed
-        ulticks = inv_clock_time/inv_bit_time;
+        ulticks = inv_clock_time / inv_bit_time;
 
         // Test if ulticks fits in nticks bitwidth (with 1-tick safety margin)
         if ((ulticks > 1) && (ulticks < max_ticks))
-        {
             break; // found prescaler
-        }
+
         // Won't fit, check with next prescaler value
     }
+
 
     // Check for error
     if ((prescaler == 6) || (ulticks < 2) || (ulticks > max_ticks))
@@ -161,8 +169,10 @@ void RH_ASK::timerSetup()
     uint16_t nticks; // number of prescaled ticks needed
     uint8_t prescaler; // Bit values for CS0[2:0]
 
- #ifdef __AVR_ATtiny85__
+ #ifdef RH_PLATFORM_ATTINY
     // figure out prescaler value and counter match value
+    // REVISIT: does not correctly handle 1MHz clock speeds, only works with 8MHz clocks
+    // At 1MHz clock, get 1/8 of the expected baud rate
     prescaler = timerCalc(_speed, (uint8_t)-1, &nticks);
     if (!prescaler)
         return; // fault
@@ -174,19 +184,22 @@ void RH_ASK::timerSetup()
     TCCR0B = 0;
     TCCR0B = prescaler; // set CS00, CS01, CS02 (other bits not needed)
 
+
     // Number of ticks to count before firing interrupt
     OCR0A = uint8_t(nticks);
 
     // Set mask to fire interrupt when OCF0A bit is set in TIFR0
     TIMSK |= _BV(OCIE0A);
 
- #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(CORE_TEENSY)
+
+
+ #elif defined(__arm__) && defined(CORE_TEENSY)
     // on Teensy 3.0 (32 bit ARM), use an interval timer
     IntervalTimer *t = new IntervalTimer();
     void TIMER1_COMPA_vect(void);
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
- #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__)
+ #elif defined(__arm__)
     // Arduino Due
     // Due has 9 timers in 3 blocks of 3.
     // We use timer 1 TC1_IRQn on TC0 channel 1, since timers 0, 2, 3, 4, 5 are used by the Servo library
@@ -254,7 +267,7 @@ void RH_ASK::timerSetup()
     TIMSK |= _BV(OCIE1A);
    #endif // TIMSK1
   #endif
- #endif // __AVR_ATtiny85__
+ #endif
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
     // Pause the timer while we're configuring it
@@ -317,6 +330,7 @@ void RH_ASK::setModeTx()
 	_mode = RHModeTx;
     }
 }
+
 // Call this often
 bool RH_ASK::available()
 {
@@ -408,6 +422,9 @@ bool RH_ASK::send(const uint8_t* data, uint8_t len)
     // Start the low level interrupt handler sending symbols
     setModeTx();
 
+// FIXME
+    thisASKDriver = this;
+
     return true;
 }
 
@@ -453,17 +470,15 @@ uint8_t RH_ASK::maxMessageLength()
 }
 
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) 
- #if __AVR_ATtiny85__
+ #if defined(RH_PLATFORM_ATTINY)
   #define RH_ASK_TIMER_VECTOR TIM0_COMPA_vect
- #elif defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) // Why can't Atmel make consistent?
-  #define RH_ASK_TIMER_VECTOR TIM1_COMPA_vect
  #else // Assume Arduino Uno (328p or similar)
   #if defined(RH_ASK_ARDUINO_USE_TIMER2)
    #define RH_ASK_TIMER_VECTOR TIMER2_COMPA_vect
   #else
    #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
   #endif
- #endif // __AVR_ATtiny85__
+ #endif 
 #elif (RH_ASK_PLATFORM == RH_ASK_PLATFORM_GENERIC_AVR8)
  #define __COMB(a,b,c) (a##b##c)
  #define _COMB(a,b,c) __COMB(a,b,c)
