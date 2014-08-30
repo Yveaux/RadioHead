@@ -20,12 +20,15 @@
 ///
 /// Manager class that extends RHDatagram to define addressed, reliable datagrams with acknowledgement and retransmission.
 /// Based on RHDatagram, adds flags and sequence numbers. RHReliableDatagram is reliable in the sense
-/// that messages are acknowledged, and unacknowledged messages are retransmitted until acknowledged or the
+/// that messages are acknowledged by the recipient, and unacknowledged messages are retransmitted until acknowledged or the
 /// retries are exhausted.
 /// When addressed messages are sent (by sendtoWait()), it will wait for an ack, and retransmit
 /// after timeout until an ack is received or retries are exhausted.
 /// When addressed messages are collected by the application (by recvfromAck()), 
 /// an acknowledgement is automatically sent to the sender.
+///
+/// You can use RHReliableDatagram to send broadcast messages, with a TO address of RH_BROADCAST_ADDRESS,
+/// however broadcasts are not acknowledged or retransmitted and are therefore NOT actually reliable.
 ///
 /// The retransmit timeout is randomly varied between timeout and timeout*2 to prevent collisions on all
 /// retries when 2 nodes happen to start sending at the same time .
@@ -37,6 +40,7 @@
 /// - FROM set to this node address
 /// - ID set to the ID of the original message
 /// - FLAGS with the RH_FLAGS_ACK bit set
+/// - 1 octet of payload containing ASCII '!' (since some drivers cannot handle 0 length payloads)
 ///
 /// \par Media Access Strategy
 ///
@@ -51,7 +55,7 @@
 ///
 /// There is no message queuing or threading in RHReliableDatagram. 
 /// sendtoWait() waits until an acknowledgement is received, retransmitting
-/// up to default 3 retries time with a default 200ms timeout. 
+/// up to (by default) 3 retries time with a default 200ms timeout. 
 /// During this transmit-acknowledge phase, any received message (other than the expected
 /// acknowledgement) will be ignored. Your sketch will be unresponsive to new messages 
 /// until an acknowledgement is received or the retries are exhausted. 

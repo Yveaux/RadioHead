@@ -8,7 +8,7 @@
 
 PROJNAME = RadioHead
 VERSION_MAJOR = 1
-VERSION_MINOR = 14
+VERSION_MINOR = 15
 
 DISTFILE = $(PROJNAME)-$(VERSION_MAJOR).$(VERSION_MINOR).zip
 
@@ -16,7 +16,7 @@ all:	versioning doxygen dist upload
 
 # Update version numbers in RadioHead.h
 versioning:
-	sed -i.bak -e 's/RadioHead.*.zip/$(DISTFILE)/' RadioHead.h
+	sed -i.bak -e 's/RadioHead-.*\.zip/$(DISTFILE)/' RadioHead.h
 	sed -i.bak -e 's/define RH_VERSION_MAJOR.*$$/define RH_VERSION_MAJOR $(VERSION_MAJOR)/' RadioHead.h
 	sed -i.bak -e 's/define RH_VERSION_MINOR.*$$/define RH_VERSION_MINOR $(VERSION_MINOR)/' RadioHead.h
 
