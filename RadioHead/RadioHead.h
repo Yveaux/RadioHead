@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.36 2014/08/21 05:50:47 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.37 2014/08/27 22:00:36 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.31.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.32.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -134,7 +134,10 @@
 ///
 /// - Arduino and the Arduino IDE (version 1.0 to 1.5.5 and later)
 /// Including Diecimila, Uno, Mega, Leonardo, Yun etc. http://arduino.cc/, Also similar boards such as 
-/// Moteino http://lowpowerlab.com/moteino/ , Anarduino Mini http://www.anarduino.com/mini/ etc.
+///  - Moteino http://lowpowerlab.com/moteino/ 
+///  - Anarduino Mini http://www.anarduino.com/mini/ 
+///  - RedBearLab Blend V1.0 http://redbearlab.com/blend/ (with Arduino 1.0.5 and RedBearLab Blend Add-On version 20140701) 
+///  - etc.
 ///
 /// - ChipKit Uno32 board and the MPIDE development environment
 /// http://www.digilentinc.com/Products/Detail.cfm?Prod=CHIPKIT-UNO32
@@ -418,10 +421,14 @@
 ///              Improvements to RH_RF69 modulation schemes: now include the AFCBW in teh ModemConfig.<br>
 ///              ModemConfig RH_RF69::FSK_Rb2Fd5 and RH_RF69::GFSK_Rb2Fd5 are now working.<br> 
 /// \version 1.30 2014-08-25
-///              Fixed some compile problems with ATtiny84 on Arduinbo 1.5.5 reported by Glen Cook.<br>
+///              Fixed some compile problems with ATtiny84 on Arduino 1.5.5 reported by Glen Cook.<br>
 /// \version 1.31 2014-08-27
 ///              Changed RH_RF69 FSK and GFSK modulations from Rb2_4Fd2_4 to Rb2_4Fd4_8 and FSK_Rb4_8Fd4_8 to FSK_Rb4_8Fd9_6
 ///              since the previous ones were unreliable (they had modulation indexes of 1).<br>
+/// \version 1.32 2014-08-28
+///              Testing with RedBearLab Blend board http://redbearlab.com/blend/. OK.<br>
+///              Changed more RH_RF69 FSK and GFSK slowish modulations to have modulation index of 2 instead of 1. 
+///              This required chnaging the symbolic names.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -430,7 +437,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 31
+#define RH_VERSION_MINOR 32
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

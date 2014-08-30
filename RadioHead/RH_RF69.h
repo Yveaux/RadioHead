@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.24 2014/08/21 05:50:47 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.25 2014/08/27 22:00:36 mikem Exp mikem $
 //
 ///
 
@@ -560,9 +560,9 @@ public:
 	FSK_Rb2Fd5 = 0,	   ///< FSK, Whitening, Rb = 2kbs,    Fd = 5kHz
 	FSK_Rb2_4Fd4_8,    ///< FSK, Whitening, Rb = 2.4kbs,  Fd = 4.8kHz 
 	FSK_Rb4_8Fd9_6,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 9.6kHz 
-	FSK_Rb9_6Fd9_6,    ///< FSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
-	FSK_Rb19_2Fd19_2,  ///< FSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
-	FSK_Rb38_4Fd38_4,  ///< FSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
+	FSK_Rb9_6Fd19_2,   ///< FSK, Whitening, Rb = 9.6kbs,  Fd = 19.2kHz
+	FSK_Rb19_2Fd38_4,  ///< FSK, Whitening, Rb = 19.2kbs, Fd = 38.4kHz
+	FSK_Rb38_4Fd76_8,  ///< FSK, Whitening, Rb = 38.4kbs, Fd = 76.8kHz
 	FSK_Rb57_6Fd120,   ///< FSK, Whitening, Rb = 57.6kbs, Fd = 120kHz
 	FSK_Rb125Fd125,    ///< FSK, Whitening, Rb = 125kbs,  Fd = 125kHz
 	FSK_Rb250Fd250,    ///< FSK, Whitening, Rb = 250kbs,  Fd = 250kHz
@@ -571,9 +571,9 @@ public:
 	GFSK_Rb2Fd5,	    ///< GFSK, Whitening, Rb = 2kbs,    Fd = 5kHz
 	GFSK_Rb2_4Fd4_8,    ///< GFSK, Whitening, Rb = 2.4kbs,  Fd = 4.8kHz
 	GFSK_Rb4_8Fd9_6,    ///< GFSK, Whitening, Rb = 4.8kbs,  Fd = 9.6kHz
-	GFSK_Rb9_6Fd9_6,    ///< GFSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
-	GFSK_Rb19_2Fd19_2,  ///< GFSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
-	GFSK_Rb38_4Fd38_4,  ///< GFSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
+	GFSK_Rb9_6Fd19_2,   ///< GFSK, Whitening, Rb = 9.6kbs,  Fd = 19.2kHz
+	GFSK_Rb19_2Fd38_4,  ///< GFSK, Whitening, Rb = 19.2kbs, Fd = 38.4kHz
+	GFSK_Rb38_4Fd76_8,  ///< GFSK, Whitening, Rb = 38.4kbs, Fd = 76.8kHz
 	GFSK_Rb57_6Fd120,   ///< GFSK, Whitening, Rb = 57.6kbs, Fd = 120kHz
 	GFSK_Rb125Fd125,    ///< GFSK, Whitening, Rb = 125kbs,  Fd = 125kHz
 	GFSK_Rb250Fd250,    ///< GFSK, Whitening, Rb = 250kbs,  Fd = 250kHz

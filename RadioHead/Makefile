@@ -4,11 +4,11 @@
 #
 # Author: Mike McCauley (mikem@airspayce.com)
 # Copyright (C) 2014 Mike McCauley
-# $Id: Makefile,v 1.20 2014/08/21 05:50:47 mikem Exp mikem $
+# $Id: Makefile,v 1.21 2014/08/27 22:00:36 mikem Exp mikem $
 
 PROJNAME = RadioHead
 VERSION_MAJOR = 1
-VERSION_MINOR = 31
+VERSION_MINOR = 32
 
 DISTFILE = $(PROJNAME)-$(VERSION_MAJOR).$(VERSION_MINOR).zip
 
