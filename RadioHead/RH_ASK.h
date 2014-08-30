@@ -122,7 +122,30 @@
 /// - Transceivers
 ///  - DR3100 (433.92MHz)
 ///
-/// For testing purposes you can connect 2 RH_ASK instances directly, by
+/// \par Connecting to Arduino
+///
+/// Most transmitters can be connected to Arduino like this:
+
+/// \code
+/// Arduino                         Transmitter
+///  GND------------------------------GND
+///  D12------------------------------Data
+///  5V-------------------------------VCC
+/// \endcode
+///
+/// Most receivers can be connected to Arduino like this:
+/// \code
+/// Arduino                         Receiver
+///  GND------------------------------GND
+///  D11------------------------------Data
+///  5V-------------------------------VCC
+///                                   SHUT (not connected)
+///                                   WAKEB (not connected)
+///                                   GND |
+///                                   ANT |- connect to your antenna syetem
+/// \endcode
+///
+/// For testing purposes you can connect 2 Arduino RH_ASK instances directly, by
 /// connecting pin 12 of one to 11 of the other and vice versa, like this for a duplex connection:
 ///
 /// \code
@@ -135,6 +158,8 @@
 /// You can also connect 2 RH_ASK instances over a suitable analog
 /// transmitter/receiver, such as the audio channel of an A/V transmitter/receiver. You may need
 /// buffers at each end of the connection to convert the 0-5V digital output to a suitable analog voltage.
+///
+/// Measured power output from RFM85 at 5V was 18dBm.
 ///
 /// \par Timers
 /// The RH_ASK driver uses a timer-driven interrupt to generate 8 interrupts per bit period. RH_ASK

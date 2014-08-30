@@ -27,6 +27,8 @@ RadioHead/RH_RF22.cpp
 RadioHead/RH_RF22.h
 RadioHead/RH_RF69.cpp
 RadioHead/RH_RF69.h
+RadioHead/RH_RF95.cpp
+RadioHead/RH_RF95.h
 RadioHead/RH_TCP.cpp
 RadioHead/RH_TCP.h
 RadioHead/RHRouter.cpp
@@ -47,6 +49,10 @@ RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client
 RadioHead/examples/ask/ask_reliable_datagram_server/ask_reliable_datagram_server.pde
 RadioHead/examples/ask/ask_transmitter/ask_transmitter.pde
 RadioHead/examples/ask/ask_receiver/ask_receiver.pde
+RadioHead/examples/rf95/rf95_client/rf95_client.pde
+RadioHead/examples/rf95/rf95_reliable_datagram_client/rf95_reliable_datagram_client.pde
+RadioHead/examples/rf95/rf95_reliable_datagram_server/rf95_reliable_datagram_server.pde
+RadioHead/examples/rf95/rf95_server/rf95_server.pde
 RadioHead/examples/rf22/rf22_client/rf22_client.pde
 RadioHead/examples/rf22/rf22_mesh_client/rf22_mesh_client.pde
 RadioHead/examples/rf22/rf22_mesh_server1/rf22_mesh_server1.pde

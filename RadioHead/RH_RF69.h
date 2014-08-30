@@ -18,7 +18,7 @@
 // The Frequency Synthesizer step = RH_RF69_FXOSC / 2^^19
 #define RH_RF69_FSTEP  (RH_RF69_FXOSC / 524288)
 
-// This is the maximum number of interrupts the library can support
+// This is the maximum number of interrupts the driver can support
 // Most Arduinos can handle 2, Megas can handle more
 #define RH_RF69_NUM_INTERRUPTS 3
 
@@ -35,7 +35,7 @@
 // The headers are inside the RF69's payload and are therefore encrypted if encryption is enabled
 #define RH_RF69_HEADER_LEN 4
 
-// This is the maximum message length that can be supported by this library. Limited by
+// This is the maximum message length that can be supported by this driver. Limited by
 // the size of the FIFO, since we are unable to support on-the-fly filling and emptying 
 // of the FIFO.
 // Can be pre-defined to a smaller size (to save SRAM) prior to including this header
@@ -319,12 +319,13 @@
 /// programmable data rates. It also suports AES encryption of up to 64 octets
 /// of payload It is available prepackaged on modules such as the RFM69W. And
 /// such modules can be prepacked on processor boards such as the Moteino from
-/// LowPowerLabs (which is what we used to develop the RH_RF69 library)
+/// LowPowerLabs (which is what we used to develop the RH_RF69 driver)
 ///
 /// This Driver provides functions for sending and receiving messages of up
 /// to 60 octets on any frequency supported by the RF69, in a range of
 /// predefined data rates and frequency deviations.  Frequency can be set with
-/// 61Hz precision to any frequency from 240.0MHz to 960.0MHz.
+/// 61Hz precision to any frequency from 240.0MHz to 960.0MHz. Caution: most modules only support a more limited
+/// range of frequencies due to antenna tuning.
 ///
 /// Up to 2 RF69B modules can be connected to an Arduino (3 on a Mega),
 /// permitting the construction of translators and frequency changers, etc.
@@ -410,22 +411,22 @@
 /// -shields hang Arduino boards, especially during the flashing
 /// \par Interrupts
 ///
-/// The RH_RF69 library uses interrupts to react to events in the RF69 module,
+/// The RH_RF69 driver uses interrupts to react to events in the RF69 module,
 /// such as the reception of a new packet, or the completion of transmission
-/// of a packet.  The RH_RF69 library interrupt service routine reads status from
+/// of a packet.  The RH_RF69 driver interrupt service routine reads status from
 /// and writes data to the the RF69 module via the SPI interface. It is very
-/// important therefore, that if you are using the RH_RF69 library with another
+/// important therefore, that if you are using the RH_RF69 driver with another
 /// SPI based deviced, that you disable interrupts while you transfer data to
 /// and from that other device.  Use cli() to disable interrupts and sei() to
 /// reenable them.
 ///
 /// \par Memory
 ///
-/// The RH_RF69 library requires non-trivial amounts of memory. The sample
+/// The RH_RF69 driver requires non-trivial amounts of memory. The sample
 /// programs above all compile to about 8kbytes each, which will fit in the
 /// flash proram memory of most Arduinos. However, the RAM requirements are
 /// more critical. Therefore, you should be vary sparing with RAM use in
-/// programs that use the RH_RF69 library.
+/// programs that use the RH_RF69 driver.
 ///
 /// It is often hard to accurately identify when you are hitting RAM limits on Arduino. 
 /// The symptoms can include:
@@ -436,7 +437,7 @@
 /// 
 /// \par Automatic Frequency Control (AFC)
 ///
-/// The RF69 module is configured by the RH_RF69 library to always use AFC.
+/// The RF69 module is configured by the RH_RF69 driver to always use AFC.
 ///
 /// \par Transmitter Power
 ///

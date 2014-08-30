@@ -7,7 +7,8 @@
 
 RH_NRF24::RH_NRF24(uint8_t chipEnablePin, uint8_t slaveSelectPin, RHGenericSPI& spi)
     :
-    RHNRFSPIDriver(slaveSelectPin, spi)
+    RHNRFSPIDriver(slaveSelectPin, spi),
+    _rxBufValid(0)
 {
     _configuration = RH_NRF24_EN_CRC | RH_NRF24_CRCO; // Default: 2 byte CRC enabled
     _chipEnablePin = chipEnablePin;

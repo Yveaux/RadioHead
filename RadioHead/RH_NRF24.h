@@ -11,7 +11,7 @@
 #include <RHNRFSPIDriver.h>
 
 // This is the maximum number of bytes that can be carried by the nRF24.
-// We use some for headers, keavin fewer for RadioHead messages
+// We use some for headers, keeping fewer for RadioHead messages
 #define RH_NRF24_MAX_PAYLOAD_LEN 32
 
 // The length of the headers we add.
@@ -256,6 +256,52 @@
 ///                 GND----------GND   (ground in)
 /// \endcode
 /// and you can then use the default constructor RH_NRF24(). 
+///
+/// For an Itead Studio IBoard Pro http://imall.iteadstudio.com/iboard-pro.html, connected by hardware SPI to the 
+/// ITDB02 Parallel LCD Module Interface pins:
+/// \code
+///  IBoard Signal=ITDB02 pin          Sparkfun WRL-00691
+///        3.3V      37-----------VCC  (3.3V to 7V in)
+///         D2       28-----------CE   (chip enable in)
+///         D29      27----------CSN   (chip select in)
+///         SCK D52  32----------SCK   (SPI clock in)
+///        MOSI D51  34----------SDI   (SPI Data in)
+///        MISO D50  30----------SDO   (SPI data out)
+///                              IRQ   (Interrupt output, not connected)
+///        GND       39----------GND   (ground in)
+/// \endcode
+/// And initialise like this:
+/// \code
+/// RH_NRF24 nrf24(2, 29);
+/// \endcode
+///
+/// For an Itead Studio IBoard Pro http://imall.iteadstudio.com/iboard-pro.html, connected by software SPI to the 
+/// nRF24L01+ Module Interface pins. CAUTION: performance of software SPI is very slow and is not
+/// compatible with other modules running hardware SPI.
+/// \code
+///  IBoard Signal=Module pin          Sparkfun WRL-00691
+///        3.3V      2-----------VCC  (3.3V to 7V in)
+///         D12      3-----------CE   (chip enable in)
+///         D29      4----------CSN   (chip select in)
+///         D9       5----------SCK   (SPI clock in)
+///         D8       6----------SDI   (SPI Data in)
+///         D7       7----------SDO   (SPI data out)
+///                              IRQ   (Interrupt output, not connected)
+///        GND       1----------GND   (ground in)
+/// \endcode
+/// And initialise like this:
+/// \code
+/// #include <SPI.h>
+/// #include <RH_NRF24.h>
+/// #include <RHSoftwareSPI.h>
+/// Singleton instance of the radio driver
+/// RHSoftwareSPI spi;
+/// RH_NRF24 nrf24(12, 11, spi);
+/// void setup() {
+///     spi.setPins(7, 8, 9);
+///     ....
+/// \endcode
+///
 /// You can override the default settings for the CSN and CE pins 
 /// in the NRF24() constructor if you wish to connect the slave select CSN to other than the normal one for your 
 /// Arduino (D10 for Diecimila, Uno etc and D53 for Mega)

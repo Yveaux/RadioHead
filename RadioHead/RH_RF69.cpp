@@ -5,7 +5,7 @@
 
 #include <RH_RF69.h>
 
-// Interrupt vectors for the 2 Arduino interrupt pins
+// Interrupt vectors for the 3 Arduino interrupt pins
 // Each interrupt can be handled by a different instance of RH_RF69, allowing you to have
 // 2 or more RF69s per Arduino
 RH_RF69* RH_RF69::_deviceForInterrupt[RH_RF69_NUM_INTERRUPTS] = {0, 0, 0};
@@ -65,9 +65,6 @@ RH_RF69::RH_RF69(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
 {
     _interruptPin = interruptPin;
     _idleMode = RH_RF69_OPMODE_MODE_STDBY;
-    _rxGood = 0;
-    _rxBad = 0;
-    _txGood = 0;
 }
 
 bool RH_RF69::init()

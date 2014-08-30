@@ -4,7 +4,7 @@
 //
 // These routines originally derived from Arduino source code. See RHCRC.cpp
 // for copyright information
-// $Id:  $
+// $Id: RHCRC.h,v 1.1 2014/06/24 02:40:12 mikem Exp mikem $
 
 #ifndef RHCRC_h
 #define RHCRC_h

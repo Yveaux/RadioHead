@@ -38,7 +38,7 @@
 // and to provide a consistent API amonng all processors
 //
 
-/* $Id: crc16.h,v 1.1 2014/05/07 06:14:39 mikem Exp $ */
+/* $Id: RHCRC.cpp,v 1.1 2014/06/24 02:40:12 mikem Exp mikem $ */
 
 #include <RHCRC.h>
 

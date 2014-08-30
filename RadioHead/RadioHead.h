@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.28 2014/06/24 00:20:33 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.29 2014/06/24 02:40:12 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.21.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.22.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -75,10 +75,15 @@
 /// - RH_NRF905
 /// Works with Nordic nRF905 based 433/868/915 MHz radio modules.
 ///
+/// - RH_RF95
+/// Works with Semtech SX1276/77/78 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
+/// Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
+/// FSK/GFSK/OOK modes are not (yet) supported.
+///
 /// - RH_ASK
 /// Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers such as RX-B1 
-/// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver; FS1000A/XY-MK-5V transceiver.
-/// Supports ASK (OOK).
+/// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver; FS1000A/XY-MK-5V transceiver;
+/// HopeRF RFM83C / RFM85. Supports ASK (OOK).
 ///
 /// - RH_Serial
 /// Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
@@ -342,6 +347,16 @@
 ///              Brought previous RHutil/crc16.h code into mainline RHCRC.cpp to prevent name collisions
 ///              with other similarly named code in other libraries. Suggested by Steve Childress.<br>
 ///              Fix SPI bus speed errors on 8MHz Arduinos.
+/// \version 1.22 2014-07-01<br>
+///              Update RH_ASK documentation for common wiring connections.<br>
+///              Testing RH_ASK with HopeRF RFM83C/RFM85 courtesy Anarduino http://www.anarduino.com/<br>
+///              Testing RH_NRF24 with Itead Studio IBoard Pro http://imall.iteadstudio.com/iboard-pro.html
+///              using both hardware SPI on the ITDB02 Parallel LCD Module Interface pins and software SPI
+///              on the nRF24L01+ Module Interface pins. Documented wiring required.<br>
+///              Added support for AVR 1284 and 1284p, contributed by Peter Scargill.
+///              Added support for Semtech SX1276/77/78 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios
+///              in LoRa mode only. Tested with the excellent MiniWirelessLoRa from 
+///              Anarduino http://www.anarduino.com/miniwireless<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -350,7 +365,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 21
+#define RH_VERSION_MINOR 22
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
@@ -458,7 +473,7 @@
  #endif
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && !defined(__arm__)
 
-  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1284__)|| defined(__AVR_ATmega1284p__)
   // Arduino Mega, Mega ADK, Mega Pro
   // 2->0, 3->1, 21->2, 20->3, 19->4, 18->5
   #define digitalPinToInterrupt(p) ((p) == 2 ? 0 : ((p) == 3 ? 1 : ((p) >= 18 && (p) <= 21 ? 23 - (p) : NOT_AN_INTERRUPT)))
