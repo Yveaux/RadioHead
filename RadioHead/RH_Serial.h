@@ -1,7 +1,7 @@
 // RH_Serial.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_Serial.h,v 1.4 2014/04/14 08:37:11 mikem Exp $
+// $Id: RH_Serial.h,v 1.5 2014/04/23 00:23:47 mikem Exp $
 
 // Works with any serial port. Tested with Arduino Mega connected to Serial1
 // Also works with 3DR Radio V1.3 Telemetry kit (serial at 57600baud)
@@ -42,6 +42,13 @@ class HardwareSerial;
 /// This class sends and received packetized messages over a serial connection.
 /// It can be used for point-to-point or multidrop, RS232, RS488 or other serial connections as
 /// supported by your controller hardware.
+/// It can also be used to communicate via radios with serial interfaces such as:
+/// - APC220 Radio Data Module http://www.dfrobot.com/image/data/TEL0005/APC220_Datasheet.pdf
+///   http://www.dfrobot.com/image/data/TEL0005/APC220_Datasheet.pdf
+/// - 3DR Telemetry Radio https://store.3drobotics.com/products/3dr-radio
+/// - HopeRF HM-TR module http://www.hoperf.com/upload/rf_app/HM-TRS.pdf
+/// - Others
+///
 /// The packetised messages include message encapsulation, headers, a message payload and a checksum
 ///
 /// \par Packet Format

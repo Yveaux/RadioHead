@@ -1,7 +1,7 @@
 // RHDatagram.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.cpp,v 1.3 2014/04/08 05:30:15 mikem Exp $
+// $Id: RHDatagram.cpp,v 1.4 2014/04/23 09:16:52 mikem Exp mikem $
 
 #include <RHDatagram.h>
 
@@ -58,9 +58,9 @@ void RHDatagram::waitAvailable()
     _driver.waitAvailable();
 }
 
-void RHDatagram::waitPacketSent()
+bool RHDatagram::waitPacketSent()
 {
-    _driver.waitPacketSent();
+    return _driver.waitPacketSent();
 }
 
 bool RHDatagram::waitPacketSent(uint16_t timeout)

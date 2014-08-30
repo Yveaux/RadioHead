@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.h,v 1.3 2014/04/14 08:37:11 mikem Exp $
+// $Id: RHMesh.h,v 1.4 2014/04/23 00:23:47 mikem Exp $
 
 #ifndef RHMesh_h
 #define RHMesh_h
@@ -17,7 +17,7 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RHMesh RHMesh.h <RHMesh.h>
-/// \brief RH subclass for sending addressed, optionally acknowledged datagrams
+/// \brief RHRouter subclass for sending addressed, optionally acknowledged datagrams
 /// multi-hop routed across a network, with automatic route discovery
 ///
 /// Extends RHRouter to add automatic route discovery within a mesh of adjacent nodes, 

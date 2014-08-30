@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.6 2014/04/14 08:43:19 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.9 2014/04/23 09:16:52 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.1.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.2.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -61,14 +61,24 @@
 /// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H). 
 /// Supports GFSK, FSK.
 ///
+/// - RH_NRF24
+/// Works with Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 and others.
+///
 /// - RH_ASK
 /// Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers such as RX-B1 
 /// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver. Supports ASK (OOK).
 ///
 /// - RH_Serial
-/// Works with RS232, RS488 and other point-to-point and multidropped serial connections, or with data radios with a 
+/// Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
+/// or with TTL serial UARTs such as those on Arduio and many other processors,
+/// or with data radios with a 
 /// serial port interface. RH_Serial provides packetization and error detection over any hardware or 
 /// virtual serial connection. 
+///
+///
+/// Drivers can be used on their own to provide unaddressed, unreliable datagrams. 
+/// All drivers have the same identical API.
+/// Or you can use any Driver with any of the Managers described below.
 ///
 /// We welcome contributions of well tested and well documented code to support other transports.
 ///
@@ -116,6 +126,7 @@
 /// - RH_RF69 is derived from the RF69 library version 1.2.
 /// - RH_ASK is based on the VirtualWire library version 1.26, after significant conversion to C++.
 /// - RH_Serial is new.
+/// - RH_NRF24 is based on the NRF24 library version 1.12, with some significant changes.
 ///
 /// During this combination and redevelopment, we have tried to retain all the processor dependencies and support from
 /// the libraries that were contributed by other people. However not all platforms can be tested by us, so if you
@@ -128,10 +139,21 @@
 /// sub-folder of your sketchbook. 
 /// The example sketches will be visible in in your Arduino, mpide, maple-ide or whatever.
 ///
+/// \par Compatible Hardware Suppliers
+///
+/// We have had good experiences with the following suppliers of RadioHead compatible hardware:
+///
+/// - LittleBird http://littlebirdelectronics.com.au in Australia for all manner of Arduinos and radios.
+/// - LowPowerLab http://lowpowerlab.com/moteino in USA for the excellent Moteino and Moteino-USB 
+///   boards which include Hope-RF RF69B radios on-board.
+/// - Anarduino and HopeRF USA (http://www.hoperfusa.com and http://www.anarduino.com) who have a wide range
+///   of HopeRF radios and Arduino integrated modules.
+/// - SparkFun https://www.sparkfun.com/ in USA who design and sell a wide range of Arduinos and radio modules.
+///
 /// \par Trademarks
 ///
 /// RadioHead is a trademark of AirSpayce Pty Ltd. The RadioHead mark was first used on April 12 2014 for
-/// international trade, and is used only in relation to data communications hardware and software. 
+/// international trade, and is used only in relation to data communications hardware and software and related services.
 /// It is not to be confused with any other similar marks covering other goods and services.
 ///
 /// \par Copyright
@@ -156,6 +178,9 @@
 ///
 /// \par Revision History
 /// \version 1.1 Initial public release
+/// \version 1.2 Fixed various typos. 
+///              Added links to compatible Anarduino products.
+///              Added RHNRFSPIDriver, RH_NRF24 classes to support Nordic NRF24 based radios.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

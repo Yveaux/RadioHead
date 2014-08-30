@@ -2,7 +2,7 @@
 // -*- mode: C++ -*-
 // Example sketch showing how to create a simple addressed, reliable messaging client
 // with the RHReliableDatagram class, using the RH_RF69 driver to control a RF69 radio.
-// It is designed to work with the other example rf22_reliable_datagram_server
+// It is designed to work with the other example rf69_reliable_datagram_server
 // Tested on Moteino with RFM69 http://lowpowerlab.com/moteino/
 
 #include <RHReliableDatagram.h>
@@ -32,7 +32,7 @@ uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop()
 {
-  Serial.println("Sending to rf22_reliable_datagram_server");
+  Serial.println("Sending to rf69_reliable_datagram_server");
     
   // Send a message to manager_server
   if (manager.sendtoWait(data, sizeof(data), SERVER_ADDRESS))
@@ -49,7 +49,7 @@ void loop()
     }
     else
     {
-      Serial.println("No reply, is rf22_reliable_datagram_server running?");
+      Serial.println("No reply, is rf69_reliable_datagram_server running?");
     }
   }
   else

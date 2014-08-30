@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.9 2014/04/14 08:37:11 mikem Exp $
+// $Id: RH_RF22.h,v 1.10 2014/04/23 00:23:47 mikem Exp $
 //
 
 #ifndef RH_RF22_h
@@ -405,6 +405,7 @@
 /// including the RFM22B transceiver module such as 
 /// this bare module: http://www.sparkfun.com/products/10153
 /// and this shield: http://www.sparkfun.com/products/11018
+/// and this module: http://www.hoperfusa.com/details.jsp?pid=131
 ///
 /// The Hope-RF (http://www.hoperf.com) RFM22B (http://www.hoperf.com/rf_fsk/fsk/RFM22B.htm) 
 /// is a low-cost ISM transceiver module. It supports FSK, GFSK, OOK over a wide 
@@ -433,7 +434,7 @@
 /// With HopeRF RFM22 modules that appear to have RF22B chips on board:
 ///    - Device Type Code = 0x08 (RX/TRX)
 ///    - Version Code = 0x06
-/// Works on Duo. Works with Sparkfun RFM22 Wireless shields.
+/// Works on Duo. Works with Sparkfun RFM22 Wireless shields. Works with RFM22 modules from http://www.hoperfusa.com/
 /// Works with Arduino 1.0 to at least 1.0.5. Works on Maple, Flymaple, Uno32.
 ///
 /// \par Packet Format
@@ -447,7 +448,7 @@
 /// - 0 to 255 octets DATA
 /// - 2 octets CRC computed with CRC16(IBM), computed on HEADER, LENGTH and DATA
 ///
-/// For technical reasons, the message format is not compatible with the 
+/// For technical reasons, the message format is not protocol compatible with the 
 /// 'HopeRF Radio Transceiver Message Library for Arduino' http://www.airspayce.com/mikem/arduino/HopeRF from the same author. Nor is it compatible with 
 /// 'Virtual Wire' http://www.airspayce.com/mikem/arduino/VirtualWire.pdf also from the same author.
 ///

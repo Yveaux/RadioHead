@@ -1,53 +1,54 @@
-// RHSPIDriver.h
+// RHNRFSPIDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.h,v 1.9 2014/04/23 06:00:59 mikem Exp $
+// $Id: RHNRFSPIDriver.h,v 1.1 2014/04/23 06:00:59 mikem Exp $
 
-#ifndef RHSPIDriver_h
-#define RHSPIDriver_h
+#ifndef RHNRFSPIDriver_h
+#define RHNRFSPIDriver_h
 
 #include <RHGenericDriver.h>
 #include <RHHardwareSPI.h>
 
-// This is the bit in the SPI address that marks it as a write
-#define RH_SPI_WRITE_MASK 0x80
-
 class RHGenericSPI;
 
 /////////////////////////////////////////////////////////////////////
-/// \class RHSPIDriver RHSPIDriver.h <RHSPIDriver.h>
-/// \brief Base class for a RadioHead drivers that use the SPI bus
+/// \class RHNRFSPIDriver RHNRFSPIDriver.h <RHNRFSPIDriver.h>
+/// \brief Base class for a RadioHead driver that use the SPI bus
 /// to communicate with its transport hardware.
 ///
 /// This class can be subclassed by Drivers that require to use the SPI bus.
 /// It can be configured to use either the RHHardwareSPI class (if there is one available on the platform)
-/// of the bitbanged RHSoftwareSPI class. The default behaviour is to use a pre-instantiated built-in RHHardwareSPI
+/// of the bitbanged RHSoftwareSPI class. The dfault behaviour is to use a pre-instantiated built-in RHHardwareSPI
 /// interface.
-///
+/// 
 /// SPI bus access is protected by ATOMIC_BLOCK_START and ATOMIC_BLOCK_END, which will ensure interrupts 
 /// are disabled during access.
 /// 
-/// The read and write routines implement commonly used SPI conventions: specifically that the MSB
-/// of the first byte transmitted indicates that it is a write and the remaining bits indicate the rehgister to access)
-/// This can be overriden 
-/// in subclasses if necessaryor an alternative class, RHNRFSPIDriver can be used to access devices like 
-/// Nordic NRF series radios, which have different requirements.
+/// The read and write routines use SPI conventions as used by Nordic NRF radios and otehr devices, 
+/// but these can be overriden 
+/// in subclasses if necessary.
 ///
 /// Application developers are not expected to instantiate this class directly: 
 /// it is for the use of Driver developers.
-class RHSPIDriver : public RHGenericDriver
+class RHNRFSPIDriver : public RHGenericDriver
 {
 public:
     /// Constructor
     /// \param[in] slaveSelectPin The controler pin to use to select the desired SPI device. This pin will be driven LOW
     /// during SPI communications with the SPI device that uis iused by this Driver.
     /// \param[in] spi Reference to the SPI interface to use. The default is to use a default built-in Hardware interface.
-    RHSPIDriver(uint8_t slaveSelectPin = SS, RHGenericSPI& spi = hardware_spi);
+    RHNRFSPIDriver(uint8_t slaveSelectPin = SS, RHGenericSPI& spi = hardware_spi);
 
     /// Initialise the Driver transport hardware and software.
     /// Make sure the Driver is properly configured before calling init().
     /// \return true if initialisation succeeded.
     bool init();
+
+    /// Sends a single command to the device
+    /// \param[in] command The command code to send to the device.
+    /// \return Some devices return a status byte during the first data transfer. This byte is returned.
+    ///  it may or may not be meaningfule depending on the the type of device being accessed.
+    uint8_t spiCommand(uint8_t command);
 
     /// Reads a single register from the SPI device
     /// \param[in] reg Register number

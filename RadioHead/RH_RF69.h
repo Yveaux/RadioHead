@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.7 2014/04/14 08:37:11 mikem Exp $
+// $Id: RH_RF69.h,v 1.8 2014/04/23 00:23:47 mikem Exp $
 //
 ///
 
@@ -296,7 +296,9 @@
 /// This Driver provides an object-oriented interface for sending and receiving data messages with Hope-RF
 /// RF69B based radio modules, such as the RFM69 module, (as used on the excellent Moteino and Moteino-USB 
 /// boards from LowPowerLab http://lowpowerlab.com/moteino/ )
-/// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H)
+/// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H),
+/// and including RFM69 modules from http://www.hoperfusa.com such as http://www.hoperfusa.com/details.jsp?pid=145
+/// and others such as http://www.anarduino.com/miniwireless/.
 /// The RFM69 device is described in http://www.hoperf.cn/upload/rf/RFM69-V1.3.pdf
 /// and http://www.hoperf.com/upload/rfchip/RF69-V1.2.pdf
 ///
@@ -337,7 +339,7 @@
 /// - 0 to 60 octets DATA 
 /// - 2 octets CRC computed with CRC16(IBM), computed on HEADER and DATA
 ///
-/// For technical reasons, the message format is not compatible with the
+/// For technical reasons, the message format is not protocol compatible with the
 /// 'HopeRF Radio Transceiver Message Library for Arduino'
 /// http://www.airspayce.com/mikem/arduino/HopeRF from the same author. Nor is
 /// it compatible with messages sent by 'Virtual Wire'

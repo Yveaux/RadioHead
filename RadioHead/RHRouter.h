@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHRouter.h,v 1.3 2014/04/14 08:37:11 mikem Exp $
+// $Id: RHRouter.h,v 1.4 2014/04/23 00:23:47 mikem Exp $
 
 #ifndef RHRouter_h
 #define RHRouter_h
@@ -37,7 +37,7 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RHRouter RHRouter.h <RHRouter.h>
-/// \brief RH subclass for sending addressed, optionally acknowledged datagrams
+/// \brief RHReliableDatagram subclass for sending addressed, optionally acknowledged datagrams
 /// multi-hop routed across a network.
 ///
 /// Extends RHReliableDatagram to define addressed messages

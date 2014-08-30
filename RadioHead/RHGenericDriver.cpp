@@ -1,7 +1,7 @@
 // RHGenericDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.cpp,v 1.6 2014/04/14 08:37:11 mikem Exp $
+// $Id: RHGenericDriver.cpp,v 1.7 2014/04/23 09:16:52 mikem Exp mikem $
 
 #include <RHGenericDriver.h>
 
@@ -38,10 +38,11 @@ bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout)
     return false;
 }
 
-void RHGenericDriver::waitPacketSent()
+bool RHGenericDriver::waitPacketSent()
 {
     while (_mode == RHModeTx)
 	; // Wait for any previous transmit to finish
+    return true;
 }
 
 bool RHGenericDriver::waitPacketSent(uint16_t timeout)

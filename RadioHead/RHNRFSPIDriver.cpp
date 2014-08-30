@@ -1,18 +1,18 @@
-// RHSPIDriver.cpp
+// RHNRFSPIDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.cpp,v 1.8 2014/04/23 00:32:19 mikem Exp $
+// $Id: RHNRFSPIDriver.cpp,v 1.1 2014/04/23 06:00:59 mikem Exp $
 
-#include <RHSPIDriver.h>
+#include <RHNRFSPIDriver.h>
 
-RHSPIDriver::RHSPIDriver(uint8_t slaveSelectPin, RHGenericSPI& spi)
+RHNRFSPIDriver::RHNRFSPIDriver(uint8_t slaveSelectPin, RHGenericSPI& spi)
     : 
     _spi(spi),
     _slaveSelectPin(slaveSelectPin)
 {
 }
 
-bool RHSPIDriver::init()
+bool RHNRFSPIDriver::init()
 {
     // start the SPI library with the default speeds etc:
     _spi.begin();
@@ -26,36 +26,48 @@ bool RHSPIDriver::init()
     return true;
 }
 
-uint8_t RHSPIDriver::spiRead(uint8_t reg)
+// Low level commands for interfacing with the device
+uint8_t RHNRFSPIDriver::spiCommand(uint8_t command)
+{
+    uint8_t status;
+    ATOMIC_BLOCK_START;
+    digitalWrite(_slaveSelectPin, LOW);
+    status = _spi.transfer(command);
+    digitalWrite(_slaveSelectPin, HIGH);
+    ATOMIC_BLOCK_END;
+    return status;
+}
+
+uint8_t RHNRFSPIDriver::spiRead(uint8_t reg)
 {
     uint8_t val;
     ATOMIC_BLOCK_START;
     digitalWrite(_slaveSelectPin, LOW);
-    _spi.transfer(reg & ~RH_SPI_WRITE_MASK); // Send the address with the write mask off
+    _spi.transfer(reg); // Send the address, discard the status
     val = _spi.transfer(0); // The written value is ignored, reg value is read
     digitalWrite(_slaveSelectPin, HIGH);
     ATOMIC_BLOCK_END;
     return val;
 }
 
-uint8_t RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
+uint8_t RHNRFSPIDriver::spiWrite(uint8_t reg, uint8_t val)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     digitalWrite(_slaveSelectPin, LOW);
-    status = _spi.transfer(reg | RH_SPI_WRITE_MASK); // Send the address with the write mask on
+    status = _spi.transfer(reg); // Send the address
     _spi.transfer(val); // New value follows
     digitalWrite(_slaveSelectPin, HIGH);
     ATOMIC_BLOCK_END;
     return status;
 }
 
-uint8_t RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
+uint8_t RHNRFSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     digitalWrite(_slaveSelectPin, LOW);
-    status = _spi.transfer(reg & ~RH_SPI_WRITE_MASK); // Send the start address with the write mask off
+    status = _spi.transfer(reg); // Send the start address
     while (len--)
 	*dest++ = _spi.transfer(0);
     digitalWrite(_slaveSelectPin, HIGH);
@@ -63,12 +75,12 @@ uint8_t RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
     return status;
 }
 
-uint8_t RHSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
+uint8_t RHNRFSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     digitalWrite(_slaveSelectPin, LOW);
-    status = _spi.transfer(reg | RH_SPI_WRITE_MASK); // Send the start address with the write mask on
+    status = _spi.transfer(reg); // Send the start address
     while (len--)
 	_spi.transfer(*src++);
     digitalWrite(_slaveSelectPin, HIGH);

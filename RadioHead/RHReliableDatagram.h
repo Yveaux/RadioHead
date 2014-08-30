@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.4 2014/04/14 08:37:11 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.5 2014/04/23 00:23:47 mikem Exp $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -14,7 +14,7 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RHReliableDatagram RHReliableDatagram.h <RHReliableDatagram.h>
-/// \brief RH subclass for sending addressed, acknowledged, retransmitted datagrams.
+/// \brief RHDatagram subclass for sending addressed, acknowledged, retransmitted datagrams.
 ///
 /// Extends RHDatagram to define addressed, reliable datagrams with acknowledgement and retransmission.
 /// Based on RHDatagram, adds flags and sequence numbers. RHReliableDatagram is reliable in the sense

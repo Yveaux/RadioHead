@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.2 2014/04/14 08:37:11 mikem Exp $
+// $Id: RH_ASK.h,v 1.3 2014/04/23 00:23:47 mikem Exp $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -72,7 +72,7 @@
 /// inexpensive radio transmitters and receivers. All that is required is
 /// transmit data, receive data and (for transmitters, optionally) a PTT
 /// transmitter enable. Can also be used over various analog connections (not just a data radio), 
-/// such as the audio channel of an A/V sender
+/// such as the audio channel of an A/V sender, or long TTL lines.
 ///
 /// It is intended to be compatible with the RF Monolithics (www.rfm.com)
 /// Virtual Wire protocol, but this has not been tested.
@@ -115,8 +115,10 @@
 ///
 /// - Receivers
 ///  - RX-B1 (433.92MHz) (also known as ST-RX04-ASK)
+///  - RFM83C from HopeRF http://www.hoperfusa.com/details.jsp?pid=126
 /// - Transmitters: 
 ///  - TX-C1 (433.92MHz)
+///  - RFM85 from HopeRF http://www.hoperfusa.com/details.jsp?pid=127
 /// - Transceivers
 ///  - DR3100 (433.92MHz)
 ///

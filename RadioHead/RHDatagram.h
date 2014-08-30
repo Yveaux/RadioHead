@@ -1,7 +1,7 @@
 // RF22Datagram.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.h,v 1.4 2014/04/14 08:37:11 mikem Exp $
+// $Id: RHDatagram.h,v 1.5 2014/04/23 09:16:52 mikem Exp mikem $
 
 #ifndef RHDatagram_h
 #define RHDatagram_h
@@ -78,7 +78,7 @@ public:
 
     /// Blocks until the transmitter 
     /// is no longer transmitting.
-    void            waitPacketSent();
+    bool            waitPacketSent();
 
     /// Blocks until the transmitter is no longer transmitting.
     /// or until the timeout occuers, whichever happens first

@@ -17,6 +17,8 @@ RadioHead/RHMesh.cpp
 RadioHead/RHMesh.h
 RadioHead/RHReliableDatagram.cpp
 RadioHead/RHReliableDatagram.h
+RadioHead/RH_NRF24.cpp
+RadioHead/RH_NRF24.h
 RadioHead/RH_RF22.cpp
 RadioHead/RH_RF22.h
 RadioHead/RH_RF69.cpp
@@ -29,6 +31,8 @@ RadioHead/RHSoftwareSPI.cpp
 RadioHead/RHSoftwareSPI.h
 RadioHead/RHSPIDriver.cpp
 RadioHead/RHSPIDriver.h
+RadioHead/RHNRFSPIDriver.cpp
+RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
 RadioHead/RHutil/crc16.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde

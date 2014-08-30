@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.cpp,v 1.4 2014/04/10 21:01:39 mikem Exp $
+// $Id: RHReliableDatagram.cpp,v 1.5 2014/04/23 09:16:52 mikem Exp mikem $
 
 #include <RHReliableDatagram.h>
 
@@ -64,7 +64,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	uint16_t timeout = _timeout + (_timeout * random(0, 256) / 256);
         while ((millis() - thisSendTime) < timeout)
 	{
-	    if (_driver.available())
+	    if (available())
 	    {
 		uint8_t from, to, id, flags;
 		recvfrom(0, 0, &from, &to, &id, &flags); // Discard the message
@@ -148,7 +148,7 @@ void RHReliableDatagram::acknowledge(uint8_t id, uint8_t from)
     setHeaderId(id);
     setHeaderFlags(RH_FLAGS_ACK);
     // We would prefer to send a zero length ACK,
-    // but if an RH receives a 0 length message with a CRC error, it will never receive
+    // but if an RH_RF22 receives a 0 length message with a CRC error, it will never receive
     // a 0 length message again, until its reset, which makes everything hang :-(
     // So we send an ACK of 1 octet
     // REVISIT: should we send the RSSI for the information of the sender?
