@@ -25,6 +25,9 @@ RadioHead/RH_NRF905.cpp
 RadioHead/RH_NRF905.h
 RadioHead/RH_RF22.cpp
 RadioHead/RH_RF22.h
+RadioHead/RH_RF24.cpp
+RadioHead/RH_RF24.h
+RadioHead/radio_config_Si4460.h
 RadioHead/RH_RF69.cpp
 RadioHead/RH_RF69.h
 RadioHead/RH_RF95.cpp
@@ -66,6 +69,10 @@ RadioHead/examples/rf22/rf22_router_server2/rf22_router_server2.pde
 RadioHead/examples/rf22/rf22_router_server3/rf22_router_server3.pde
 RadioHead/examples/rf22/rf22_router_test/rf22_router_test.pde
 RadioHead/examples/rf22/rf22_server/rf22_server.pde
+RadioHead/examples/rf24/rf24_client/rf24_client.pde
+RadioHead/examples/rf24/rf24_reliable_datagram_client/rf24_reliable_datagram_client.pde
+RadioHead/examples/rf24/rf24_reliable_datagram_server/rf24_reliable_datagram_server.pde
+RadioHead/examples/rf24/rf24_server/rf24_server.pde
 RadioHead/examples/rf69/rf69_client/rf69_client.pde
 RadioHead/examples/rf69/rf69_reliable_datagram_client/rf69_reliable_datagram_client.pde
 RadioHead/examples/rf69/rf69_reliable_datagram_server/rf69_reliable_datagram_server.pde

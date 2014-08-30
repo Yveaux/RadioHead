@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.27.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.28.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -53,6 +53,13 @@
 /// and this shield: http://www.sparkfun.com/products/11018 
 /// and this board: http://www.anarduino.com/miniwireless
 /// and RF23BP modules such as: http://www.anarduino.com/details.jsp?pid=130
+/// Supports GFSK, FSK and OOK. Access to other chip 
+/// features such as on-chip temperature measurement, analog-digital 
+/// converter, transmitter power control etc is also provided.
+///
+/// - RH_RF24
+/// Works with Silicon Labs Si4460/4461/4463/4464 family of transceivers chip, and the equivalent
+/// HopeRF RF24/26/27 family of chips and the HopeRF RFM24W/26W/27W modules.
 /// Supports GFSK, FSK and OOK. Access to other chip 
 /// features such as on-chip temperature measurement, analog-digital 
 /// converter, transmitter power control etc is also provided.
@@ -398,6 +405,11 @@
 ///              Tested and added a number of OOK modulation schemes to RH_RF69 Modem config table.<br>
 ///              Minor improvements to a number of the faster RH_RF69 modulation schemes, but some slower ones
 ///              are still not working correctly.<br>
+/// \version 1.28 2014-08-20
+///              Added new RH_RF24 driver to support Si446x, RF24/26/26, RFM24/26/27 family of transceivers.
+///              Tested with the excellent
+///              Anarduino Mini and RFM24W and RFM26W with the generous assistance of the good people at 
+///              Anarduino http://www.anarduino.com.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -406,7 +418,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 27
+#define RH_VERSION_MINOR 28
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

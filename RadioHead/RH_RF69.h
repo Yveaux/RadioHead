@@ -667,7 +667,7 @@ public:
     /// maximum VSWR of 3:1 at the antenna port.
     void           setTxPower(int8_t power);
 
-    /// Sets all the registered required to configure the data modem in the RF69, including the data rate, 
+    /// Sets all the registers required to configure the data modem in the RF69, including the data rate, 
     /// bandwidths etc. You can use this to configure the modem with custom configurations if none of the 
     /// canned configurations in ModemConfigChoice suit you.
     /// \param[in] config A ModemConfig structure containing values for the modem configuration registers.

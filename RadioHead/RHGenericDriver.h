@@ -200,7 +200,7 @@ public:
 protected:
 
     /// The current transport operating mode
-    volatile RHMode       _mode;
+    volatile RHMode     _mode;
 
     /// This node id
     uint8_t             _thisAddress;

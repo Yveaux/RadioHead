@@ -147,7 +147,7 @@ void RHGenericDriver::printBuffer(const char* prompt, const uint8_t* buf, uint8_
 	    Serial.print(' ');
 	}
     }
-    Serial.println(' ');
+    Serial.println("");
 }
 
 uint16_t RHGenericDriver::rxBad()
