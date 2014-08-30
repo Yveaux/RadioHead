@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.10 2014/05/08 08:53:26 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.11 2014/05/22 06:07:09 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -280,6 +280,12 @@ void RH_RF69::setModeIdle()
 {
     if (_mode != RHModeIdle)
     {
+	if (_power >= 18)
+	{
+	    // If high power boost, return power amp to receive mode
+	    spiWrite(RH_RF69_REG_5A_TESTPA1, RH_RF69_TESTPA1_NORMAL);
+	    spiWrite(RH_RF69_REG_5C_TESTPA2, RH_RF69_TESTPA2_NORMAL);
+	}
 	setOpMode(_idleMode);
 	_mode = RHModeIdle;
     }
@@ -289,6 +295,12 @@ void RH_RF69::setModeRx()
 {
     if (_mode != RHModeRx)
     {
+	if (_power >= 18)
+	{
+	    // If high power boost, return power amp to receive mode
+	    spiWrite(RH_RF69_REG_5A_TESTPA1, RH_RF69_TESTPA1_NORMAL);
+	    spiWrite(RH_RF69_REG_5C_TESTPA2, RH_RF69_TESTPA2_NORMAL);
+	}
 	spiWrite(RH_RF69_REG_25_DIOMAPPING1, RH_RF69_DIOMAPPING1_DIO0MAPPING_01); // Set interrupt line 0 PayloadReady
 	setOpMode(RH_RF69_OPMODE_MODE_RX); // Clears FIFO
 	_mode = RHModeRx;
@@ -299,6 +311,13 @@ void RH_RF69::setModeTx()
 {
     if (_mode != RHModeTx)
     {
+	if (_power >= 18)
+	{
+	    // Set high power boost mode
+	    // Note that OCP defaults to ON so no need to change that.
+	    spiWrite(RH_RF69_REG_5A_TESTPA1, RH_RF69_TESTPA1_BOOST);
+	    spiWrite(RH_RF69_REG_5C_TESTPA2, RH_RF69_TESTPA2_BOOST);
+	}
 	spiWrite(RH_RF69_REG_25_DIOMAPPING1, RH_RF69_DIOMAPPING1_DIO0MAPPING_00); // Set interrupt line 0 PacketSent
 	setOpMode(RH_RF69_OPMODE_MODE_TX); // Clears FIFO
 	_mode = RHModeTx;
@@ -307,28 +326,32 @@ void RH_RF69::setModeTx()
 
 void RH_RF69::setTxPower(int8_t power)
 {
+    _power = power;
+
     uint8_t palevel;
-    if (power < -18)
-	power = -18;
+    if (_power < -18)
+	_power = -18;
 
     // See http://www.hoperf.com/upload/rfchip/RF69-V1.2.pdf section 3.3.6
     // for power formulas
-    if (power >= 14)
+    if (_power <= 13)
     {
+	// -18dBm to +13dBm
+	palevel = RH_RF69_PALEVEL_PA0ON | ((_power + 18) & RH_RF69_PALEVEL_OUTPUTPOWER);
+    }
+    else if (_power >= 18)
+    {
+	// +18dBm to +20dBm
 	// Need PA1+PA2
-	palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((power + 14) & RH_RF69_PALEVEL_OUTPUTPOWER);
-	if (power >= 18)
-	{
-	    // For 20dBm need boost settings, not implemented yet, see section 3.3.7
-	    palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((power + 11) & RH_RF69_PALEVEL_OUTPUTPOWER);
-	}
+	// Also need PA boost settings change when tx is turneed on and off, see setModeTx()
+	palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((_power + 11) & RH_RF69_PALEVEL_OUTPUTPOWER);
     }
     else
     {
-	// -18dBm to +13dBm
-	palevel = RH_RF69_PALEVEL_PA0ON | ((power + 18) & RH_RF69_PALEVEL_OUTPUTPOWER);
+	// +14dBm to +17dBm
+	// Need PA1+PA2
+	palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((_power + 14) & RH_RF69_PALEVEL_OUTPUTPOWER);
     }
-
     spiWrite(RH_RF69_REG_11_PALEVEL, palevel);
 }
 

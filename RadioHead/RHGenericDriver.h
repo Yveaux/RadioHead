@@ -8,6 +8,12 @@
 
 #include <RadioHead.h>
 
+// Defines bits of the FLAGS header reserved for use by the RadioHead library and 
+// the flags available for use by applications
+#define RH_FLAGS_RESERVED                 0xf0
+#define RH_FLAGS_APPLICATION_SPECIFIC     0x0f
+#define RH_FLAGS_NONE                     0
+
 /////////////////////////////////////////////////////////////////////
 /// \class RHGenericDriver RHGenericDriver.h <RHGenericDriver.h>
 /// \brief Abstract base class for a RadioHead driver.
@@ -127,9 +133,10 @@ public:
     /// \param[in] id The new ID header value
     virtual void           setHeaderId(uint8_t id);
 
-    /// Sets the FLAGS header to be sent in all subsequent messages
-    /// \param[in] flags The new FLAGS header value
-    virtual void           setHeaderFlags(uint8_t flags);
+    /// Sets and clears bits in the FLAGS header to be sent in all subsequent messages
+    /// \param[in] set bitmask of bits to be set
+    /// \param[in] clear bitmask of flags to clear
+    virtual void           setHeaderFlags(uint8_t set, uint8_t clear = RH_FLAGS_NONE);
 
     /// Tells the receiver to accept messages with any TO address, not just messages
     /// addressed to thisAddress or the broadcast address

@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.18 2014/05/18 06:42:31 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.19 2014/05/22 06:07:09 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.12.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.13.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -295,6 +295,11 @@
 ///              Added RHReliableDatagram::resetRetransmissions().<br>
 ///              Retransmission count precision increased to uin32_t.<br>
 ///              Added data about actual power measurements from RFM22 module.<br>
+/// \version 1.13 2014-05-23<br>
+///              setHeaderFlags(flags) changed to setHeaderFlags(set, clear), enabling any flags to be
+///              individually set and cleared by either RadioHead or application code. Requested by Steve Childress.<br>
+///              Fixed power output setting for boost power on RF69HW for 18, 19 and 20dBm.<br>
+///              Added data about actual power measurements from RFM69W and RFM69HW modules.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.cpp,v 1.7 2014/05/15 10:55:57 mikem Exp mikem $
+// $Id: RHReliableDatagram.cpp,v 1.8 2014/05/22 06:07:09 mikem Exp mikem $
 
 #include <RHReliableDatagram.h>
 
@@ -46,7 +46,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
     while (retries++ <= _retries)
     {
 	setHeaderId(thisSequenceNumber);
-	setHeaderFlags(0);
+	setHeaderFlags(RH_FLAGS_NONE, RH_FLAGS_ACK); // Clear the ACK flag
 	sendto(buf, len, address);
 	waitPacketSent();
 
@@ -103,7 +103,7 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
     uint8_t _to;
     uint8_t _id;
     uint8_t _flags;
-    // Get the message before its clobbered by the ACK (shared rx anfd tx buffer in RH
+    // Get the message before its clobbered by the ACK (shared rx and tx buffer in RH
     if (available() && recvfrom(buf, len, &_from, &_to, &_id, &_flags))
     {
 	// Never ACK an ACK

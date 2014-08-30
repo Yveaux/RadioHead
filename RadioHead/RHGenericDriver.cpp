@@ -87,9 +87,10 @@ void RHGenericDriver::setHeaderId(uint8_t id)
     _txHeaderId = id;
 }
 
-void RHGenericDriver::setHeaderFlags(uint8_t flags)
+void RHGenericDriver::setHeaderFlags(uint8_t set, uint8_t clear)
 {
-    _txHeaderFlags = flags;
+    _txHeaderFlags |= set;
+    _txHeaderFlags &= ~clear;
 }
 
 uint8_t RHGenericDriver::headerTo()

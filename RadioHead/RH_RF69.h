@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.14 2014/05/18 06:42:31 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.15 2014/05/22 06:07:09 mikem Exp mikem $
 //
 ///
 
@@ -271,6 +271,14 @@
 #define RH_RF69_TEMP1_TEMPMEASSTART                         0x08
 #define RH_RF69_TEMP1_TEMPMEASRUNNING                       0x04
 
+// RH_RF69_REG_5A_TESTPA1
+#define RH_RF69_TESTPA1_NORMAL                              0x55
+#define RH_RF69_TESTPA1_BOOST                               0x5d
+
+// RH_RF69_REG_5C_TESTPA2
+#define RH_RF69_TESTPA2_NORMAL                              0x70
+#define RH_RF69_TESTPA2_BOOST                               0x7c
+
 // RH_RF69_REG_6F_TESTDAGC
 #define RH_RF69_TESTDAGC_CONTINUOUSDAGC_NORMAL              0x00
 #define RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAON  0x20
@@ -430,6 +438,74 @@
 ///
 /// The RF69 module is configured by the RH_RF69 library to always use AFC.
 ///
+/// \par Transmitter Power
+///
+/// You can control the transmitter power on the RF69 transceiver
+/// with the RH_RF69::setTxPower() function. The argument can be any of
+/// -18 to +13 (for RF69W) or -14 to 20 (for RF69HW) 
+/// The default is 13. Eg:
+/// \code
+/// driver.setTxPower(-5);
+/// \endcode
+///
+/// We have made some actual power measurements against
+/// programmed power for Moteino (with RF69W)
+/// - Moteino (with RF69W), USB power
+/// - 10cm RG58C/U soldered direct to RFM69 module ANT and GND
+/// - bnc connecteor
+/// - 12dB attenuator
+/// - BNC-SMA adapter
+/// - MiniKits AD8307 HF/VHF Power Head (calibrated against Rohde&Schwartz 806.2020 test set)
+/// - Tektronix TDS220 scope to measure the Vout from power head
+/// \code
+/// Program power           Measured Power
+///    dBm                         dBm
+///    -18                         -17
+///    -16                         -16
+///    -14                         -14
+///    -12                         -12
+///    -10                         -9
+///    -8                          -7
+///    -6                          -4
+///    -4                          -3
+///    -2                          -2
+///    0                           0.2
+///    2                           3
+///    4                           5
+///    6                           7
+///    8                           10
+///    10                          13
+///    12                          14
+///    13                          15
+///    14                         -51
+///    20                         -51
+/// \endcode
+/// We have also made some actual power measurements against
+/// programmed power for Anarduino MiniWireless with RFM69-HW
+/// Anarduino MiniWireless (with RFM69-HW), USB power
+/// - 10cm RG58C/U soldered direct to RFM69 module ANT and GND
+/// - bnc connecteor
+/// - 2x12dB attenuators
+/// - BNC-SMA adapter
+/// - MiniKits AD8307 HF/VHF Power Head (calibrated against Rohde&Schwartz 806.2020 test set)
+/// - Tektronix TDS220 scope to measure the Vout from power head
+/// \code
+/// Program power           Measured Power
+///    dBm                         dBm
+///    -18                         no measurable output
+///    0                           no measurable output
+///    13                          no measurable output
+///    14                          11
+///    15                          12
+///    16                          12.4
+///    17                          14
+///    18                          15
+///    19                          15.8
+///    20                          17
+/// \endcode
+/// (Caution: we dont claim laboratory accuracy for these measurements)
+/// You would not expect to get anywhere near these powers to air with a simple 1/4 wavelength wire antenna.
+///
 /// \par Performance
 ///
 /// Some simple speed performance tests have been conducted.
@@ -578,7 +654,7 @@ public:
     /// After init(), the power will be set to 13dBm.
     /// \param[in] power Transmitter power level in dBm. For RF69W, valid values are from -18 to +13 
     /// (higher power settings disable the transmitter).
-    /// For RF69HW, valid values are from 14 to 20. Caution: at 20dBm, duty cycle is limited to 1% and a 
+    /// For RF69HW, valid values are from +14 to +20. Caution: at +20dBm, duty cycle is limited to 1% and a 
     /// maximum VSWR of 3:1 at the antenna port.
     void           setTxPower(int8_t power);
 
@@ -681,6 +757,9 @@ protected:
 
     /// The reported device type
     uint8_t             _deviceType;
+
+    /// The selected output power in dBm
+    int8_t              _power;
 
     /// The message length in _buf
     volatile uint8_t    _bufLen;

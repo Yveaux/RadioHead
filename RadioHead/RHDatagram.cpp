@@ -94,9 +94,9 @@ void RHDatagram::setHeaderId(uint8_t id)
     _driver.setHeaderId(id);
 }
 
-void RHDatagram::setHeaderFlags(uint8_t flags)
+void RHDatagram::setHeaderFlags(uint8_t set, uint8_t clear)
 {
-    _driver.setHeaderFlags(flags);
+    _driver.setHeaderFlags(set, clear);
 }
 
 uint8_t RHDatagram::headerTo()

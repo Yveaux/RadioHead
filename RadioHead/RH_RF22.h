@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.17 2014/05/18 06:42:31 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.18 2014/05/22 06:07:09 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -753,7 +753,7 @@
 /// - 12dB attenuator
 /// - BNC-SMA adapter
 /// - MiniKits AD8307 HF/VHF Power Head (calibrated against Rohde&Schwartz 806.2020 test set)
-/// - Tektronix TDA220 scope to measure the Vout from power head
+/// - Tektronix TDS220 scope to measure the Vout from power head
 /// \code
 /// Program power           Measured Power
 ///    dBm                         dBm
