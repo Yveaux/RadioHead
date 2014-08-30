@@ -67,23 +67,25 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	    if (available())
 	    {
 		uint8_t from, to, id, flags;
-		recvfrom(0, 0, &from, &to, &id, &flags); // Discard the message
-		// Now have a message: is it our ACK?
-		if (   from == address 
-		    && to == _thisAddress 
-		    && (flags & RH_FLAGS_ACK) 
-		    && (id == thisSequenceNumber))
+		if (recvfrom(0, 0, &from, &to, &id, &flags)) // Discards the message
 		{
-		    // Its the ACK we are waiting for
-		    return true;
+		    // Now have a message: is it our ACK?
+		    if (   from == address 
+			   && to == _thisAddress 
+			   && (flags & RH_FLAGS_ACK) 
+			   && (id == thisSequenceNumber))
+		    {
+			// Its the ACK we are waiting for
+			return true;
+		    }
+		    else if (   !(flags & RH_FLAGS_ACK)
+				&& (id == _seenIds[from]))
+		    {
+			// This is a request we have already received. ACK it again
+			acknowledge(id, from);
+		    }
+		    // Else discard it
 		}
-		else if (   !(flags & RH_FLAGS_ACK)
-			 && (id == _seenIds[from]))
-		{
-		    // This is a request we have already received. ACK it again
-		    acknowledge(id, from);
-		}
-		// Else discard it
 	    }
 	    // Not the one we are waiting for, maybe keep waiting until timeout exhausted
 	    YIELD;

@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.8 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.9 2014/05/08 22:56:52 mikem Exp $
 
 #include <RH_ASK.h>
 
@@ -15,6 +15,11 @@
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
 #endif
+
+// RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
+// Define RH_ASK_ARDUINO_USE_TIMER2 if you want to use Timer 2 instead of Timer 1 on Arduino
+// You may need this to work around other librraies that insiston using timer 1
+//#define RH_ASK_ARDUINO_USE_TIMER2
 
 // Interrupt handler uses this to find the most recently initialised instance of this driver
 static RH_ASK* thisASKDriver;
@@ -79,7 +84,13 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
 {
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
     // Clock divider (prescaler) values - 0/3333: error flag
-    uint16_t prescalers[] = {0, 1, 8, 64, 256, 1024, 3333};
+ #if defined(RH_ASK_ARDUINO_USE_TIMER2)
+    // Timer 2 has different prescalers
+    uint16_t prescalers[] = {0, 1, 8, 32, 64, 128, 256, 3333}; 
+ #else
+    uint16_t prescalers[] = {0, 1, 8, 64, 256, 1024, 3333}; 
+ #endif
+    #define NUM_PRESCALERS sizeof(prescalers) / sizeof( uint16_t)
     uint8_t prescaler=0; // index into array & return bit value
     unsigned long ulticks; // calculate by ntick overflow
 
@@ -92,7 +103,7 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
     }
 
     // test increasing prescaler (divisor), decreasing ulticks until no overflow
-    for (prescaler=1; prescaler < 7; prescaler += 1)
+    for (prescaler=1; prescaler < NUM_PRESCALERS; prescaler += 1)
     {
 	// Integer arithmetic courtesy Jim Remington
 	// 1/Amount of time per CPU clock tick (in seconds)
@@ -202,10 +213,31 @@ void RH_ASK::timerSetup()
  #else
     // This is the path for most Arduinos
     // figure out prescaler value and counter match value
+  #if defined(RH_ASK_ARDUINO_USE_TIMER2)
+    prescaler = timerCalc(_speed, (uint8_t)-1, &nticks);
+    if (!prescaler)
+        return; // fault
+    // Use timer 2
+    TCCR2A = _BV(WGM21); // Turn on CTC mode)
+    // convert prescaler index to TCCRnB prescaler bits CS10, CS11, CS12
+    TCCR2B = prescaler;
+
+    // Caution: special procedures for setting 16 bit regs
+    // is handled by the compiler
+    OCR2A = nticks;
+    // Enable interrupt
+   #ifdef TIMSK2
+    // atmega168
+    TIMSK2 |= _BV(OCIE2A);
+   #else
+    // others
+    TIMSK |= _BV(OCIE2A);
+   #endif // TIMSK2
+  #else
+    // Use timer 1
     prescaler = timerCalc(_speed, (uint16_t)-1, &nticks);    
     if (!prescaler)
         return; // fault
-
     TCCR1A = 0; // Output Compare pins disconnected
     TCCR1B = _BV(WGM12); // Turn on CTC mode
 
@@ -216,13 +248,14 @@ void RH_ASK::timerSetup()
     // is handled by the compiler
     OCR1A = nticks;
     // Enable interrupt
-  #ifdef TIMSK1
+   #ifdef TIMSK1
     // atmega168
     TIMSK1 |= _BV(OCIE1A);
-  #else
+   #else
     // others
     TIMSK |= _BV(OCIE1A);
-  #endif // TIMSK1
+   #endif // TIMSK1
+  #endif
  #endif // __AVR_ATtiny85__
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
@@ -425,7 +458,11 @@ uint8_t RH_ASK::maxMessageLength()
  #elif defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) // Why can't Atmel make consistent?
   #define RH_ASK_TIMER_VECTOR TIM1_COMPA_vect
  #else // Assume Arduino Uno (328p or similar)
-  #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
+  #if defined(RH_ASK_ARDUINO_USE_TIMER2)
+   #define RH_ASK_TIMER_VECTOR TIMER2_COMPA_vect
+  #else
+   #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
+  #endif
  #endif // __AVR_ATtiny85__
 #elif (RH_ASK_PLATFORM == RH_ASK_PLATFORM_GENERIC_AVR8)
  #define __COMB(a,b,c) (a##b##c)

@@ -25,6 +25,8 @@ RadioHead/RH_RF22.cpp
 RadioHead/RH_RF22.h
 RadioHead/RH_RF69.cpp
 RadioHead/RH_RF69.h
+RadioHead/RH_TCP.cpp
+RadioHead/RH_TCP.h
 RadioHead/RHRouter.cpp
 RadioHead/RHRouter.h
 RadioHead/RH_Serial.cpp
@@ -33,11 +35,13 @@ RadioHead/RHSoftwareSPI.cpp
 RadioHead/RHSoftwareSPI.h
 RadioHead/RHSPIDriver.cpp
 RadioHead/RHSPIDriver.h
+RadioHead/RHTcpProtocol.h
 RadioHead/RHNRFSPIDriver.cpp
 RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
 RadioHead/RHutil/crc16.h
 RadioHead/RHutil/atomic.h
+RadioHead/RHutil/simulator.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde
 RadioHead/examples/ask/ask_reliable_datagram_server/ask_reliable_datagram_server.pde
 RadioHead/examples/rf22/rf22_client/rf22_client.pde
@@ -67,4 +71,11 @@ RadioHead/examples/nrf905/nrf905_reliable_datagram_server/nrf905_reliable_datagr
 RadioHead/examples/nrf905/nrf905_server/nrf905_server.pde
 RadioHead/examples/serial/serial_reliable_datagram_client/serial_reliable_datagram_client.pde
 RadioHead/examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.pde
+RadioHead/examples/simulator/simulator_reliable_datagram_client/simulator_reliable_datagram_client.pde
+RadioHead/examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.pde
+RadioHead/tools/etherSimulator.pl
+RadioHead/tools/chain.conf
+RadioHead/tools/simMain.cpp
+RadioHead/tools/simBuild
+
 RadioHead/doc

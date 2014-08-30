@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.8 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RHReliableDatagram.h,v 1.9 2014/05/08 08:53:26 mikem Exp $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -47,6 +47,16 @@
 /// retries, the transmissions is deemed to have failed.
 /// No contention for media is detected.
 /// This will be recognised as "pure ALOHA". 
+///
+/// There is no message queuing or threading in RHReliableDatagram. 
+/// sendtoWait() waits until an acknowledgement is received, retransmitting
+/// up to default 3 retries time with a default 200ms timeout. 
+/// During this transmit-acknowledge phase, any received message (other than the expected
+/// acknowledgement) will be ignored. Your sketch will be unresponsive to new messages 
+/// until an acknowledgement is received or the retries are exhausted. 
+/// Central server-type sketches should be very cautious about their
+/// retransmit strategy and configuration lest they hang for a long time
+/// up trying to reply to clients that are unreachable.
 class RHReliableDatagram : public RHDatagram
 {
 public:

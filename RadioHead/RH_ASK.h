@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.3 2014/04/23 00:23:47 mikem Exp $
+// $Id: RH_ASK.h,v 1.5 2014/05/09 05:29:47 mikem Exp $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -136,10 +136,16 @@
 /// transmitter/receiver, such as the audio channel of an A/V transmitter/receiver. You may need
 /// buffers at each end of the connection to convert the 0-5V digital output to a suitable analog voltage.
 ///
+/// \par Timers
+/// The RH_ASK driver uses a timer-driven interrupt to generate 8 interrupts per bit period. RH_ASK
+/// takes over a timer on Arduino-like platforms. By default it takes over Timer 1. You can force it
+/// to use Timer 2 instead by enabling the define RH_ASK_ARDUINO_USE_TIMER2 near the top of RH_ASK.cpp
+///
 /// Caution: ATTiny85 has only 2 timers, one (timer 0) usually used for
 /// millis() and one (timer 1) for PWM analog outputs. The RH_ASK Driver
 /// library, when built for ATTiny85, takes over timer 0, which prevents use
-/// of millis() etc but does permit analog outputs.
+/// of millis() etc but does permit analog outputs. This will affect the accuracy of millis() and time
+/// measurement.
 class RH_ASK : public RHGenericDriver
 {
 public:
@@ -147,7 +153,7 @@ public:
     /// \param[in] speed The desired bit rate in bits per second
     /// \param[in] rxPin The pin that is used to get data from the receiver
     /// \param[in] txPin The pin that is used to send data to the transmitter
-    /// \param[in] pttPin The pin that is connected to the transmitter controller. It wil be set HIGH to enable the transmitter (unless pttInverted is true).
+    /// \param[in] pttPin The pin that is connected to the transmitter controller. It will be set HIGH to enable the transmitter (unless pttInverted is true).
     /// \param[in] pttInverted true if you desire the pttin to be inverted so that LOW wil enable the transmitter.
     RH_ASK(uint16_t speed = 2000, uint8_t rxPin = 11, uint8_t txPin = 12, uint8_t pttPin = 10, bool pttInverted = false);
 

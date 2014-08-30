@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.14 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.16 2014/05/09 22:03:04 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -406,6 +406,7 @@
 /// this bare module: http://www.sparkfun.com/products/10153
 /// and this shield: http://www.sparkfun.com/products/11018
 /// and this module: http://www.hoperfusa.com/details.jsp?pid=131
+/// and this integrated board: http://www.anarduino.com/miniwireless
 ///
 /// The Hope-RF (http://www.hoperf.com) RFM22B (http://www.hoperf.com/rf_fsk/fsk/RFM22B.htm) 
 /// is a low-cost ISM transceiver module. It supports FSK, GFSK, OOK over a wide 

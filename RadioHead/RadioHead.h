@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.13 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.16 2014/05/09 22:03:04 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.8.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.9.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -50,7 +50,8 @@
 /// RF22B based radio modules, and compatible chips and modules, 
 /// including the RFM22B transceiver module such as 
 /// this bare module: http://www.sparkfun.com/products/10153
-/// and this shield: http://www.sparkfun.com/products/11018. Supports GFSK, FSK and OOK. Access to other chip 
+/// and this shield: http://www.sparkfun.com/products/11018 and this board http://www.anarduino.com/miniwireless
+/// Supports GFSK, FSK and OOK. Access to other chip 
 /// features such as on-chip temperature measurement, analog-digital 
 /// converter, transmitter power control etc is also provided.
 ///
@@ -78,6 +79,10 @@
 /// serial port interface. RH_Serial provides packetization and error detection over any hardware or 
 /// virtual serial connection. 
 ///
+/// - RH_TCP
+/// For use with simulated sketches compiled and running on Linux.
+/// Works with tools/etherSimulator.pl to pass messages between simulated sketches, allowing
+/// testing of Manager classes on Linuix and without need for real radios or other transport hardware.
 ///
 /// Drivers can be used on their own to provide unaddressed, unreliable datagrams. 
 /// All drivers have the same identical API.
@@ -132,7 +137,7 @@
 /// - RH_RF22 is derived from the RF22 library version 1.39.
 /// - RH_RF69 is derived from the RF69 library version 1.2.
 /// - RH_ASK is based on the VirtualWire library version 1.26, after significant conversion to C++.
-/// - RH_Serial is new.
+/// - RH_Serial was new.
 /// - RH_NRF24 is based on the NRF24 library version 1.12, with some significant changes.
 ///
 /// During this combination and redevelopment, we have tried to retain all the processor dependencies and support from
@@ -234,7 +239,7 @@
 /// \version 1.7 2014-05-03<br>
 ///              Added support for Arduino Due. Tested with RH_NRF905, RH_Serial, RH_ASK.
 ///              IMPORTANT CHANGE to interrupt pins on Arduino with RH_RF22 and RH_RF69 constructors:
-///              previously, you had to specify the interrupt _number_ not hte interrupt _pin_. Arduinos and Uno32
+///              previously, you had to specify the interrupt _number_ not the interrupt _pin_. Arduinos and Uno32
 ///              are now consistent with all other platforms: you must specify the interrupt pin number. Default
 ///              changed to pin 2 (a common choice with RF22 shields).
 ///              Removed examples/maple/maple_rf22_reliable_datagram_client and 
@@ -249,6 +254,19 @@
 ///              Fixed misalignment in RH_RF69 between ModemConfigChoice definitions and the implemented choices
 ///              which meant you didnt get the choice you thought and GFSK_Rb55555Fd50 hung the transmitter.<br>
 ///              Preliminary work on Linux simulator.
+/// \version 1.9 2014-05-14 <br>
+///              Added support for using Timer 2 instead of Timer 1 on Arduino in RH_ASK when
+///              RH_ASK_ARDUINO_USE_TIMER2 is defined. With the kind assistance of
+///              Luc Small. Thanks!<br>
+///              Updated comments in RHReliableDatagram concerning servers, retries, timeouts and delays.
+///              Fixed an error in RHReliableDatagram where recvfrom return value was not checked.
+///              Reported by Steve Childress.<br>
+///              Added Linux simulator support so simple RadioHead sketches can be compiled and run on Linux.<br>
+///              Added RH_TCP driver to permit message passing between simulated sketches on Linux.<br>
+///              Added example simulator sketches.<br>
+///              Added tools/etherSimulator.pl, a simulator of the 'Luminiferous Ether' that passes
+///              messages between simulated sketches and can simulate random message loss etc.<br>
+///              Fixed a number of typos and improved some documentation.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

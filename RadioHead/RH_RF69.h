@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.10 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.12 2014/05/09 22:03:04 mikem Exp mikem $
 //
 ///
 
@@ -116,7 +116,7 @@
 #define RH_RF69_REG_4F_TEMP2                                0x4f
 #define RH_RF69_REG_58_TESTLNA                              0x58
 #define RH_RF69_REG_5A_TESTPA1                              0x5a
-#define RH_RF69_REG_5C_TSETPA2                              0x5c
+#define RH_RF69_REG_5C_TESTPA2                              0x5c
 #define RH_RF69_REG_6F_TESTDAGC                             0x6f
 #define RH_RF69_REG_71_TESTAFC                              0x71
 
@@ -573,7 +573,8 @@ public:
     /// Caution: legal power limits may apply in certain countries.
     /// After init(), the power will be set to 13dBm.
     /// \param[in] power Transmitter power level in dBm from -18dBm to +13dB (higher powers may
-    /// be available depending on which version of RF69 radio you have).
+    /// be available depending on which version of RF69 radio you have). Caution: for the RF69W, powers 
+    /// higher than 13dBm disable the transmitter entirely.
     void           setTxPower(int8_t power);
 
     /// Sets all the registered required to configure the data modem in the RF69, including the data rate, 
