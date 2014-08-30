@@ -64,7 +64,6 @@ RH_RF22::RH_RF22(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
     _interruptPin = interruptPin;
     _idleMode = RH_RF22_XTON; // Default idle state is READY mode
     _polynomial = CRC_16_IBM; // Historical
-    _gpioReversed = false;
 }
 
 bool RH_RF22::init()
@@ -140,20 +139,11 @@ bool RH_RF22::init()
     setHeaderId(0);
     setHeaderFlags(0);
 
-    // Ensure the antenna can be switched automatically according to transmit and receive
-    // This assumes GPIO0(out) is connected to TX_ANT(in) to enable tx antenna during transmit
-    // This assumes GPIO1(out) is connected to RX_ANT(in) to enable rx antenna during receive
-    if (_gpioReversed)
-    {
-	// Reversed for HAB-RFM22B-BOA HAB-RFM22B-BO, also Si4432 sold by Dorji.com via Tindie.com.
-	spiWrite(RH_RF22_REG_0B_GPIO_CONFIGURATION0, 0x15) ; // RX state
-	spiWrite(RH_RF22_REG_0C_GPIO_CONFIGURATION1, 0x12) ; // TX state
-    }
-    else
-    {
-	spiWrite(RH_RF22_REG_0B_GPIO_CONFIGURATION0, 0x12) ; // TX state
-	spiWrite(RH_RF22_REG_0C_GPIO_CONFIGURATION1, 0x15) ; // RX state
-    }
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr>
+#if defined (__MK20DX128__) || defined (__MK20DX256__)
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    pinMode(_interruptPin, INPUT); 
+#endif
 
     // Enable interrupts
     spiWrite(RH_RF22_REG_05_INTERRUPT_ENABLE1, RH_RF22_ENTXFFAEM | RH_RF22_ENRXFFAFULL | RH_RF22_ENPKSENT | RH_RF22_ENPKVALID | RH_RF22_ENCRCERROR | RH_RF22_ENFFERR);
@@ -693,6 +683,12 @@ uint8_t RH_RF22::headerFlags()
     return spiRead(RH_RF22_REG_4A_RECEIVED_HEADER0);
 }
 
+void RH_RF22::setPromiscuous(bool promiscuous)
+{
+    RHSPIDriver::setPromiscuous(promiscuous);
+    spiWrite(RH_RF22_REG_43_HEADER_ENABLE3, promiscuous ? 0x00 : 0xff);
+}
+
 bool RH_RF22::setCRCPolynomial(CRCPolynomial polynomial)
 {
     if (polynomial >= CRC_CCITT &&
@@ -720,3 +716,22 @@ uint32_t RH_RF22::getLastPreambleTime()
 {
     return _lastPreambleTime;
 }
+
+void RH_RF22::setGpioReversed(bool gpioReversed)
+{
+    // Ensure the antenna can be switched automatically according to transmit and receive
+    // This assumes GPIO0(out) is connected to TX_ANT(in) to enable tx antenna during transmit
+    // This assumes GPIO1(out) is connected to RX_ANT(in) to enable rx antenna during receive
+    if (gpioReversed)
+    {
+	// Reversed for HAB-RFM22B-BOA HAB-RFM22B-BO, also Si4432 sold by Dorji.com via Tindie.com.
+	spiWrite(RH_RF22_REG_0B_GPIO_CONFIGURATION0, 0x15) ; // RX state
+	spiWrite(RH_RF22_REG_0C_GPIO_CONFIGURATION1, 0x12) ; // TX state
+    }
+    else
+    {
+	spiWrite(RH_RF22_REG_0B_GPIO_CONFIGURATION0, 0x12) ; // TX state
+	spiWrite(RH_RF22_REG_0C_GPIO_CONFIGURATION1, 0x15) ; // RX state
+    }
+}
+

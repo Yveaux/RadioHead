@@ -19,6 +19,15 @@
 /// Every RHDatagram node has an 8 bit address (defaults to 0).
 /// Addresses (DEST and SRC) are 8 bit integers with an address of RH_BROADCAST_ADDRESS (0xff) 
 /// reserved for broadcast.
+///
+/// \par Message Lengths
+///
+/// Not all Radio drivers supported by RadioHead can handle the same message lengths. Some radios can handle
+/// up to 255 octets, and some as few as 28. If you attempt to send a message that is too long for 
+/// the underlying driver, sendTo() will return false and will not transmit the mesage. 
+/// It is the programmers responsibility to make
+/// sure that messages passed to sendto() do not exceed the capability of the radio. You can use the 
+/// *_MAX_MESSAGE_LENGTH definitions to help.
 class RHDatagram
 {
 public:
@@ -44,7 +53,7 @@ public:
     /// \param[in] buf Pointer to the binary message to send
     /// \param[in] len Number of octets to send (> 0)
     /// \param[in] address The address to send the message to.
-    /// \return true if the message was transmitted.
+    /// \return true if the message not too loing fot eh driver, and the message was transmitted.
     bool sendto(uint8_t* buf, uint8_t len, uint8_t address);
 
     /// Turns the receiver on if it not already on.

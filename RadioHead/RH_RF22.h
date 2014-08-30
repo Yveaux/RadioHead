@@ -642,6 +642,24 @@
 ///
 /// Transmit-and-wait-for-a-reply tests with modulation RH_RF22::GFSK_Rb125Fd125 and a 
 /// 13 octet message (send and receive) show about 160 round trips per second.
+///
+/// \par Compatibility with RF22 librray
+/// The RH_RF22 driver is based on our earlier RF22 library http://www.airspayce.com/mikem/arduino/RF22
+/// We have tried hard to be as compatible as possible with the earlier RF22 library, but there are some differences:
+/// - Different constructor.
+///
+/// The major difference is that under RadioHead, you are
+/// required to create 2 objects (ie RH_RF22 and a manager) instead of just one object under RF22
+/// (ie RHMesh, RHRouter, RHReliableDatagram or RHDatagram).
+/// It may be sufficient or you to change for example:
+/// \code
+/// RF22ReliableDatagram rf22(CLIENT_ADDRESS);
+/// \endcode
+/// to:
+/// \code
+/// RH_RF22 driver;
+/// RHReliableDatagram rf22(driver, CLIENT_ADDRESS);
+/// \endcode
 class RH_RF22 : public RHSPIDriver
 {
 public:
@@ -679,8 +697,10 @@ public:
   
     /// Choices for setModemConfig() for a selected subset of common modulation types,
     /// and data rates. If you need another configuration, use the register calculator.
-    /// and call setModemRegisters() with your desired settings
-    /// These are indexes into MODEM_CONFIG_TABLE
+    /// and call setModemRegisters() with your desired settings.
+    /// These are indexes into MODEM_CONFIG_TABLE. We strongly recommend you use these symbolic
+    /// definitions and not their integer equivalents: its possible that new values will be
+    /// introduced in later versions (though we will try to avoid it).
     typedef enum
     {
 	UnmodulatedCarrier = 0, ///< Unmodulated carrier for testing
@@ -924,6 +944,11 @@ public:
     /// \param[in] len Number of sync words to set, 1 to 4.
     void           setSyncWords(const uint8_t* syncWords, uint8_t len);
 
+    /// Tells the receiver to accept messages with any TO address, not just messages
+    /// addressed to thisAddress or the broadcast address
+    /// \param[in] promiscuous true if you wish to receive messages with any TO address
+    virtual void   setPromiscuous(bool promiscuous);
+
     /// Sets the CRC polynomial top be used to generare the CRC for both receive and transmit
     /// Must be called before init(), otherwise the default of CRC_16_IBM will be used.
     /// \param[in] polynomial One of RH_RF22::CRCPolynomial choices CRC_*
@@ -936,7 +961,8 @@ public:
     /// configures the GPIO pins during init() so the antenna switch works as expected.
     /// However, some RF22 modules, such as HAB-RFM22B-BOA HAB-RFM22B-BO, also Si4432 sold by Dorji.com via Tindie.com
     /// have these GPIO pins reversed, so that GPIO0 is connected to RX_ANT.
-    /// Call this function with a true argument before init() in order to configure the module for reversed GPIO pins
+    /// Call this function with a true argument after init() and before transmitting
+    /// in order to configure the module for reversed GPIO pins
     /// \param[in] gpioReversed Set to true if your RF22 module has reversed GPIO antenna switch connections.
     void setGpioReversed(bool gpioReversed = false);
 
@@ -1071,9 +1097,6 @@ protected:
     /// Index into TX buffer of the next to send chunk
     volatile uint8_t    _txBufSentIndex;
   
-    /// True of the antenna control GPIO pins are reversed on this RF22 module
-    bool                _gpioReversed;
-
     /// Time in millis since the last preamble was received (and the last time the RSSI was measured)
     uint32_t            _lastPreambleTime;
 };

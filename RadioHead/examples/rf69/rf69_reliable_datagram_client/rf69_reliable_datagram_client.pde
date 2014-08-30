@@ -4,6 +4,7 @@
 // with the RHReliableDatagram class, using the RH_RF69 driver to control a RF69 radio.
 // It is designed to work with the other example rf69_reliable_datagram_server
 // Tested on Moteino with RFM69 http://lowpowerlab.com/moteino/
+// Tested on miniWireless with RFM69 www.anarduino.com/miniwireless
 
 #include <RHReliableDatagram.h>
 #include <RH_RF69.h>

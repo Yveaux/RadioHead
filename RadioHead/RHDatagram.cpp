@@ -27,6 +27,7 @@ void RHDatagram::setThisAddress(uint8_t thisAddress)
     _driver.setThisAddress(thisAddress);
     // Use this address in the transmitted FROM header
     setHeaderFrom(thisAddress);
+    _thisAddress = thisAddress;
 }
 
 bool RHDatagram::sendto(uint8_t* buf, uint8_t len, uint8_t address)

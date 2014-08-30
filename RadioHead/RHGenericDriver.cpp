@@ -23,7 +23,7 @@ bool RHGenericDriver::init()
 void RHGenericDriver::waitAvailable()
 {
     while (!available())
-	;
+	YIELD;
 }
 
 // Blocks until a valid message is received or timeout expires
@@ -33,15 +33,18 @@ bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout)
 {
     unsigned long starttime = millis();
     while ((millis() - starttime) < timeout)
+    {
         if (available())
            return true;
+	YIELD;
+    }
     return false;
 }
 
 bool RHGenericDriver::waitPacketSent()
 {
     while (_mode == RHModeTx)
-	; // Wait for any previous transmit to finish
+	YIELD; // Wait for any previous transmit to finish
     return true;
 }
 
@@ -49,8 +52,11 @@ bool RHGenericDriver::waitPacketSent(uint16_t timeout)
 {
     unsigned long starttime = millis();
     while ((millis() - starttime) < timeout)
+    {
         if (_mode != RHModeTx) // Any previous transmit finished?
            return true;
+	YIELD;
+    }
     return false;
 }
 

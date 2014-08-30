@@ -116,6 +116,12 @@ bool RH_RF69::init()
     // PACKETCONFIG 2 is default 
     spiWrite(RH_RF69_REG_6F_TESTDAGC, RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAOFF);
 
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr>
+#if defined (__MK20DX128__) || defined (__MK20DX256__)
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    pinMode(_interruptPin, INPUT); 
+#endif
+
     // Some of these can be changed by the user if necessary.
     // Set up default configuration
 

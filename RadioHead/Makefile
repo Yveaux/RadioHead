@@ -8,7 +8,7 @@
 
 PROJNAME = RadioHead
 # Dont forget to also change the version at the top of RadioHead.h:
-DISTFILE = $(PROJNAME)-1.2.zip
+DISTFILE = $(PROJNAME)-1.3.zip
 
 all:	doxygen dist upload
 

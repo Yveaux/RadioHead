@@ -8,6 +8,7 @@
 // Demonstrates the use of AES encryption, setting the frequency and modem 
 // configuration
 // Tested on Moteino with RFM69 http://lowpowerlab.com/moteino/
+// Tested on miniWireless with RFM69 www.anarduino.com/miniwireless
 
 #include <SPI.h>
 #include <RH_RF69.h>

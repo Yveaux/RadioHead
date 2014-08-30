@@ -64,6 +64,8 @@ public:
     /// Send the message and waits for an ack. Returns true if an acknowledgement is received.
     /// Synchronous: any message other than the desired ACK received while waiting is discarded.
     /// Blocks until an ACK is received or all retries are exhausted (ie up to retries*timeout milliseconds).
+    /// If the destination address is the broadcast address RH_BROADCAST_ADDRESS (255), the message will 
+    /// be sent as a broadcast, but receiving nodes do not acknowledge, and sendToWait() returns true immediately.
     /// \param[in] address The address to send the message to.
     /// \param[in] buf Pointer to the binary message to send
     /// \param[in] len Number of octets to send

@@ -467,7 +467,9 @@ public:
     /// modulation types, and data rates. If you need another configuration,
     /// use the register calculator.  and call setModemRegisters() with your
     /// desired settings.  
-    /// These are indexes into MODEM_CONFIG_TABLE
+    /// These are indexes into MODEM_CONFIG_TABLE. We strongly recommend you use these symbolic
+    /// definitions and not their integer equivalents: its possible that new values will be
+    /// introduced in later versions (though we will try to avoid it).
     typedef enum
     {
 	FSK_Rb2Fd5 = 0,	   ///< FSK, No Manchester, Rb = 2kbs,    Fd = 5kHz

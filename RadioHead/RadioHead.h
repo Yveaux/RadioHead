@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.2.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.3.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -133,6 +133,9 @@
 /// find that support from some platform has not been successfully migrated, please feel free to fix it and send us a 
 /// patch.
 ///
+/// Users of RHMesh, RHRouter, RHReliableDatagram and RHDatagram in the previous RF22 library will find that their
+/// existing code will run mostly without modification. See the RH_RF22 documentation for more details.
+///
 /// \par Installation
 ///
 /// Install in the usual way: unzip the distribution zip file to the libraries
@@ -150,6 +153,16 @@
 ///   of HopeRF radios and Arduino integrated modules.
 /// - SparkFun https://www.sparkfun.com/ in USA who design and sell a wide range of Arduinos and radio modules.
 ///
+/// \par Donations
+///
+/// This library is offered under a free GPL license for those who want to use it that way. 
+/// We try hard to keep it up to date, fix bugs
+/// and to provide free support. If this library has helped you save time or money, please consider donating at
+/// http://www.airspayce.com or here:
+///
+/// \htmlonly <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations" /> <input type="hidden" name="business" value="mikem@airspayce.com" /> <input type="hidden" name="lc" value="AU" /> <input type="hidden" name="item_name" value="Airspayce" /> <input type="hidden" name="item_number" value="mainpage" /> <input type="hidden" name="currency_code" value="USD" /> <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" /> <input type="image" alt="PayPal — The safer, easier way to pay online." name="submit" src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" /> <img alt="" src="https://www.paypalobjects.com/en_AU/i/scr/pixel.gif" width="1" height="1" border="0" /></form> \endhtmlonly
+/// 
+/// 
 /// \par Trademarks
 ///
 /// RadioHead is a trademark of AirSpayce Pty Ltd. The RadioHead mark was first used on April 12 2014 for
@@ -181,6 +194,18 @@
 /// \version 1.2 Fixed various typos. 
 ///              Added links to compatible Anarduino products.
 ///              Added RHNRFSPIDriver, RH_NRF24 classes to support Nordic NRF24 based radios.
+/// \version 1.3 Various documentation fixups.
+///              RHDatagram::setThisAddress() did not set the local copy of thisAddress. Reported by Steve Childress.
+///              Fixed a problem on Teensy with RF22 and RF69, where the interrupt pin needs to be set for input, 
+///              else pin interrupt doesn't work properly. Reported by Steve Childress and patched by 
+///              Adrien van den Bossche. Thanks.
+///              Fixed a problem that prevented RF22 honouring setPromiscuous(true). Reported by Steve Childress.
+///              Updated documentation to clarify some issues to do with maximum message lengths 
+///              reported by Steve Childress.
+///              Added support for yield() on systems that support it (currently Arduino 1.5.5 and later)
+///              so that spin-loops can suport multitasking. Suggested by Steve Childress.
+///              Added RH_RF22::setGpioReversed() so the reversal it can be configured at run-time after
+///              radio initialisation. It must now be called _after_ init(). Suggested by Steve Childress.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -260,6 +285,14 @@
  // TO BE DONE:
  #define ATOMIC_BLOCK_START
  #define ATOMIC_BLOCK_END
+#endif
+
+// Try to be compatible with systems that support yield() and multitasking
+// instead of spin-loops
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155)
+ #define YIELD yield();
+#else
+ #define YIELD
 #endif
 
 // These defs cause trouble on some versions of Arduino

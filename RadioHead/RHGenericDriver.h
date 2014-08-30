@@ -64,7 +64,8 @@ public:
 
     /// Waits until any previous transmit packet is finished being transmitted with waitPacketSent().
     /// Then loads a message into the transmitter and starts the transmitter. Note that a message length
-    /// of 0 is NOT permitted. 
+    /// of 0 is NOT permitted. If the message is too long for the underlying radio technology, send() will
+    /// return false and will not send the message.
     /// \param[in] data Array of data to be sent
     /// \param[in] len Number of bytes of data to send (> 0)
     /// \return true if the message length was valid and it was correctly queued for transmit

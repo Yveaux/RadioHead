@@ -111,7 +111,7 @@ public:
     typedef struct
     {
 	MeshMessageHeader   header; ///< msgType = RH_MESH_MESSAGE_TYPE_APPLICATION 
-	uint8_t             data[RH_MESH_MAX_MESSAGE_LEN]; ///< Applicaiotn layer payload data
+	uint8_t             data[RH_MESH_MAX_MESSAGE_LEN]; ///< Application layer payload data
     } MeshApplicationMessage;
 
     /// Signals a route discovery request or reply
