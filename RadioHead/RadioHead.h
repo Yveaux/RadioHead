@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.16 2014/05/09 22:03:04 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.17 2014/05/15 10:55:57 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.9.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.10.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -47,10 +47,12 @@
 ///
 /// - RH_RF22
 /// Works with Hope-RF
-/// RF22B based radio modules, and compatible chips and modules, 
+/// RF22B and RF23B based transceivers, and compatible chips and modules, 
 /// including the RFM22B transceiver module such as 
 /// this bare module: http://www.sparkfun.com/products/10153
-/// and this shield: http://www.sparkfun.com/products/11018 and this board http://www.anarduino.com/miniwireless
+/// and this shield: http://www.sparkfun.com/products/11018 
+/// and this board: http://www.anarduino.com/miniwireless
+/// and RF23BP modules such as: http://www.anarduino.com/details.jsp?pid=130
 /// Supports GFSK, FSK and OOK. Access to other chip 
 /// features such as on-chip temperature measurement, analog-digital 
 /// converter, transmitter power control etc is also provided.
@@ -64,6 +66,9 @@
 ///
 /// - RH_NRF24
 /// Works with Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 and others.
+/// Also works with Hope-RF RFM73 
+/// and compatible devices (such as BK2423). nRF24L01 and RFM73 can interoperate
+/// with each other.
 ///
 /// - RH_NRF905
 /// Works with Nordic nRF905 based 433/868/915 MHz radio modules.
@@ -114,7 +119,7 @@
 ///
 /// - Arduino and the Arduino IDE (version 1.0 to 1.5.5 and later)
 /// Including Diecimila, Uno, Mega, Leonardo, Yun etc. http://arduino.cc/, Also similar boards such as 
-/// Moteino http://lowpowerlab.com/moteino/ etc.
+/// Moteino http://lowpowerlab.com/moteino/ , Anarduino Mini http://www.anarduino.com/mini/ etc.
 ///
 /// - ChipKit Uno32 board and the MPIDE development environment
 /// http://www.digilentinc.com/Products/Detail.cfm?Prod=CHIPKIT-UNO32
@@ -267,6 +272,19 @@
 ///              Added tools/etherSimulator.pl, a simulator of the 'Luminiferous Ether' that passes
 ///              messages between simulated sketches and can simulate random message loss etc.<br>
 ///              Fixed a number of typos and improved some documentation.<br>
+/// \version 1.10 2014-05-15 <br>
+///              Added support for RFM73 modules to RH_NRF24. These 2 radios are very similar, anc can interoperate
+///              with each other. Added new RH_NRF24::TransmitPower enums for the RFM73, which has a different 
+///              range of available powers<br>
+///              reduced the default SPI bus speed for RH_NRF24 to 1MHz, since so many modules and CPU have problems
+///              with 8MHz.<br>
+/// \version 1.11 2014-05-18<br>
+///              Testing RH_RF22 with RFM23BP and 3.3V Teensy 3.1 and 5V Arduinos. 
+///              Updated documentation with respect to GPIO and antenna
+///              control pins for RFM23. Updated documentation with respect to transmitter power control for RFM23<br>
+///              Fixed a problem with RH_RF22 driver, where GPIO TX and RX pins were not configured during
+///              initialisation, causing poor transmit power and sensitivity on those RF22/RF23 devices where GPIO controls
+///              the antenna selection pins.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

@@ -1,7 +1,7 @@
 // RHGenericDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.h,v 1.9 2014/05/08 08:53:26 mikem Exp $
+// $Id: RHGenericDriver.h,v 1.9 2014/05/08 08:53:26 mikem Exp mikem $
 
 #ifndef RHGenericDriver_h
 #define RHGenericDriver_h

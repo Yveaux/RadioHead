@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.7 2014/04/29 12:18:27 mikem Exp $
+// $Id: RH_NRF24.h,v 1.8 2014/05/15 10:55:57 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -25,6 +25,7 @@
 // SPI Command names
 #define RH_NRF24_COMMAND_R_REGISTER                        0x00
 #define RH_NRF24_COMMAND_W_REGISTER                        0x20
+#define RH_NRF24_COMMAND_ACTIVATE                          0x50 // only on RFM73 ?
 #define RH_NRF24_COMMAND_R_RX_PAYLOAD                      0x61
 #define RH_NRF24_COMMAND_W_TX_PAYLOAD                      0xa0
 #define RH_NRF24_COMMAND_FLUSH_TX                          0xe1
@@ -153,6 +154,14 @@
 /////////////////////////////////////////////////////////////////////
 /// \class RH_NRF24 RH_NRF24.h <RH_NRF24.h>
 /// \brief Send and receive addressed, reliable, acknowledged datagrams by nRF24L01 and compatible transceivers.
+///
+/// Supported transceivers include:
+/// - Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01
+/// and other compatible transceivers.
+/// - Hope-RF RFM73 http://www.hoperf.com/rf/2.4g_module/RFM73.htm and 
+/// http://www.anarduino.com/details.jsp?pid=121
+/// and compatible devices (such as BK2423). nRF24L01 and RFM73 can interoperate
+/// with each other.
 ///
 /// This base class provides basic functions for sending and receiving unaddressed, unreliable datagrams
 /// of arbitrary length to 28 octets per packet. Use one of the Manager classes to get addressing and 
@@ -301,14 +310,20 @@ public:
     } DataRate;
 
     /// \brief Convenient values for setting transmitter power in setRF()
-    /// These are designed to agree with the values for RF_PWR
+    /// These are designed to agree with the values for RF_PWR in RH_NRF24_REG_06_RF_SETUP
     /// To be passed to setRF();
     typedef enum
     {
-	TransmitPowerm18dBm = 0,   ///< -18 dBm
-	TransmitPowerm12dBm,       ///< -12 dBm
-	TransmitPowerm6dBm,        ///< -6 dBm
-	TransmitPower0dBm          ///< 0 dBm
+	TransmitPowerm18dBm = 0,        ///< On nRF24, -18 dBm
+	TransmitPowerm12dBm,            ///< On nRF24, -12 dBm
+	TransmitPowerm6dBm,             ///< On nRF24, -6 dBm
+	TransmitPower0dBm,              ///< On nRF24, 0 dBm
+	// Sigh, different power levels for the same bit patterns on RFM73:
+	RFM73TransmitPowerm10dBm = 0,   ///< On RFM73, -10 dBm
+	RFM73TransmitPowerm5dBm,        ///< On RFM73, -5 dBm
+	RFM73TransmitPowerm0dBm,        ///< On RFM73, 0 dBm
+	RFM73TransmitPower5dBm          ///< On RFM73, 5 dBm
+
     } TransmitPower;
 
     /// Constructor. You can have multiple instances, but each instance must have its own
@@ -389,9 +404,12 @@ public:
     /// \return true on success, false if len is not in the range 3-5 inclusive.
     bool setNetworkAddress(uint8_t* address, uint8_t len);
 
-    /// Sets the data rate and tranmitter power to use
-    /// \param [in] data_rate The data rate to use for all packets transmitted and received. One of RH_NRF24::DataRate
-    /// \param [in] power Transmitter power. One of NRF24TransmitPower.
+    /// Sets the data rate and transmitter power to use. Note that the nRF24 and the RFM73 have different
+    /// available power levels, and for convenience, 2 different sets of values are available in the 
+    /// RH_NRF24::TransmitPower enum. The ones with the RFM73 only have meaning on the RFM73 and compatible
+    /// devces. The others are for the nRF24.
+    /// \param [in] data_rate The data rate to use for all packets transmitted and received. One of RH_NRF24::DataRate.
+    /// \param [in] power Transmitter power. One of RH_NRF24::TransmitPower.
     /// \return true on success
     bool setRF(DataRate data_rate, TransmitPower power);
 

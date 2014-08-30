@@ -6,6 +6,7 @@
 // level messaging abilities.
 // It is designed to work with the other example nrf24_client
 // Tested on Uno with Sparkfun NRF25L01 module
+// Tested on Anarduino Mini (http://www.anarduino.com/mini/) with RFM73 module
 
 #include <SPI.h>
 #include <RH_NRF24.h>
@@ -14,6 +15,7 @@
 RH_NRF24 nrf24;
 // RH_NRF24 nrf24(8, 7); // use this to be electrically compatible with Mirf
 // RH_NRF24 nrf24(8, 10);// For Leonardo, need explicit SS pin
+// RH_NRF24 nrf24(8, 7); // For RFM73 on Anarduino Mini
 
 void setup() 
 {

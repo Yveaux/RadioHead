@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.cpp,v 1.4 2014/04/28 23:07:14 mikem Exp $
+// $Id: RHMesh.cpp,v 1.4 2014/04/28 23:07:14 mikem Exp mikem $
 
 #include <RHMesh.h>
 

@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.7 2014/05/03 00:20:36 mikem Exp $
+// $Id: RH_NRF24.cpp,v 1.8 2014/05/15 10:55:57 mikem Exp mikem $
 
 #include <RH_NRF24.h>
 
@@ -15,12 +15,9 @@ RH_NRF24::RH_NRF24(uint8_t chipEnablePin, uint8_t slaveSelectPin, RHGenericSPI& 
 
 bool RH_NRF24::init()
 {
-#if defined (__MK20DX128__) || defined (__MK20DX256__)
-    // Teensy is unreliable at 8MHz:
+    // Teensy with nRF24 is unreliable at 8MHz:
+    // so is Arduino with RF73
     _spi.setFrequency(RHGenericSPI::Frequency1MHz);
-#else
-    _spi.setFrequency(RHGenericSPI::Frequency8MHz);
-#endif
     if (!RHNRFSPIDriver::init())
 	return false;
 
@@ -41,6 +38,15 @@ bool RH_NRF24::init()
     // Flush FIFOs
     flushTx();
     flushRx();
+
+    // On RFM73, try to figure out if we need to ACTIVATE to enable W_TX_PAYLOAD_NOACK
+    uint8_t testWriteData  = 0x77; // Anything will do here
+    spiBurstWrite(RH_NRF24_COMMAND_W_TX_PAYLOAD_NOACK, &testWriteData, 1);
+    // If RH_NRF24_REG_17_FIFO_STATUS still thinks the Tx fifo is empty, we need to ACTIVATE
+    if (spiReadRegister(RH_NRF24_REG_17_FIFO_STATUS) & RH_NRF24_TX_EMPTY)
+	spiWrite(RH_NRF24_COMMAND_ACTIVATE, 0x73);
+    // Flush Tx FIFO again after using the tx fifo in our test above
+    flushTx();
 
     return true;
 }

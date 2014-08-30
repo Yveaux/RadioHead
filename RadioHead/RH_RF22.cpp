@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.15 2014/05/03 00:20:36 mikem Exp $
+// $Id: RH_RF22.cpp,v 1.15 2014/05/03 00:20:36 mikem Exp mikem $
 
 #include <RH_RF22.h>
 
@@ -160,7 +160,7 @@ bool RH_RF22::init()
     // Some slow, reliable default speed and modulation
     setModemConfig(FSK_Rb2_4Fd36);
 //    setModemConfig(FSK_Rb125Fd125);
-
+    setGpioReversed(false);
     // Lowish power
     setTxPower(RH_RF22_TXPOW_8DBM);
 
@@ -458,7 +458,7 @@ void RH_RF22::setModeTx()
 
 void RH_RF22::setTxPower(uint8_t power)
 {
-    spiWrite(RH_RF22_REG_6D_TX_POWER, power);
+    spiWrite(RH_RF22_REG_6D_TX_POWER, power | RH_RF22_LNA_SW); // On RF23, LNA_SW must be set.
 }
 
 // Sets registers from a canned modem configuration structure

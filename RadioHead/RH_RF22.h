@@ -336,18 +336,39 @@
 #define RH_RF22_PREALEN8                           0x01
 
 // RH_RF22_REG_6D_TX_POWER                         0x6d
+// https://www.sparkfun.com/datasheets/Wireless/General/RFM22B.pdf
+#define RH_RF22_PAPEAKVAL                          0x80
+#define RH_RF22_PAPEAKEN                           0x40
+#define RH_RF22_PAPEAKLVL                          0x30
+#define RH_RF22_PAPEAKLVL6_5                       0x00
+#define RH_RF22_PAPEAKLVL7                         0x10
+#define RH_RF22_PAPEAKLVL7_5                       0x20
+#define RH_RF22_PAPEAKLVL8                         0x30
+#define RH_RF22_LNA_SW                             0x08
 #define RH_RF22_TXPOW                              0x07
 #define RH_RF22_TXPOW_4X31                         0x08 // Not used in RFM22B
+// For RFM22B:
 #define RH_RF22_TXPOW_1DBM                         0x00
 #define RH_RF22_TXPOW_2DBM                         0x01
 #define RH_RF22_TXPOW_5DBM                         0x02
 #define RH_RF22_TXPOW_8DBM                         0x03
 #define RH_RF22_TXPOW_11DBM                        0x04
-#define RH_RF22_TXPOW_14DBM                        0x05 // +28dBm on RF23bp
-#define RH_RF22_TXPOW_17DBM                        0x06 // +29dBm on RF23bp
-#define RH_RF22_TXPOW_20DBM                        0x07 // +30dBm on RF23bp
-// IN RFM23B
-#define RH_RF22_TXPOW_LNA_SW                       0x08
+#define RH_RF22_TXPOW_14DBM                        0x05 
+#define RH_RF22_TXPOW_17DBM                        0x06 
+#define RH_RF22_TXPOW_20DBM                        0x07 
+// RFM23B only:
+#define RH_RF22_RF23B_TXPOW_M8DBM                  0x00 // -8dBm
+#define RH_RF22_RF23B_TXPOW_M5DBM                  0x01 // -5dBm
+#define RH_RF22_RF23B_TXPOW_M2DBM                  0x02 // -2dBm
+#define RH_RF22_RF23B_TXPOW_1DBM                   0x03 // 1dBm
+#define RH_RF22_RF23B_TXPOW_4DBM                   0x04 // 4dBm
+#define RH_RF22_RF23B_TXPOW_7DBM                   0x05 // 7dBm
+#define RH_RF22_RF23B_TXPOW_10DBM                  0x06 // 10dBm
+#define RH_RF22_RF23B_TXPOW_13DBM                  0x07 // 13dBm
+// RFM23BP only:
+#define RH_RF22_RF23BP_TXPOW_28DBM                 0x05 // 28dBm
+#define RH_RF22_RF23BP_TXPOW_29DBM                 0x06 // 29dBm
+#define RH_RF22_RF23BP_TXPOW_30DBM                 0x07 // 30dBm
 
 // RH_RF22_REG_71_MODULATION_CONTROL2              0x71
 #define RH_RF22_TRCLK                              0xc0
@@ -379,7 +400,17 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RH_RF22 RH_RF22.h <RH_RF22.h>
-/// \brief Driver to send and receive unaddressed, unreliable datagrams via an RF22 radio transceiver.
+/// \brief Driver to send and receive unaddressed, unreliable datagrams via an RF22 and compatible radio transceiver.
+///
+/// Works with RF22, RF23 based radio modules, and compatible chips and modules, including:
+/// - RF22 bare module: http://www.sparkfun.com/products/10153
+///   (Caution, that is a 3.3V part, and requires a 3.3V CPU such as Teensy etc or level shifters)
+/// - RF22 shield: http://www.sparkfun.com/products/11018 
+/// - RF22 integrated board http://www.anarduino.com/miniwireless
+/// - RFM23BP bare module: http://www.anarduino.com/details.jsp?pid=130 
+/// - Silicon Labs Si4430/31/32 based modules. S4432 is equivalent to RF22. Si4431/30 is equivalent to RF23.
+///
+/// Data based on https://www.sparkfun.com/datasheets/Wireless/General/RFM22B.pdf
 ///
 /// \par Overview
 ///
@@ -401,12 +432,13 @@
 /// \par Details
 ///
 /// This Driver provides an object-oriented interface for sending and receiving data messages with Hope-RF
-/// RF22 based radio modules, and compatible chips and modules, 
+/// RF22 and RF23 based radio modules, and compatible chips and modules, 
 /// including the RFM22B transceiver module such as 
 /// this bare module: http://www.sparkfun.com/products/10153
 /// and this shield: http://www.sparkfun.com/products/11018
 /// and this module: http://www.hoperfusa.com/details.jsp?pid=131
 /// and this integrated board: http://www.anarduino.com/miniwireless
+/// and RF23BP modules such as this http://www.anarduino.com/details.jsp?pid=130
 ///
 /// The Hope-RF (http://www.hoperf.com) RFM22B (http://www.hoperf.com/rf_fsk/fsk/RFM22B.htm) 
 /// is a low-cost ISM transceiver module. It supports FSK, GFSK, OOK over a wide 
@@ -459,18 +491,20 @@
 /// the connections described below are done for you on the shield, no changes required, 
 /// just add headers and plug it in to an Arduino (but not and Arduino Mega, see below)
 ///
-/// The physical connection between the RF22B and the Arduino require 3.3V,
+/// The physical connection between the RF22B and the Arduino requires 3.3V,
 /// the 3 x SPI pins (SCK, SDI, SDO), a Slave Select pin and an interrupt pin.
-/// Note also that on the RFF22B, it is required to control the TX_ANT and
-/// X_ANT pins of the RFM22 in order to enable the antenna connection. The
-/// Driver is configured by default so that GPIO0 and GPIO1 outputs can
-/// control TX_ANT and RX_ANT input pins automatically. You must connect GPIO0
+///
+/// Note also that on the RFM22B (but not the RFM23B), it is required to control the TX_ANT and
+/// RX_ANT pins of the RFM22 in order to control the antenna connection properly. The RH_RF22
+/// driver is configured by default so that GPIO0 and GPIO1 outputs can
+/// control TX_ANT and RX_ANT input pins respectively automatically. On RFM22, 
+/// you must connect GPIO0
 /// to TX_ANT and GPIO1 to RX_ANT for this automatic antenna switching to
-/// occur.  See setGpioReveresed() for more details.
+/// occur.  See setGpioReversed() for more details. These connections are not required on RFM23B.
 ///
 /// If you are using the Sparkfun RF22 shield, it will work with any 5V arduino without modification.
 /// Connect the RFM-22 module to most Arduino's like this (Caution, Arduino Mega has different pins for SPI, 
-/// see below):
+/// see below).
 /// \code
 ///                 Arduino      RFM-22B
 ///                 GND----------GND-\ (ground in)
@@ -481,10 +515,10 @@
 ///         SCK pin D13----------SCK   (SPI clock in)
 ///        MOSI pin D11----------SDI   (SPI Data in)
 ///        MISO pin D12----------SDO   (SPI data out)
-///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT
-///                           \--TX_ANT (TX antenna control in)
-///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
-///                           \--RX_ANT (RX antenna control in)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
 /// \endcode
 /// For an Arduino Mega:
 /// \code
@@ -497,10 +531,10 @@
 ///         SCK pin D52----------SCK   (SPI clock in)
 ///        MOSI pin D51----------SDI   (SPI Data in)
 ///        MISO pin D50----------SDO   (SPI data out)
-///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT
-///                           \--TX_ANT (TX antenna control in)
-///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
-///                           \--RX_ANT (RX antenna control in)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
 /// \endcode
 /// For Chipkit Uno32. Caution: you must also ensure jumper JP4 on the Uno32 is set to RD4
 /// \code
@@ -513,10 +547,10 @@
 ///         SCK pin D13----------SCK   (SPI clock in)
 ///        MOSI pin D11----------SDI   (SPI Data in)
 ///        MISO pin D12----------SDO   (SPI data out)
-///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT
-///                           \--TX_ANT (TX antenna control in)
-///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
-///                           \--RX_ANT (RX antenna control in)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
 /// \endcode
 /// For Teensy 3.1
 /// \code
@@ -529,10 +563,27 @@
 ///         SCK pin D13----------SCK   (SPI clock in)
 ///        MOSI pin D11----------SDI   (SPI Data in)
 ///        MISO pin D12----------SDO   (SPI data out)
-///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT
-///                           \--TX_ANT (TX antenna control in)
-///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT
-///                           \--RX_ANT (RX antenna control in)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
+/// \endcode
+/// For connecting an Arduino to an RFM23BP module. Note that the antenna control pins are reversed 
+/// compared to the RF22.
+/// \code
+///                 Arduino      RFM-23BP
+///                 GND----------GND-\ (ground in)
+///                              SDN-/ (shutdown in)
+///                 5V-----------VCC   (5V in)
+/// interrupt 0 pin D2-----------NIRQ  (interrupt request out)
+///          SS pin D10----------NSEL  (chip select in)
+///         SCK pin D13----------SCK   (SPI clock in)
+///        MOSI pin D11----------SDI   (SPI Data in)
+///        MISO pin D12----------SDO   (SPI data out)
+///                           /--GPIO0 (GPIO0 out to control receiver antenna RXON)
+///                           \--RXON   (RX antenna control in)
+///                           /--GPIO1 (GPIO1 out to control transmitter antenna TXON)
+///                           \--TXON   (TX antenna control in)
 /// \endcode
 ///
 /// and you can then use the default constructor RH_RF22(). 
@@ -643,7 +694,55 @@
 /// This RF22 library enables the AFC and by default sets the pull-in frequency range to
 /// 0.05MHz, which should be sufficient to handle most situations. However, if you observe unexplained packet losses
 /// or failure to operate correctly all the time it may be because your modules have a wider frequency difference, and
-/// you may need to set the afcPullInRange to a differentvalue, using setFrequency();
+/// you may need to set the afcPullInRange to a different value, using setFrequency();
+///
+/// \par Transmitter Power
+///
+/// You can control the transmitter power on the RF22 and RF23 transceivers
+/// with the RH_RF22::setTxPower() function. The argument can be any of the
+/// RH_RF22_TXPOW_* (for RFM22) or RH_RF22_RF23B_TXPOW_* (for RFM23) values. 
+/// The default is RH_RF22_TXPOW_8DBM/RH_RF22_RF23B_TXPOW_1DBM . Eg:
+/// \code
+/// driver.setTxPower(RH_RF22_TXPOW_2DBM);
+/// \endcode
+///
+/// The RF23BP has higher power capability, there are
+/// several power settings that are specific to the RF23BP only:
+///
+/// - RH_RF22_RF23BP_TXPOW_28DBM
+/// - RH_RF22_RF23BP_TXPOW_29DBM
+/// - RH_RF22_RF23BP_TXPOW_38DBM
+///
+/// CAUTION: the high power settings available on the RFM23BP require
+/// significant power supply current.  For example at +30dBm, the typical chip
+/// supply current is 550mA. This will overwhelm some small CPU board power
+/// regulators and USB supplies. If you use this chip at high power make sure
+/// you have an adequate supply current providing full 5V to the RFM23BP (and
+/// the CPU if required), otherwise you can expect strange behaviour like
+/// hanging, stopping, incorrect power levels, RF power amp overheating etc.
+/// You must also ensure that the RFM23BP GPIO pins are connected to the
+/// antenna switch control pins like so:
+////
+/// \code
+/// GPIO0 <-> RXON
+/// GPIO1 <-> TXON
+/// \endcode
+///
+/// The RF output impedance of the RFM22BP module is 50 ohms.  In our
+/// experiments we found that the most critical issue (besides a suitable
+/// power supply) is to ensure that the antenna impedance is also near 50
+/// ohms. Connecting a simple 1/4 wavelength (ie a 17.3cm single wire)
+/// directly to the antenna output <b>will not work at full 30dBm power</b>,
+/// and will result in the transmitter hanging and/or the power amp
+/// overheating. Connect a proper 50 ohm impedance transmission line or
+/// antenna in order to get full, reliable power. Our tests show that a 433MHz
+/// RFM23BP feeding a 50 ohm transmission line with a VHF discone antenna at
+/// the end results in full power output and the power amp transistor on the
+/// RFM22BP module runnning slightly warm but not hot. We recommend you use
+/// the services of a competent RF engineer when trying to use this high power
+/// module.
+///
+/// Note: with RFM23BP, the reported maximum possible power when operating on 3.3V is 27dBm.
 ///
 /// \par Performance
 ///
@@ -660,7 +759,7 @@
 /// Transmit-and-wait-for-a-reply tests with modulation RH_RF22::GFSK_Rb125Fd125 and a 
 /// 13 octet message (send and receive) show about 160 round trips per second.
 ///
-/// \par Compatibility with RF22 librray
+/// \par Compatibility with RF22 library
 /// The RH_RF22 driver is based on our earlier RF22 library http://www.airspayce.com/mikem/arduino/RF22
 /// We have tried hard to be as compatible as possible with the earlier RF22 library, but there are some differences:
 /// - Different constructor.
@@ -893,12 +992,16 @@ public:
 
     /// Sets the transmitter power output level in register RH_RF22_REG_6D_TX_POWER.
     /// Be a good neighbour and set the lowest power level you need.
-    /// After init(), the power will be set to RH_RF22::RH_RF22_TXPOW_8DBM.
-    /// The highest power available on RF22B is RH_RF22::RH_RF22_TXPOW_11DBM (11dBm).
-    /// Higher powers are only available on RF23BP, and then only with adequate power supply.
-    /// Caution: In some countries you may only select RH_RF22::RH_RF22_TXPOW_17DBM if you
-    /// are also using frequency hopping.
-    /// \param[in] power Transmitter power level, one of RH_RF22_TXPOW_*
+    /// After init(), the power will be set to RH_RF22::RH_RF22_TXPOW_8DBM on RF22B
+    /// or RH_RF22_RF23B_TXPOW_1DBM on an RF23B.
+    /// The highest power available on RF22B is RH_RF22::RH_RF22_TXPOW_20DBM (20dBm).
+    /// The highest power available on RF23B is RH_RF22::RH_RF22_RF23B_TXPOW_13DBM (13dBm).
+    /// Higher powers are available on RF23BP (using RH_RF22_RF23BP_TXPOW_*), 
+    /// and then only with an adequate power supply. See comments above.
+    /// Caution: In some countries you may only select certain higher power levels if you
+    /// are also using frequency hopping. Make sure you are aware of the legal
+    /// limitations and regulations in your region.
+    /// \param[in] power Transmitter power level, one of RH_RF22_*TXPOW_*
     void           setTxPower(uint8_t power);
 
     /// Sets all the registered required to configure the data modem in the RH_RF22, including the data rate, 

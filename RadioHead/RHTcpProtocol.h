@@ -2,7 +2,7 @@
 // Author: Mike McCauley (mikem@aierspayce.com)
 // Definition of protocol messages sent and received by RH_TCP
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHTcpProtocol.h,v 1.1 2014/05/08 08:53:26 mikem Exp $
+// $Id: RHTcpProtocol.h,v 1.2 2014/05/15 10:55:57 mikem Exp mikem $
 
 /// This file contains the definitions of message structures passed between
 /// RH_TCP and the etherSimulator

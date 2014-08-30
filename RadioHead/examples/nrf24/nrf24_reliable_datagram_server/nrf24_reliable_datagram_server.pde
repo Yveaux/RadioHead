@@ -5,6 +5,7 @@
 // It is designed to work with the other example nrf24_reliable_datagram_client
 // Tested on Uno with Sparkfun WRL-00691 NRF24L01 module
 // Tested on Teensy with Sparkfun WRL-00691 NRF24L01 module
+// Tested on Anarduino Mini (http://www.anarduino.com/mini/) with RFM73 module
 
 #include <RHReliableDatagram.h>
 #include <RH_NRF24.h>
@@ -15,6 +16,7 @@
 
 // Singleton instance of the radio driver
 RH_NRF24 driver;
+// RH_NRF24 driver(8, 7);   // For RFM73 on Anarduino Mini
 
 // Class to manage message delivery and receipt, using the driver declared above
 RHReliableDatagram manager(driver, SERVER_ADDRESS);
