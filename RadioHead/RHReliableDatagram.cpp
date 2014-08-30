@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.cpp,v 1.9 2014/05/23 02:20:17 mikem Exp mikem $
+// $Id: RHReliableDatagram.cpp,v 1.10 2014/05/30 19:30:54 mikem Exp mikem $
 
 #include <RHReliableDatagram.h>
 
@@ -48,8 +48,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	setHeaderId(thisSequenceNumber);
 	setHeaderFlags(RH_FLAGS_NONE, RH_FLAGS_ACK); // Clear the ACK flag
 	sendto(buf, len, address);
-//Serial.println("fixme");
-//	waitPacketSent();
+	waitPacketSent();
 
 	// Never wait for ACKS to broadcasts:
 	if (address == RH_BROADCAST_ADDRESS)

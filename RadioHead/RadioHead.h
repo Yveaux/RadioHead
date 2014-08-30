@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.24 2014/05/26 21:19:25 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.25 2014/05/30 19:30:54 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.16.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.17.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -312,7 +312,7 @@
 ///              Reported by Steve Childress.<br>
 /// \version 1.15 2014-05-27<br>
 ///              Fixed a problem with the RadioHead .zip link.
-/// \version ??? <br>
+/// \version 1.16 2014-05-30 <br>
 ///              Fixed RH_RF22 so that lastRssi() returns the signal strength in dBm. Suggested by Steve Childress.<br>
 ///              Added support for getLastPreambleTime() to RH_RF69. Requested by Steve Childress.<br>
 ///              RH_NRF24::init() now checks if there is a device connected and responding, else init() will fail.
@@ -321,6 +321,11 @@
 ///              Fixed some problems that prevented RH_NRF24 working with mixed software and hardware SPI 
 ///              on different devices: a race condition
 ///              due to slow SPI transfers and fast acknowledgement.<br>
+/// \version 1.17 2014-06-02 <br>
+///              Fixed a debug typo in RHReliableDatagram that was introduced in 1.16.<br>
+///              RH_NRF24 now sets default power, data rate and channel in init(), in case another
+///              app has previously set different values without powerdown.<br>
+///              Caution: there are still problems with RH_NRF24 and Software SPI. Do not use.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -329,7 +334,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 16
+#define RH_VERSION_MINOR 17
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1

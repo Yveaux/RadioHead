@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.9 2014/05/22 06:07:09 mikem Exp mikem $
+// $Id: RH_NRF24.cpp,v 1.10 2014/05/30 19:30:54 mikem Exp mikem $
 
 #include <RH_NRF24.h>
 
@@ -48,6 +48,9 @@ bool RH_NRF24::init()
     // If RH_NRF24_REG_17_FIFO_STATUS still thinks the Tx fifo is empty, we need to ACTIVATE
     if (spiReadRegister(RH_NRF24_REG_17_FIFO_STATUS) & RH_NRF24_TX_EMPTY)
 	spiWrite(RH_NRF24_COMMAND_ACTIVATE, 0x73);
+
+    setChannel(2); // The default, in case it was set by another app without powering down
+    setRF(RH_NRF24::DataRate2Mbps, RH_NRF24::TransmitPower0dBm);
     // Flush Tx FIFO again after using the tx fifo in our test above
     flushTx();
 
