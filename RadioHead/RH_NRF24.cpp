@@ -31,7 +31,10 @@ bool RH_NRF24::init()
     spiWriteRegister(RH_NRF24_REG_1C_DYNPD, RH_NRF24_DPL_ALL);
     // Enable dynamic payload length, disable payload-with-ack, enable noack
     spiWriteRegister(RH_NRF24_REG_1D_FEATURE, RH_NRF24_EN_DPL | RH_NRF24_EN_DYN_ACK);
-    
+    // Test if there is actually a device connected and responding
+    if (spiReadRegister(RH_NRF24_REG_1D_FEATURE) != (RH_NRF24_EN_DPL | RH_NRF24_EN_DYN_ACK))
+	return false;
+
     // Make sure we are powered down
     setModeIdle();
 
@@ -139,7 +142,7 @@ void RH_NRF24::setModeRx()
 {
     if (_mode != RHModeRx)
     {
-	bool status = spiWriteRegister(RH_NRF24_REG_00_CONFIG, _configuration | RH_NRF24_PWR_UP | RH_NRF24_PRIM_RX);
+	spiWriteRegister(RH_NRF24_REG_00_CONFIG, _configuration | RH_NRF24_PWR_UP | RH_NRF24_PRIM_RX);
 	digitalWrite(_chipEnablePin, HIGH);
 	_mode = RHModeRx;
     }
@@ -176,8 +179,8 @@ bool RH_NRF24::send(const uint8_t* data, uint8_t len)
 
 bool RH_NRF24::waitPacketSent()
 {
-    // If we are currently in receive mode, then there is no packet to wait for
-    if (spiReadRegister(RH_NRF24_REG_00_CONFIG) & RH_NRF24_PRIM_RX)
+    // If we are not currently in transmit mode, there is no packet to wait for
+    if (_mode != RHModeTx)
 	return false;
 
     // Wait for either the Data Sent or Max ReTries flag, signalling the 

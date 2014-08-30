@@ -9,6 +9,7 @@ RHSoftwareSPI::RHSoftwareSPI(Frequency frequency, BitOrder bitOrder, DataMode da
     :
     RHGenericSPI(frequency, bitOrder, dataMode)
 {
+    setPins(12, 11, 13);
 }
 
 

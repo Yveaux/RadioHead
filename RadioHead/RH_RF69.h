@@ -719,6 +719,10 @@ public:
     /// encryption is disabled.
     void           setEncryptionKey(uint8_t* key = NULL);
 
+    /// Returns the time in millis since the last preamble was received, and when the last
+    /// RSSI measurement was made.
+    uint32_t getLastPreambleTime();
+
     /// The maximum message length supported by this driver
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
@@ -769,6 +773,9 @@ protected:
 
     /// True when there is a valid message in the Rx buffer
     volatile bool    _rxBufValid;
+
+    /// Time in millis since the last preamble was received (and the last time the RSSI was measured)
+    uint32_t            _lastPreambleTime;
 };
 
 /// @example rf69_client.pde

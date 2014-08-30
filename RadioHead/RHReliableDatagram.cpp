@@ -48,7 +48,8 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	setHeaderId(thisSequenceNumber);
 	setHeaderFlags(RH_FLAGS_NONE, RH_FLAGS_ACK); // Clear the ACK flag
 	sendto(buf, len, address);
-	waitPacketSent();
+//Serial.println("fixme");
+//	waitPacketSent();
 
 	// Never wait for ACKS to broadcasts:
 	if (address == RH_BROADCAST_ADDRESS)

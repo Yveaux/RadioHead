@@ -172,6 +172,8 @@ void RH_RF69::handleInterrupt()
     {
 	// A complete message has been received with good CRC
 	_lastRssi = -((int8_t)(spiRead(RH_RF69_REG_24_RSSIVALUE) >> 1));
+	_lastPreambleTime = millis();
+
 	setModeIdle();
 	// Save it in our buffer
 	readFifo();

@@ -66,7 +66,7 @@
 /// (http://www.airspayce.com/mikem/arduino/VirtualWire), with which it is compatible.
 /// See http://www.airspayce.com/mikem/arduino/VirtualWire.pdf for more details.
 ///
-/// RK_ASK is a Driver for Arduino, Maple and others that provides features to send short
+/// RH_ASK is a Driver for Arduino, Maple and others that provides features to send short
 /// messages, without addressing, retransmit or acknowledgment, a bit like UDP
 /// over wireless, using ASK (amplitude shift keying). Supports a number of
 /// inexpensive radio transmitters and receivers. All that is required is

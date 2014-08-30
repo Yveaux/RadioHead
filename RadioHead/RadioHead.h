@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.15.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.16.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -77,7 +77,8 @@
 ///
 /// - RH_ASK
 /// Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers such as RX-B1 
-/// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver. Supports ASK (OOK).
+/// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver; FS1000A/XY-MK-5V transceiver.
+/// Supports ASK (OOK).
 ///
 /// - RH_Serial
 /// Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
@@ -311,6 +312,15 @@
 ///              Reported by Steve Childress.<br>
 /// \version 1.15 2014-05-27<br>
 ///              Fixed a problem with the RadioHead .zip link.
+/// \version ??? <br>
+///              Fixed RH_RF22 so that lastRssi() returns the signal strength in dBm. Suggested by Steve Childress.<br>
+///              Added support for getLastPreambleTime() to RH_RF69. Requested by Steve Childress.<br>
+///              RH_NRF24::init() now checks if there is a device connected and responding, else init() will fail.
+///              Suggested by Steve Brown.<br>
+///              RHSoftwareSPI now initialises default values for SPI pins MOSI = 12, MISO = 11 and SCK = 13.<br>
+///              Fixed some problems that prevented RH_NRF24 working with mixed software and hardware SPI 
+///              on different devices: a race condition
+///              due to slow SPI transfers and fast acknowledgement.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -319,7 +329,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 15
+#define RH_VERSION_MINOR 16
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
