@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.10 2014/04/28 23:07:14 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.11 2014/04/29 12:18:27 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.5.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.6.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -73,7 +73,7 @@
 ///
 /// - RH_Serial
 /// Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
-/// or with TTL serial UARTs such as those on Arduio and many other processors,
+/// or with TTL serial UARTs such as those on Arduino and many other processors,
 /// or with data radios with a 
 /// serial port interface. RH_Serial provides packetization and error detection over any hardware or 
 /// virtual serial connection. 
@@ -93,7 +93,7 @@
 /// Addressed, unreliable variable length messages, with optional broadcast facilities.
 ///
 /// - RHReliableDatagram
-/// Addressed reliable, retransmitted, acknowledged variable length messages.
+/// Addressed, reliable, retransmitted, acknowledged variable length messages.
 ///
 /// - RHRouter
 /// Multi-hop delivery from source node to destination node via 0 or more intermediate nodes.
@@ -229,6 +229,8 @@
 /// \version 1.5 2014-04-29<br>
 ///              Added support for Nordic Semiconductor nRF905 transceiver with RH_NRF905 driver. Also
 ///              added examples for nRF905 and tested on Teensy 3.1
+/// \version 1.5 2014-04-30<br>
+///              NRF905 edxamples were missing
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

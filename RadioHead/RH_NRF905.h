@@ -1,7 +1,7 @@
 // RH_NRF905.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_NRF905.h,v 1.1 2014/04/23 00:23:47 mikem Exp $
+// $Id: RH_NRF905.h,v 1.2 2014/04/29 12:18:27 mikem Exp mikem $
 //
 
 #ifndef RH_NRF905_h
@@ -110,6 +110,9 @@
 /// (http://www.nordicsemi.com/jpn/nordic/content_download/2452/29528/file/Product_Specification_nRF905_v1.5.pdf)
 /// is a low-cost 433/868/915 MHz ISM transceiver module. It supports a number of channel frequencies at
 /// 100kHz deviation and 50kHz bandwidth with Manchester encoding.
+///
+/// We tested with inexpensive nRF905 modules from eBay, similar to:
+/// http://www.aliexpress.com/store/product/Free-ship-NRF905-433MHz-Wireless-Transmission-Module-Transceiver-Module-with-Antenna-for-the-433MHz-ISM-band/513046_607163305.html
 ///
 /// This library provides functions for sending and receiving messages of up to 27 octets on any 
 /// frequency supported by the nRF905.
@@ -353,5 +356,10 @@ private:
     /// True when there is a valid message in the buffer
     bool                _rxBufValid;
 };
+
+/// @example nrf905_client.pde
+/// @example nrf905_server.pde
+/// @example nrf905_reliable_datagram_client.pde
+/// @example nrf905_reliable_datagram_server.pde
 
 #endif

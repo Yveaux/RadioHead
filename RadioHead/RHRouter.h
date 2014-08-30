@@ -133,8 +133,7 @@ class RHRouter : public RHReliableDatagram
 {
 public:
 
-    /// Defines the structure of the RHRouter message header, used to keep track of end-to-end delivery
-    /// parameters
+    /// Defines the structure of the RHRouter message header, used to keep track of end-to-end delivery parameters
     typedef struct
     {
 	uint8_t    dest;       ///< Destination node address

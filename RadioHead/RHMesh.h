@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.h,v 1.5 2014/04/28 23:07:14 mikem Exp mikem $
+// $Id: RHMesh.h,v 1.5 2014/04/28 23:07:14 mikem Exp $
 
 #ifndef RHMesh_h
 #define RHMesh_h
@@ -114,13 +114,12 @@ public:
 	uint8_t             data[RH_MESH_MAX_MESSAGE_LEN]; ///< Application layer payload data
     } MeshApplicationMessage;
 
-    /// Signals a route discovery request or reply
-    /// At present only supports physical dest addresses of length 1 octet
+    /// Signals a route discovery request or reply (At present only supports physical dest addresses of length 1 octet)
     typedef struct
     {
-	MeshMessageHeader   header; ///< msgType = RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_*
+	MeshMessageHeader   header;  ///< msgType = RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_*
 	uint8_t             destlen; ///< Reserved. Must be 1.g
-	uint8_t             dest;   ///< The address of the destination node whose route is being sought
+	uint8_t             dest;    ///< The address of the destination node whose route is being sought
 	uint8_t             route[RH_MESH_MAX_MESSAGE_LEN - 1]; ///< List of node addresses visited so far. Length is implcit
     } MeshRouteDiscoveryMessage;
 

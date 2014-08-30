@@ -1,7 +1,7 @@
 // RHDatagram.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.cpp,v 1.5 2014/04/28 23:07:14 mikem Exp mikem $
+// $Id: RHDatagram.cpp,v 1.5 2014/04/28 23:07:14 mikem Exp $
 
 #include <RHDatagram.h>
 

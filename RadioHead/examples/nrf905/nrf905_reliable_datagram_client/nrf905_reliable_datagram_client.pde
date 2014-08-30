@@ -23,7 +23,7 @@ void setup()
   Serial.begin(9600);
   if (!manager.init())
     Serial.println("init failed");
-  // Defaults after init are 2.402 GHz (channel 2), -10dBm
+  // Defaults after init are 433.2 MHz (channel 108), -10dBm
 }
 
 uint8_t data[] = "Hello World!";

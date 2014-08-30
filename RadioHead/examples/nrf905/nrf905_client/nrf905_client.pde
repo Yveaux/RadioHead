@@ -20,7 +20,7 @@ void setup()
     ; // wait for serial port to connect. Needed for Leonardo only
   if (!nrf905.init())
     Serial.println("init failed");
-  // Defaults after init are 433.2 GHz (channel 108), -10dBm
+  // Defaults after init are 433.2 MHz (channel 108), -10dBm
 }
 
 
