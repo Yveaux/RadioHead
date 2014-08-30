@@ -166,6 +166,8 @@ public:
     /// RH_BROADCAST_ADDRESS. 
     /// This is the preferred function for getting messages addressed to this node.
     /// If the message is not a broadcast, acknowledge to the sender before returning.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
     /// \param[in] source If present and not NULL, the referenced uint8_t will be set to the SOURCE address
@@ -180,6 +182,8 @@ public:
     /// Similar to recvfromAck(), this will block until either a valid application layer 
     /// message available for this node
     /// or the timeout expires. 
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
     /// \param[in] timeout Maximum time to wait in milliseconds

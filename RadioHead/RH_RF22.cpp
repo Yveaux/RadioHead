@@ -162,7 +162,6 @@ bool RH_RF22::init()
 // C++ level interrupt handler for this instance
 void RH_RF22::handleInterrupt()
 {
-    digitalWrite(2, HIGH);
     uint8_t _lastInterruptFlags[2];
     // Read the interrupt flags which clears the interrupt
     spiBurstRead(RH_RF22_REG_03_INTERRUPT_STATUS1, _lastInterruptFlags, 2);

@@ -107,6 +107,8 @@ public:
     /// If the message is not a broadcast, acknowledge to the sender before returning.
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
     /// \param[in] from If present and not NULL, the referenced uint8_t will be set to the SRC address
@@ -121,6 +123,8 @@ public:
     /// or the timeout expires. Starts the receiver automatically.
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
     /// \param[in] timeout Maximum time to wait in milliseconds

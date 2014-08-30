@@ -104,6 +104,7 @@ bool RH_NRF24::setChannel(uint8_t channel)
 bool RH_NRF24::setOpMode(uint8_t mode)
 {
     _configuration = mode;
+    return true;
 }
 
 bool RH_NRF24::setNetworkAddress(uint8_t* address, uint8_t len)

@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.23.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.24.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -362,6 +362,11 @@
 ///              was not very reliable.<br>
 ///              Documented RH_RF95 range tests.<br>
 ///              Improvements to RH_RF22 RSSI readings so that lastRssi correctly returns the last message in dBm.<br>
+/// \version 1.24 ????
+///              Added support for building RadioHead for STM32F4 Discovery boards, using the native STM Firmware libraries,
+///              in order to support Codec2WalkieTalkie (http://www.airspayce.com/mikem/Codec2WalkieTalkie)
+///              and other projects. See STM32ArduinoCompat.<br>
+///              Default modulation for RH_RF95 was incorrectly set to a very slow Bw125Cr48Sf4096
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -370,7 +375,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 23
+#define RH_VERSION_MINOR 24
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
@@ -379,6 +384,7 @@
 #define RH_PLATFORM_GENERIC_AVR8 4
 #define RH_PLATFORM_UNO32        5
 #define RH_PLATFORM_SIMULATOR    6
+#define RH_PLATFORM_STM32STD     7
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -389,8 +395,10 @@
   #define RH_PLATFORM RH_PLATFORM_ARDUINO
  #elif defined(__MSP430G2452__) || defined(__MSP430G2553__)
   #define RH_PLATFORM RH_PLATFORM_MSP430
- #elif defined(MCU_STM32F103RE)
+#elif defined(MCU_STM32F103RE)
   #define RH_PLATFORM RH_PLATFORM_STM32
+#elif defined(USE_STDPERIPH_DRIVER)
+  #define RH_PLATFORM RH_PLATFORM_STM32STD
  #elif defined(__unix__)
   #define RH_PLATFORM RH_PLATFORM_SIMULATOR
  #else
@@ -424,6 +432,14 @@
  #define MAPLE_TIMER 1
  #define PROGMEM
  #define memcpy_P memcpy
+ #define Serial SerialUSB
+
+#elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32 with STM32F4xx_StdPeriph_Driver 
+ #include <stm32f4xx.h>
+ #include <wirish.h>	
+ #include <stdint.h>
+ #include <string.h>
+ #include <math.h>
  #define Serial SerialUSB
 
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) 

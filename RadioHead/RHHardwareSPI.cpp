@@ -9,6 +9,9 @@
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 // Declare an SPI interface to use
 HardwareSPI SPI(1);
+#elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32F4 Discovery
+// Declare an SPI interface to use
+HardwareSPI SPI(1);
 #endif
 
 // Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
@@ -54,6 +57,7 @@ void RHHardwareSPI::detachInterrupt()
     
 void RHHardwareSPI::begin() 
 {
+    // Sigh: there are no common symbols for some of these SPI options across all platforms
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_UNO32)
     uint8_t dataMode;
     if (_dataMode == DataMode0)
@@ -172,6 +176,51 @@ void RHHardwareSPI::begin()
     }
     SPI.begin(frequency, bitOrder, dataMode);
 
+#elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32F4 discovery
+    uint8_t dataMode;
+    if (_dataMode == DataMode0)
+	dataMode = SPI_MODE0;
+    else if (_dataMode == DataMode1)
+	dataMode = SPI_MODE1;
+    else if (_dataMode == DataMode2)
+	dataMode = SPI_MODE2;
+    else if (_dataMode == DataMode3)
+	dataMode = SPI_MODE3;
+    else
+	dataMode = SPI_MODE0;
+
+    uint32_t bitOrder;
+    if (_bitOrder == BitOrderLSBFirst)
+	bitOrder = LSBFIRST;
+    else
+	bitOrder = MSBFIRST;
+
+    SPIFrequency frequency; // Yes, I know these are not exact equivalents.
+    switch (_frequency)
+    {
+	case Frequency1MHz:
+	default:
+	    frequency = SPI_1_3125MHZ;
+	    break;
+
+	case Frequency2MHz:
+	    frequency = SPI_2_625MHZ;
+	    break;
+
+	case Frequency4MHz:
+	    frequency = SPI_5_25MHZ;
+	    break;
+
+	case Frequency8MHz:
+	    frequency = SPI_10_5MHZ;
+	    break;
+
+	case Frequency16MHz:
+	    frequency = SPI_21_0MHZ;
+	    break;
+
+    }
+    SPI.begin(frequency, bitOrder, dataMode);
 #else
  #warning RHHardwareSPI does not support this platform yet. Consider adding it and contributing a patch.
 #endif

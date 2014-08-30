@@ -165,7 +165,7 @@
 
 // RH_RF95_REG_1C_HOP_CHANNEL                         0x1c
 #define RH_RF95_PLL_TIMEOUT                           0x80
-#define RH_RF95_RX_PAYLOAD_CRC_ON                     0x40
+#define RH_RF95_RX_PAYLOAD_CRC_IS_ON                  0x40
 #define RH_RF95_FHSS_PRESENT_CHANNEL                  0x3f
 
 // RH_RF95_REG_1D_MODEM_CONFIG1                       0x1d

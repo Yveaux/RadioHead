@@ -11,6 +11,8 @@
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 #include <HardwareSPI.h>
+#elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32F4 Discovery
+#include <HardwareSPI.h>
 #else
 #include <SPI.h>
 #endif

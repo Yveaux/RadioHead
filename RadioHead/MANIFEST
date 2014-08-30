@@ -86,5 +86,11 @@ RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp
 RadioHead/tools/simBuild
-
 RadioHead/doc
+RadioHead/STM32ArduinoCompat/HardwareSerial.cpp
+RadioHead/STM32ArduinoCompat/HardwareSerial.h
+RadioHead/STM32ArduinoCompat/HardwareSPI.cpp
+RadioHead/STM32ArduinoCompat/HardwareSPI.h
+RadioHead/STM32ArduinoCompat/wirish.cpp
+RadioHead/STM32ArduinoCompat/wirish.h
+RadioHead/STM32ArduinoCompat/README

@@ -76,6 +76,8 @@ public:
     /// If a message is copied, *len is set to the length.
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Pointer to available space in buf. Set to the actual number of octets copied.
     /// \param[in] from If present and not NULL, the referenced uint8_t will be set to the FROM address
@@ -91,11 +93,15 @@ public:
     /// On most drivers, this will also put the Driver into RHModeRx mode until
     /// a message is actually received bythe transport, when it will be returned to RHModeIdle.
     /// This can be called multiple times in a timeout loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \return true if a new, complete, error-free uncollected message is available to be retreived by recv()
     bool            available();
 
     /// Starts the Driver receiver and blocks until a valid received 
     /// message is available.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     void            waitAvailable();
 
     /// Blocks until the transmitter 
@@ -109,6 +115,8 @@ public:
     bool            waitPacketSent(uint16_t timeout);
 
     /// Starts the Driver receiver and blocks until a received message is available or a timeout
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] timeout Maximum time to wait in milliseconds.
     /// \return true if a message is available
     bool            waitAvailableTimeout(uint16_t timeout);

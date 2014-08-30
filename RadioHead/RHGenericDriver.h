@@ -62,7 +62,9 @@ public:
     /// from the Driver. 
     /// On most drivers, this will also put the Driver into RHModeRx mode until
     /// a message is actually received bythe transport, when it wil be returned to RHModeIdle.
-    /// This can be called multiple times in a timeout loop
+    /// This can be called multiple times in a timeout loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \return true if a new, complete, error-free uncollected message is available to be retreived by recv()
     virtual bool available() = 0;
 
@@ -72,6 +74,8 @@ public:
     /// If a message is copied, *len is set to the length (Caution, 0 length messages are permitted).
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
+    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
+    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Pointer to available space in buf. Set to the actual number of octets copied.
     /// \return true if a valid message was copied to buf
