@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.cpp,v 1.8 2014/05/22 06:07:09 mikem Exp mikem $
+// $Id: RHReliableDatagram.cpp,v 1.9 2014/05/23 02:20:17 mikem Exp mikem $
 
 #include <RHReliableDatagram.h>
 
@@ -137,8 +137,11 @@ bool RHReliableDatagram::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t
 {
     unsigned long starttime = millis();
     while ((millis() - starttime) < timeout)
+    {
 	if (recvfromAck(buf, len, from, to, id, flags))
 	    return true;
+	YIELD;
+    }
     return false;
 }
 

@@ -69,7 +69,9 @@ class RH_TCP : public RHGenericDriver
 public:
     /// Constructor
     /// \param[in] server Name and optionally the port number of the ether simulator server to contact.
-    /// Format is "name:portnumber"
+    /// Format is "name[:port]", where name can be any valid host name or address (IPV4 or IPV6).
+    /// The trailing :port is optional, and port can be any valid 
+    /// port name or port number.
     RH_TCP(const char* server = "localhost:4000");
 
     /// Initialise the Driver transport hardware and software.
@@ -124,6 +126,10 @@ public:
 protected:
 
 private:
+    /// Connect to the address and port specified by the server constructor argument.
+    /// Prepares the socket for use.
+    bool connectToServer();
+
     /// Check for new messages from the ether simulator server
     void checkForEvents();
 

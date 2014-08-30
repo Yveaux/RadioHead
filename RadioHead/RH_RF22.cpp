@@ -145,14 +145,6 @@ bool RH_RF22::init()
     uint8_t syncwords[] = { 0x2d, 0xd4 };
     setSyncWords(syncwords, sizeof(syncwords));
     setPromiscuous(false); 
-    // Check the TO header against RH_RF22_DEFAULT_NODE_ADDRESS
-    spiWrite(RH_RF22_REG_3F_CHECK_HEADER3, RH_RF22_DEFAULT_NODE_ADDRESS);
-    // Set the default transmit header values
-    setHeaderTo(RH_RF22_DEFAULT_NODE_ADDRESS);
-    setHeaderFrom(RH_RF22_DEFAULT_NODE_ADDRESS);
-    setHeaderId(0);
-    setHeaderFlags(0);
-
 
     // Set some defaults. An innocuous ISM frequency, and reasonable pull-in
     setFrequency(434.0, 0.05);
@@ -258,6 +250,10 @@ void RH_RF22::handleInterrupt()
 	}
 
 	spiBurstRead(RH_RF22_REG_7F_FIFO_ACCESS, _buf + _bufLen, len - _bufLen);
+	_rxHeaderTo = spiRead(RH_RF22_REG_47_RECEIVED_HEADER3);
+	_rxHeaderFrom = spiRead(RH_RF22_REG_48_RECEIVED_HEADER2);
+	_rxHeaderId = spiRead(RH_RF22_REG_49_RECEIVED_HEADER1);
+	_rxHeaderFlags = spiRead(RH_RF22_REG_4A_RECEIVED_HEADER0);
 	_rxGood++;
 	_bufLen = len;
 	_mode = RHModeIdle;
@@ -561,6 +557,10 @@ bool RH_RF22::send(const uint8_t* data, uint8_t len)
     bool ret = true;
     waitPacketSent();
     ATOMIC_BLOCK_START;
+    spiWrite(RH_RF22_REG_3A_TRANSMIT_HEADER3, _txHeaderTo);
+    spiWrite(RH_RF22_REG_3B_TRANSMIT_HEADER2, _txHeaderFrom);
+    spiWrite(RH_RF22_REG_3C_TRANSMIT_HEADER1, _txHeaderId);
+    spiWrite(RH_RF22_REG_3D_TRANSMIT_HEADER0, _txHeaderFlags);
     if (!fillTxBuf(data, len))
 	ret = false;
     else
@@ -647,46 +647,6 @@ void RH_RF22::handleExternalInterrupt()
 // Default implmentation does nothing. Override if you wish
 void RH_RF22::handleWakeupTimerInterrupt()
 {
-}
-
-void RH_RF22::setHeaderTo(uint8_t to)
-{
-    spiWrite(RH_RF22_REG_3A_TRANSMIT_HEADER3, to);
-}
-
-void RH_RF22::setHeaderFrom(uint8_t from)
-{
-    spiWrite(RH_RF22_REG_3B_TRANSMIT_HEADER2, from);
-}
-
-void RH_RF22::setHeaderId(uint8_t id)
-{
-    spiWrite(RH_RF22_REG_3C_TRANSMIT_HEADER1, id);
-}
-
-void RH_RF22::setHeaderFlags(uint8_t flags)
-{
-    spiWrite(RH_RF22_REG_3D_TRANSMIT_HEADER0, flags);
-}
-
-uint8_t RH_RF22::headerTo()
-{
-    return spiRead(RH_RF22_REG_47_RECEIVED_HEADER3);
-}
-
-uint8_t RH_RF22::headerFrom()
-{
-    return spiRead(RH_RF22_REG_48_RECEIVED_HEADER2);
-}
-
-uint8_t RH_RF22::headerId()
-{
-    return spiRead(RH_RF22_REG_49_RECEIVED_HEADER1);
-}
-
-uint8_t RH_RF22::headerFlags()
-{
-    return spiRead(RH_RF22_REG_4A_RECEIVED_HEADER0);
 }
 
 void RH_RF22::setPromiscuous(bool promiscuous)

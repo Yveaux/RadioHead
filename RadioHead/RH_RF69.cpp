@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.11 2014/05/22 06:07:09 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.12 2014/05/23 02:20:17 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -130,6 +130,9 @@ bool RH_RF69::init()
 //    spiWrite(RH_RF69_REG_38_PAYLOADLENGTH, RH_RF69_FIFO_SIZE); // max size only for RX
     // PACKETCONFIG 2 is default 
     spiWrite(RH_RF69_REG_6F_TESTDAGC, RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAOFF);
+    // If high power boost set previously, disable it
+    spiWrite(RH_RF69_REG_5A_TESTPA1, RH_RF69_TESTPA1_NORMAL);
+    spiWrite(RH_RF69_REG_5C_TESTPA2, RH_RF69_TESTPA2_NORMAL);
 
     // The following can be changed later by the user if necessary.
     // Set up default configuration
@@ -343,7 +346,7 @@ void RH_RF69::setTxPower(int8_t power)
     {
 	// +18dBm to +20dBm
 	// Need PA1+PA2
-	// Also need PA boost settings change when tx is turneed on and off, see setModeTx()
+	// Also need PA boost settings change when tx is turned on and off, see setModeTx()
 	palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((_power + 11) & RH_RF69_PALEVEL_OUTPUTPOWER);
     }
     else

@@ -4,13 +4,21 @@
 #
 # Author: Mike McCauley (mikem@airspayce.com)
 # Copyright (C) 2014 Mike McCauley
-# $Id: Makefile,v 1.9 2014/05/22 06:07:09 mikem Exp mikem $
+# $Id: Makefile,v 1.11 2014/05/23 23:08:48 mikem Exp mikem $
 
 PROJNAME = RadioHead
-# Dont forget to also change the version at the top of RadioHead.h:
-DISTFILE = $(PROJNAME)-1.13.zip
+VERSION_MAJOR = 1
+VERSION_MINOR = 14
 
-all:	doxygen dist upload
+DISTFILE = $(PROJNAME)-$(VERSION_MAJOR).$(VERSION_MINOR).zip
+
+all:	versioning doxygen dist upload
+
+# Update version numbers in RadioHead.h
+versioning:
+	sed -i.bak -e 's/RadioHead.*.zip/$(DISTFILE)/' RadioHead.h
+	sed -i.bak -e 's/define RH_VERSION_MAJOR.*$$/define RH_VERSION_MAJOR $(VERSION_MAJOR)/' RadioHead.h
+	sed -i.bak -e 's/define RH_VERSION_MINOR.*$$/define RH_VERSION_MINOR $(VERSION_MINOR)/' RadioHead.h
 
 doxygen: 
 	doxygen project.cfg

@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.18 2014/05/22 06:07:09 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.19 2014/05/23 02:20:17 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -39,9 +39,6 @@
 // These values we set for FIFO thresholds (4, 55) are actually the same as the POR values
 #define RH_RF22_TXFFAEM_THRESHOLD 4
 #define RH_RF22_RXFFAFULL_THRESHOLD 55
-
-// This is the default node address,
-#define RH_RF22_DEFAULT_NODE_ADDRESS 0
 
 // Number of registers to be passed to setModemConfig(). Obsolete.
 #define RH_RF22_NUM_MODEM_CONFIG_REGS 18
@@ -1067,22 +1064,6 @@ public:
     /// \return true if the message length was valid and it was correctly queued for transmit
     bool        send(const uint8_t* data, uint8_t len);
 
-    /// Returns the TO header of the last received message
-    /// \return The TO header
-    uint8_t        headerTo();
-
-    /// Returns the FROM header of the last received message
-    /// \return The FROM header
-    uint8_t        headerFrom();
-
-    /// Returns the ID header of the last received message
-    /// \return The ID header
-    uint8_t        headerId();
-
-    /// Returns the FLAGS header of the last received message
-    /// \return The FLAGS header
-    uint8_t        headerFlags();
-
     /// Sets the length of the preamble
     /// in 4-bit nibbles. 
     /// Caution: this should be set to the same 
@@ -1189,21 +1170,6 @@ protected:
     /// (which they are not by default). 
     /// Subclasses may override this function to get control when an RF22 wakeup timer interrupt occurs. 
     virtual void   handleWakeupTimerInterrupt();
-
-    /// Sets the TO header to be sent in all subsequent messages
-    /// \param[in] to The new TO header value
-    void           setHeaderTo(uint8_t to);
-
-    /// Sets the FROM header to be sent in all subsequent messages
-    /// \param[in] from The new FROM header value
-    void           setHeaderFrom(uint8_t from);
-
-    /// Sets the ID header to be sent in all subsequent messages
-    /// \param[in] id The new ID header value
-    void           setHeaderId(uint8_t id);
-    /// Sets the FLAGS header to be sent in all subsequent messages
-    /// \param[in] flags The new FLAGS header value
-    void           setHeaderFlags(uint8_t flags);
 
     /// Start the transmission of the contents 
     /// of the Tx buffer

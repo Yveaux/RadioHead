@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.19 2014/05/22 06:07:09 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.22 2014/05/23 23:08:54 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.13.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead-1.14.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -160,6 +160,7 @@
 /// Install in the usual way: unzip the distribution zip file to the libraries
 /// sub-folder of your sketchbook. 
 /// The example sketches will be visible in in your Arduino, mpide, maple-ide or whatever.
+/// http://arduino.cc/en/Guide/Libraries
 ///
 /// \par Compatible Hardware Suppliers
 ///
@@ -300,13 +301,25 @@
 ///              individually set and cleared by either RadioHead or application code. Requested by Steve Childress.<br>
 ///              Fixed power output setting for boost power on RF69HW for 18, 19 and 20dBm.<br>
 ///              Added data about actual power measurements from RFM69W and RFM69HW modules.<br>
+/// \version ???
+///              RH_RF69::init() now always sets the PA boost back to the default settings, else can get invalid
+///              PA power modes after uploading new sketches without a power cycle. Reported by Bryan.<br>
+///              Added new macros RH_VERSION_MAJOR RH_VERSION_MINOR, with automatic maintenance in Makefile.<br>
+///              Improvements to RH_TCP: constructor now honours the server argument in the form "servername:port".<br>
+///              Added YIELD to RHReliableDatagram::recvfromAckTimeout. Requested by Steve Childress.<br>
+///              Fixed a problem with RH_RF22 reliable datagram acknowledgements that was introduced in version 1.13.
+///              Reported by Steve Childress.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
 #ifndef RadioHead_h
 #define RadioHead_h
 
-//	Currently supported platforms
+// Official version numbers are maintained automatically by Makefile:
+#define RH_VERSION_MAJOR 1
+#define RH_VERSION_MINOR 14
+
+// Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
 #define RH_PLATFORM_MSP430       2
 #define RH_PLATFORM_STM32        3
@@ -314,7 +327,8 @@
 #define RH_PLATFORM_UNO32        5
 #define RH_PLATFORM_SIMULATOR    6
 
-//	Select platform automatically, if possible
+////////////////////////////////////////////////////
+// Select platform automatically, if possible
 #ifndef RH_PLATFORM
  #if defined(MPIDE)
   #define RH_PLATFORM RH_PLATFORM_UNO32
@@ -331,6 +345,8 @@
  #endif
 #endif
 
+////////////////////////////////////////////////////
+// Platform specific headers:
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
  #if (ARDUINO >= 100)
   #include <Arduino.h>
@@ -338,7 +354,7 @@
   #include <wiring.h>
  #endif
 
-#elif (RH_PLATFORM == RH_PLATFORM_MSP430)// LaunchPad specific
+#elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"
  #include "Energia.h"
 
@@ -347,7 +363,7 @@
  #include <string.h>
  #define memcpy_P memcpy
 
-#elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
+#elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple, Flymaple etc
  #include <wirish.h>	
  #include <stdint.h>
  #include <string.h>
@@ -375,6 +391,7 @@
  #error Platform unknown!
 #endif
 
+////////////////////////////////////////////////////
 // This is an attempt to make a portable atomic block
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
 #if defined(__arm__)
@@ -394,6 +411,7 @@
  #define ATOMIC_BLOCK_END
 #endif
 
+////////////////////////////////////////////////////
 // Try to be compatible with systems that support yield() and multitasking
 // instead of spin-loops
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (TEENSYDUINO)
@@ -402,6 +420,7 @@
  #define YIELD
 #endif
 
+////////////////////////////////////////////////////
 // digitalPinToInterrupt is not available prior to Arduino 1.5.6
 // See http://arduino.cc/en/Reference/attachInterrupt
 #ifndef digitalPinToInterrupt
