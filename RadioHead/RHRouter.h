@@ -40,7 +40,7 @@
 /// \brief RHReliableDatagram subclass for sending addressed, optionally acknowledged datagrams
 /// multi-hop routed across a network.
 ///
-/// Extends RHReliableDatagram to define addressed messages
+/// Manager class that extends RHReliableDatagram to define addressed messages
 /// That are reliably transmitted and routed across a network. Each message is transmitted reliably 
 /// between each hop in order to get from the source node to the destination node.
 ///

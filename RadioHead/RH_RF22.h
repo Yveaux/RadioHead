@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.16 2014/05/09 22:03:04 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.17 2014/05/18 06:42:31 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -735,7 +735,8 @@
 /// directly to the antenna output <b>will not work at full 30dBm power</b>,
 /// and will result in the transmitter hanging and/or the power amp
 /// overheating. Connect a proper 50 ohm impedance transmission line or
-/// antenna in order to get full, reliable power. Our tests show that a 433MHz
+/// antenna, and prevent RF radiation into the radio and arduino modules,
+/// in order to get full, reliable power. Our tests show that a 433MHz
 /// RFM23BP feeding a 50 ohm transmission line with a VHF discone antenna at
 /// the end results in full power output and the power amp transistor on the
 /// RFM22BP module runnning slightly warm but not hot. We recommend you use
@@ -743,6 +744,30 @@
 /// module.
 ///
 /// Note: with RFM23BP, the reported maximum possible power when operating on 3.3V is 27dBm.
+///
+/// We have made some actual power measurements against
+/// programmed power for Sparkfun RFM22 wireless module under the following conditions:
+/// - Sparkfun RFM22 wireless module, Duemilanove, USB power
+/// - 10cm RG58C/U soldered direct to RFM22 module ANT and GND
+/// - bnc connecteor
+/// - 12dB attenuator
+/// - BNC-SMA adapter
+/// - MiniKits AD8307 HF/VHF Power Head (calibrated against Rohde&Schwartz 806.2020 test set)
+/// - Tektronix TDA220 scope to measure the Vout from power head
+/// \code
+/// Program power           Measured Power
+///    dBm                         dBm
+///    1                           -5.6
+///    2                           -3.8
+///    5                           -2.2
+///    8                           -0.6
+///    11                           1.2
+///    14                           11.6
+///    17                           14.4
+///    20                           18.0
+/// \endcode
+/// (Caution: we dont claim laboratory accuracy for these measurements)
+/// You would not expect to get anywhere near these powers to air with a simple 1/4 wavelength wire antenna.
 ///
 /// \par Performance
 ///
@@ -763,6 +788,7 @@
 /// The RH_RF22 driver is based on our earlier RF22 library http://www.airspayce.com/mikem/arduino/RF22
 /// We have tried hard to be as compatible as possible with the earlier RF22 library, but there are some differences:
 /// - Different constructor.
+/// - Indexes for some modem configurations have changed (we recommend you use the symbolic names, not integer indexes).
 ///
 /// The major difference is that under RadioHead, you are
 /// required to create 2 objects (ie RH_RF22 and a manager) instead of just one object under RF22

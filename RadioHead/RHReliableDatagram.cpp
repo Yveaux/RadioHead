@@ -142,11 +142,16 @@ bool RHReliableDatagram::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t
     return false;
 }
 
-uint16_t RHReliableDatagram::retransmissions()
+uint32_t RHReliableDatagram::retransmissions()
 {
     return _retransmissions;
 }
 
+void RHReliableDatagram::resetRetransmissions()
+{
+    _retransmissions = 0;
+}
+ 
 void RHReliableDatagram::acknowledge(uint8_t id, uint8_t from)
 {
     setHeaderId(id);

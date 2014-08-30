@@ -14,7 +14,7 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RHDatagram RHDatagram.h <RHDatagram.h>
-/// \brief Class for addressed, unreliable messages
+/// \brief Manager class for addressed, unreliable messages
 ///
 /// Every RHDatagram node has an 8 bit address (defaults to 0).
 /// Addresses (DEST and SRC) are 8 bit integers with an address of RH_BROADCAST_ADDRESS (0xff) 

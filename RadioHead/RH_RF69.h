@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.13 2014/05/15 10:55:57 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.14 2014/05/18 06:42:31 mikem Exp mikem $
 //
 ///
 
@@ -282,7 +282,17 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RH_RF69 RH_RF69.h <RH_RF69.h>
-/// \brief Driver to send and receive unaddressed, unreliable datagrams via an RF69 radio transceiver.
+/// \brief Driver to send and receive unaddressed, unreliable datagrams via an RF69 and compatible radio transceiver.
+///
+/// Works with 
+/// - the excellent Moteino and Moteino-USB 
+/// boards from LowPowerLab http://lowpowerlab.com/moteino/
+/// - compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H),
+/// - RFM69 modules from http://www.hoperfusa.com such as http://www.hoperfusa.com/details.jsp?pid=145
+/// - Anarduino MiniWireless -CW and -HW boards http://www.anarduino.com/miniwireless/ including
+///  the marvellous high powered MinWireless-HW (with 20dBm output for excellent range)
+///
+/// \par Overview
 ///
 /// This class provides basic functions for sending and receiving unaddressed, 
 /// unreliable datagrams of arbitrary length to 64 octets per packet.
@@ -294,13 +304,7 @@
 /// modulation scheme.
 ///
 /// This Driver provides an object-oriented interface for sending and receiving data messages with Hope-RF
-/// RF69B based radio modules, such as the RFM69 module, (as used on the excellent Moteino and Moteino-USB 
-/// boards from LowPowerLab http://lowpowerlab.com/moteino/ )
-/// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H),
-/// and including RFM69 modules from http://www.hoperfusa.com such as http://www.hoperfusa.com/details.jsp?pid=145
-/// and others such as http://www.anarduino.com/miniwireless/.
-/// The RFM69 device is described in http://www.hoperf.cn/upload/rf/RFM69-V1.3.pdf
-/// and http://www.hoperf.com/upload/rfchip/RF69-V1.2.pdf
+/// RF69B and compatible radio modules, such as the RFM69 module.
 ///
 /// The Hope-RF (http://www.hoperf.com) RF69 is a low-cost ISM transceiver
 /// chip. It supports FSK, GFSK, OOK over a wide range of frequencies and
@@ -551,7 +555,7 @@ public:
     int8_t        rssiRead();
 
     /// Sets the parameters for the RF69 OPMODE.
-    /// This is a low level device access funciton, and should not normally ned to be used by user code. 
+    /// This is a low level device access function, and should not normally ned to be used by user code. 
     /// Instead can use stModeRx(), setModeTx(), setModeIdle()
     /// \param[in] mode RF69 OPMODE to set, one of RH_RF69_OPMODE_MODE_*.
     void           setOpMode(uint8_t mode);
@@ -572,9 +576,10 @@ public:
     /// Be a good neighbour and set the lowest power level you need.
     /// Caution: legal power limits may apply in certain countries.
     /// After init(), the power will be set to 13dBm.
-    /// \param[in] power Transmitter power level in dBm from -18dBm to +13dB (higher powers may
-    /// be available depending on which version of RF69 radio you have). Caution: for the RF69W, powers 
-    /// higher than 13dBm disable the transmitter entirely.
+    /// \param[in] power Transmitter power level in dBm. For RF69W, valid values are from -18 to +13 
+    /// (higher power settings disable the transmitter).
+    /// For RF69HW, valid values are from 14 to 20. Caution: at 20dBm, duty cycle is limited to 1% and a 
+    /// maximum VSWR of 3:1 at the antenna port.
     void           setTxPower(int8_t power);
 
     /// Sets all the registered required to configure the data modem in the RF69, including the data rate, 

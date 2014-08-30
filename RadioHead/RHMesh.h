@@ -20,7 +20,7 @@
 /// \brief RHRouter subclass for sending addressed, optionally acknowledged datagrams
 /// multi-hop routed across a network, with automatic route discovery
 ///
-/// Extends RHRouter to add automatic route discovery within a mesh of adjacent nodes, 
+/// Manager class that extends RHRouter to add automatic route discovery within a mesh of adjacent nodes, 
 /// and route signalling.
 ///
 /// Unlike RHRouter, RHMesh can be used in networks where the network topology is fluid, or unknown, 

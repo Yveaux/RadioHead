@@ -41,7 +41,7 @@ typedef struct
     uint8_t         payload[RH_TCP_MAX_PAYLOAD_LEN]; ///< Payload
 }   RHTcpTypeMessage;
 
-/// \brief Notifies the server of thisAddress of this client
+/// \brief RH_TCP message Notifies the server of thisAddress of this client
 typedef struct
 {
     uint32_t        length; ///< Number of octets following, in network byte order
@@ -49,7 +49,7 @@ typedef struct
     uint8_t         thisAddress; ///< Node address
 }   RHTcpThisAddress;
 
-/// \brief Mesage passed to or from the simulator
+/// \brief RH_TCP radio message passed to or from the simulator
 typedef struct
 {
     uint32_t        length; ///< Number of octets following, in network byte order

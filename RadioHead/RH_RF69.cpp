@@ -311,19 +311,17 @@ void RH_RF69::setTxPower(int8_t power)
     if (power < -18)
 	power = -18;
 
-    // See http://www.hoperf.com/upload/rfchip/RH_RF69-V1.2.pdf section 3.3.6
+    // See http://www.hoperf.com/upload/rfchip/RF69-V1.2.pdf section 3.3.6
     // for power formulas
     if (power >= 14)
     {
 	// Need PA1+PA2
 	palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((power + 14) & RH_RF69_PALEVEL_OUTPUTPOWER);
-#if 0
 	if (power >= 18)
 	{
-	    // Also need 20dBm boost settings, not implemented yet, see section 3.3.7
+	    // For 20dBm need boost settings, not implemented yet, see section 3.3.7
 	    palevel = RH_RF69_PALEVEL_PA1ON | RH_RF69_PALEVEL_PA2ON | ((power + 11) & RH_RF69_PALEVEL_OUTPUTPOWER);
 	}
-#endif
     }
     else
     {

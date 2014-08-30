@@ -120,6 +120,8 @@ bool RH_NRF24::setRF(DataRate data_rate, TransmitPower power)
 	value |= RH_NRF24_RF_DR_HIGH;
     // else DataRate1Mbps, 00
     spiWriteRegister(RH_NRF24_REG_06_RF_SETUP, value);
+    // If we were using auto-ack, we would have to set the appropriate timeout in reg 4 here
+    // see NRF24::setRF()
     return true;
 }
 

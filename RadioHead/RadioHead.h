@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.17 2014/05/15 10:55:57 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.18 2014/05/18 06:42:31 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.10.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.12.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -61,7 +61,9 @@
 /// Works with Hope-RF
 /// RF69B based radio modules, such as the RFM69 module, (as used on the excellent Moteino and Moteino-USB 
 /// boards from LowPowerLab http://lowpowerlab.com/moteino/ )
-/// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H). 
+/// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H).
+/// Also works with Anarduino MiniWireless -CW and -HW boards http://www.anarduino.com/miniwireless/ including
+/// the marvellous high powered MinWireless-HW (with 20dBm output for excelent range).
 /// Supports GFSK, FSK.
 ///
 /// - RH_NRF24
@@ -285,6 +287,14 @@
 ///              Fixed a problem with RH_RF22 driver, where GPIO TX and RX pins were not configured during
 ///              initialisation, causing poor transmit power and sensitivity on those RF22/RF23 devices where GPIO controls
 ///              the antenna selection pins.
+/// \version 1.12 2014-05-20<br>
+///              Testing with RF69HW and the RH_RF69 driver. Works well with the Anarduino MiniWireless -CW and -HW 
+///              boards http://www.anarduino.com/miniwireless/ including
+///              the marvellous high powered MinWireless-HW (with 20dBm output for excellent range).<br>
+///              Clarified documentation of RH_RF69::setTxPower values for different models of RF69.<br>
+///              Added RHReliableDatagram::resetRetransmissions().<br>
+///              Retransmission count precision increased to uin32_t.<br>
+///              Added data about actual power measurements from RFM22 module.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 

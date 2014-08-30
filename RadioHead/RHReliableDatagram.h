@@ -18,14 +18,14 @@
 /// \class RHReliableDatagram RHReliableDatagram.h <RHReliableDatagram.h>
 /// \brief RHDatagram subclass for sending addressed, acknowledged, retransmitted datagrams.
 ///
-/// Extends RHDatagram to define addressed, reliable datagrams with acknowledgement and retransmission.
+/// Manager class that extends RHDatagram to define addressed, reliable datagrams with acknowledgement and retransmission.
 /// Based on RHDatagram, adds flags and sequence numbers. RHReliableDatagram is reliable in the sense
 /// that messages are acknowledged, and unacknowledged messages are retransmitted until acknowledged or the
 /// retries are exhausted.
 /// When addressed messages are sent (by sendtoWait()), it will wait for an ack, and retransmit
 /// after timeout until an ack is received or retries are exhausted.
 /// When addressed messages are collected by the application (by recvfromAck()), 
-/// an acknowledgement is automatically sent.
+/// an acknowledgement is automatically sent to the sender.
 ///
 /// The retransmit timeout is randomly varied between timeout and timeout*2 to prevent collisions on all
 /// retries when 2 nodes happen to start sending at the same time .
@@ -47,6 +47,7 @@
 /// retries, the transmissions is deemed to have failed.
 /// No contention for media is detected.
 /// This will be recognised as "pure ALOHA". 
+/// The addition of Clear Channel Assessment (CCA) is desirable and planned.
 ///
 /// There is no message queuing or threading in RHReliableDatagram. 
 /// sendtoWait() waits until an acknowledgement is received, retransmitting
@@ -56,7 +57,7 @@
 /// until an acknowledgement is received or the retries are exhausted. 
 /// Central server-type sketches should be very cautious about their
 /// retransmit strategy and configuration lest they hang for a long time
-/// up trying to reply to clients that are unreachable.
+/// trying to reply to clients that are unreachable.
 class RHReliableDatagram : public RHDatagram
 {
 public:
@@ -128,9 +129,13 @@ public:
     bool recvfromAckTimeout(uint8_t* buf, uint8_t* len,  uint16_t timeout, uint8_t* from = NULL, uint8_t* to = NULL, uint8_t* id = NULL, uint8_t* flags = NULL);
 
     /// Returns the number of retransmissions 
-    /// we have had to send
+    /// we have had to send since starting or since the last call to resetRetransmissions().
     /// \return The number of retransmissions since initialisation.
-    uint16_t retransmissions();
+    uint32_t retransmissions();
+
+    /// Resets the count of the number of retransmissions 
+    /// to 0. 
+    void resetRetransmissions(); 
 
 protected:
     /// Send an ACK for the message id to the given from address
@@ -144,7 +149,7 @@ protected:
 
 private:
     /// Count of retransmissions we have had to send
-    uint16_t _retransmissions;
+    uint32_t _retransmissions;
 
     /// The last sequence number to be used
     /// Defaults to 0
