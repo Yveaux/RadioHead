@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.19.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.20.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -333,6 +333,9 @@
 ///              Added examples ask_transmitter.pde and ask_receiver.pde.<br>
 ///              Fixed an error in the RH_RF22 doc for connection of Teensy to RF22.<br>
 ///              Improved documentation of start symbol bit patterns in RH_ASK.cpp
+/// \version 1.20 2014-06-24<br>
+///              Fixed a problem with compiling on platforms such as ATTiny where SS is not defined.<br>
+///              Added YIELD to RHMesh::recvfromAckTimeout().<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -341,7 +344,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 19
+#define RH_VERSION_MINOR 20
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
@@ -396,10 +399,6 @@
  #define PROGMEM
  #define memcpy_P memcpy
  #define Serial SerialUSB
- // Slave select pin
- #ifndef SS
-  #define SS 10
- #endif
 
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) 
  #include <avr/io.h>
@@ -480,6 +479,10 @@
  #endif
 #endif
 
+// Slave select pin, some platforms such as ATTiny do not define it.
+#ifndef SS
+ #define SS 10
+#endif
 
 // These defs cause trouble on some versions of Arduino
 #undef abs

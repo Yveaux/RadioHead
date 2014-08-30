@@ -224,6 +224,7 @@ bool RHMesh::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, ui
     {
 	if (recvfromAck(buf, len, from, to, id, flags))
 	    return true;
+	YIELD;
     }
     return false;
 }
