@@ -34,6 +34,9 @@ static uint8_t symbols[] =
     0x23, 0x25, 0x26, 0x29, 0x2a, 0x2c, 0x32, 0x34
 };
 
+// This is the value of the start symbol after 6-bit conversion and nybble swapping
+#define RH_ASK_START_SYMBOL 0xb38
+
 RH_ASK::RH_ASK(uint16_t speed, uint8_t rxPin, uint8_t txPin, uint8_t pttPin, bool pttInverted)
     :
     _speed(speed),
@@ -43,7 +46,8 @@ RH_ASK::RH_ASK(uint16_t speed, uint8_t rxPin, uint8_t txPin, uint8_t pttPin, boo
     _pttInverted(pttInverted)
 {
     // Initialise the first 8 nibbles of the tx buffer to be the standard
-    // preamble. We will append messages after that
+    // preamble. We will append messages after that. 0x38, 0x2c is the start symbol before
+    // 6-bit conversion to RH_ASK_START_SYMBOL
     uint8_t preamble[RH_ASK_PREAMBLE_LEN] = {0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x38, 0x2c};
     memcpy(_txBuf, preamble, sizeof(preamble));
 }
@@ -544,7 +548,7 @@ void RH_ASK::validateRxBuf()
     // The CRC covers the byte count, headers and user data
     for (uint8_t i = 0; i < _rxBufLen; i++)
 	crc = _crc_ccitt_update(crc, _rxBuf[i]);
-    if (crc != 0xf0b8)
+    if (crc != 0xf0b8) // CRC when buffer and expected CRC are CRC'd
     {
 	// Reject and drop the message
 	_rxBad++;
@@ -645,7 +649,7 @@ void RH_ASK::receiveTimer()
 	    }
 	}
 	// Not in a message, see if we have a start symbol
-	else if (_rxBits == 0xb38)
+	else if (_rxBits == RH_ASK_START_SYMBOL)
 	{
 	    // Have start symbol, start collecting message
 	    _rxActive = true;

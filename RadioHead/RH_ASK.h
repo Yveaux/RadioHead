@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.7 2014/05/30 19:30:54 mikem Exp mikem $
+// $Id: RH_ASK.h,v 1.8 2014/06/02 20:43:24 mikem Exp mikem $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -315,5 +315,6 @@ protected:
 
 /// @example ask_reliable_datagram_client.pde
 /// @example ask_reliable_datagram_server.pde
-
+/// @example ask_transmitter.pde
+/// @example ask_receiver.pde
 #endif

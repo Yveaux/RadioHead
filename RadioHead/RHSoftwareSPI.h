@@ -25,7 +25,12 @@
 /// #include <RHSoftwareSPI.h>
 /// RHSoftwareSPI spi;
 /// RH_RF22 driver(SS, 2, spi);
-/// RHReliableDatagram(driver, CLIENT_ADDRES);
+/// RHReliableDatagram(driver, CLIENT_ADDRESS);
+/// void setup()
+/// {
+///    spi.setPins(6, 5, 7); // Or whatever SPI pins you need
+///    ....
+/// }
 /// \endcode
 class RHSoftwareSPI : public RHGenericSPI 
 {

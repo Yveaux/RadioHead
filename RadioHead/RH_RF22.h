@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.20 2014/05/30 19:30:54 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.21 2014/06/02 20:43:24 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -551,11 +551,11 @@
 /// \endcode
 /// For Teensy 3.1
 /// \code
-///                 Arduino      RFM-22B
+///                 Teensy      RFM-22B
 ///                 GND----------GND-\ (ground in)
 ///                              SDN-/ (shutdown in)
 ///                 3V3----------VCC   (3.3V in)
-/// interrupt 0 pin D0-----------NIRQ  (interrupt request out)
+/// interrupt 2 pin D2-----------NIRQ  (interrupt request out)
 ///          SS pin D10----------NSEL  (chip select in)
 ///         SCK pin D13----------SCK   (SPI clock in)
 ///        MOSI pin D11----------SDI   (SPI Data in)

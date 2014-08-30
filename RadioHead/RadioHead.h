@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.25 2014/05/30 19:30:54 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.26 2014/06/02 20:43:24 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.18.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.19.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -329,6 +329,10 @@
 /// \version 1.18 2014-06-02<br>
 ///              Improvements to performance of RH_NRF24 statusRead, allowing RH_NRF24 and Software SPI
 ///              to operate on slow devices like Arduino Uno.<br>
+/// \version 1.19 2014-06-19<br>
+///              Added examples ask_transmitter.pde and ask_receiver.pde.<br>
+///              Fixed an error in the RH_RF22 doc for connection of Teensy to RF22.<br>
+///              Improved documentation of start symbol bit patterns in RH_ASK.cpp
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -337,7 +341,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 18
+#define RH_VERSION_MINOR 19
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1

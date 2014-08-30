@@ -659,7 +659,7 @@ public:
     void           setTxPower(int8_t power);
 
     /// Sets all the registered required to configure the data modem in the RF69, including the data rate, 
-    /// bandwidths etc. You cas use this to configure the modem with custom configurations if none of the 
+    /// bandwidths etc. You can use this to configure the modem with custom configurations if none of the 
     /// canned configurations in ModemConfigChoice suit you.
     /// \param[in] config A ModemConfig structure containing values for the modem configuration registers.
     void           setModemRegisters(const ModemConfig* config);
