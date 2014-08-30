@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.11 2014/06/24 02:40:12 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.12 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -320,6 +320,8 @@ void RH_ASK::setModeTx()
 // Call this often
 bool RH_ASK::available()
 {
+    if (_mode == RHModeTx)
+	return false;
     setModeRx();
     if (_rxBufFull)
     {

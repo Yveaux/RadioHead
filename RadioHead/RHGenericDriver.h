@@ -1,7 +1,7 @@
 // RHGenericDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.h,v 1.10 2014/05/23 02:20:17 mikem Exp $
+// $Id: RHGenericDriver.h,v 1.12 2014/07/23 09:40:42 mikem Exp mikem $
 
 #ifndef RHGenericDriver_h
 #define RHGenericDriver_h
@@ -60,12 +60,11 @@ public:
 
     /// Tests whether a new message is available
     /// from the Driver. 
-    /// On most drivers, this will also put the Driver into RHModeRx mode until
-    /// a message is actually received bythe transport, when it wil be returned to RHModeIdle.
+    /// On most drivers, if there is an uncollected received message, and there is no message
+    /// currently bing transmitted, this will also put the Driver into RHModeRx mode until
+    /// a message is actually received by the transport, when it will be returned to RHModeIdle.
     /// This can be called multiple times in a timeout loop.
-    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
-    /// use waitPacketSent() first.
-    /// \return true if a new, complete, error-free uncollected message is available to be retreived by recv()
+    /// \return true if a new, complete, error-free uncollected message is available to be retreived by recv().
     virtual bool available() = 0;
 
     /// Turns the receiver on if it not already on.
@@ -74,8 +73,6 @@ public:
     /// If a message is copied, *len is set to the length (Caution, 0 length messages are permitted).
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
-    /// Caution: terminates any transmit that is currently occurring. If you dont want this to happen, 
-    /// use waitPacketSent() first.
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Pointer to available space in buf. Set to the actual number of octets copied.
     /// \return true if a valid message was copied to buf

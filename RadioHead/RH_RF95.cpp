@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.1 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RH_RF95.cpp,v 1.3 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -185,6 +185,8 @@ void RH_RF95::validateRxBuf()
 
 bool RH_RF95::available()
 {
+    if (_mode == RHModeTx)
+	return false;
     setModeRx();
     return _rxBufValid; // Will be set by the interrupt handler when a good message is received
 }

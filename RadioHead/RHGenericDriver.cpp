@@ -1,7 +1,7 @@
 // RHGenericDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.cpp,v 1.11 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RHGenericDriver.cpp,v 1.13 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RHGenericDriver.h>
 
@@ -92,8 +92,8 @@ void RHGenericDriver::setHeaderId(uint8_t id)
 
 void RHGenericDriver::setHeaderFlags(uint8_t set, uint8_t clear)
 {
-    _txHeaderFlags |= set;
     _txHeaderFlags &= ~clear;
+    _txHeaderFlags |= set;
 }
 
 uint8_t RHGenericDriver::headerTo()

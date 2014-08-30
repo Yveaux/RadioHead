@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.1 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RH_RF95.h,v 1.3 2014/07/23 09:40:42 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h
@@ -497,7 +497,7 @@ public:
 
     /// Sets the transmitter and receiver 
     /// centre frequency
-    /// \param[in] centre Frequency in MHz. 137.0 to 1020.0. Caution,RFM95/96/97/98 comes in several
+    /// \param[in] centre Frequency in MHz. 137.0 to 1020.0. Caution: RFM95/96/97/98 comes in several
     /// different frequency ranges, and setting a frequency outside that range of your radio will probably not work
     /// \return true if the selected frquency centre is within range
     bool        setFrequency(float centre);

@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.30 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.32 2014/07/23 09:40:42 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.24.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.25.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -362,11 +362,19 @@
 ///              was not very reliable.<br>
 ///              Documented RH_RF95 range tests.<br>
 ///              Improvements to RH_RF22 RSSI readings so that lastRssi correctly returns the last message in dBm.<br>
-/// \version 1.24 ????
+/// \version 1.24 2014-07-18
 ///              Added support for building RadioHead for STM32F4 Discovery boards, using the native STM Firmware libraries,
 ///              in order to support Codec2WalkieTalkie (http://www.airspayce.com/mikem/Codec2WalkieTalkie)
 ///              and other projects. See STM32ArduinoCompat.<br>
 ///              Default modulation for RH_RF95 was incorrectly set to a very slow Bw125Cr48Sf4096
+/// \version 1.25 2014-07-25
+///              The available() function will longer terminate any current transmission, and force receive mode. 
+///              Now, if there is no unprocessed incoming message abd an outgoing message is currently being transmitted, 
+///              available() will return false.<br>
+///              RHRouter::sendtoWait(uint8_t*, uint8_t, uint8_t, uint8_t) renamed to sendtoFromSourceWait due to conflicts
+///              with new sendtoWait() with optional flags.<br>
+///              RHMEsh and RHRouter already supported end-to-end application layer flags, but RHMesh::sendtoWait() 
+///              and RHRouter::sendToWait have now been extended to expose a way to send optional application layer flags.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -375,7 +383,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 24
+#define RH_VERSION_MINOR 25
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1

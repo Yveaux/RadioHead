@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.13 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RH_NRF24.cpp,v 1.15 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_NRF24.h>
 
@@ -248,6 +248,8 @@ bool RH_NRF24::available()
 {
     if (!_rxBufValid)
     {
+	if (_mode == RHModeTx)
+	    return false;
 	setModeRx();
 	if (spiReadRegister(RH_NRF24_REG_17_FIFO_STATUS) & RH_NRF24_RX_EMPTY)
 	    return false;

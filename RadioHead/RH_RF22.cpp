@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.17 2014/05/30 19:30:54 mikem Exp $
+// $Id: RH_RF22.cpp,v 1.19 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_RF22.h>
 
@@ -505,7 +505,11 @@ void RH_RF22::clearRxBuf()
 bool RH_RF22::available()
 {
     if (!_rxBufValid)
+    {
+	if (_mode == RHModeTx)
+	    return false;
 	setModeRx(); // Make sure we are receiving
+    }
     return _rxBufValid;
 }
 

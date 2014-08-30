@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.cpp,v 1.5 2014/06/24 00:12:57 mikem Exp $
+// $Id: RHMesh.cpp,v 1.6 2014/07/23 07:49:42 mikem Exp $
 
 #include <RHMesh.h>
 
@@ -28,7 +28,7 @@ RHMesh::RHMesh(RHGenericDriver& driver, uint8_t thisAddress)
 ////////////////////////////////////////////////////////////////////
 // Discovers a route to the destination (if necessary), sends and 
 // waits for delivery to the next hop (but not for delivery to the final destination)
-uint8_t RHMesh::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
+uint8_t RHMesh::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address, uint8_t flags)
 {
     if (len > RH_MESH_MAX_MESSAGE_LEN)
 	return RH_ROUTER_ERROR_INVALID_LENGTH;
@@ -44,7 +44,7 @@ uint8_t RHMesh::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
     MeshApplicationMessage* a = (MeshApplicationMessage*)&_tmpMessage;
     a->header.msgType = RH_MESH_MESSAGE_TYPE_APPLICATION;
     memcpy(a->data, buf, len);
-    return RHRouter::sendtoWait(_tmpMessage, sizeof(RHMesh::MeshMessageHeader) + len, address);
+    return RHRouter::sendtoWait(_tmpMessage, sizeof(RHMesh::MeshMessageHeader) + len, address, flags);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 		tmpMessageLen++;
 		// Have to impersonate the source
 		// REVISIT: if this fails what can we do?
-		RHRouter::sendtoWait(_tmpMessage, tmpMessageLen, RH_BROADCAST_ADDRESS, _source);
+		RHRouter::sendtoFromSourceWait(_tmpMessage, tmpMessageLen, RH_BROADCAST_ADDRESS, _source);
 	    }
 	}
     }

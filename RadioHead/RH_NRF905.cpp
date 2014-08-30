@@ -1,7 +1,7 @@
 // RH_NRF905.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF905.cpp,v 1.2 2014/05/03 00:20:36 mikem Exp $
+// $Id: RH_NRF905.cpp,v 1.3 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_NRF905.h>
 
@@ -213,6 +213,8 @@ bool RH_NRF905::available()
 {
     if (!_rxBufValid)
     {
+	if (_mode == RHModeTx)
+	    return false;
 	setModeRx();
 	if (!(statusRead() & RH_NRF905_STATUS_DR))
 	    return false;

@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.14 2014/07/01 01:23:58 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.16 2014/07/23 09:40:42 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -415,6 +415,8 @@ void RH_RF69::setEncryptionKey(uint8_t* key)
 
 bool RH_RF69::available()
 {
+    if (_mode == RHModeTx)
+	return false;
     setModeRx(); // Make sure we are receiving
     return _rxBufValid;
 }
