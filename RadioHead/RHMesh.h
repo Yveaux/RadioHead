@@ -144,7 +144,8 @@ public:
     /// (but not from the destination node (if that is different).
     /// \param [in] buf The application message data
     /// \param [in] len Number of octets in the application message data. 0 is permitted
-    /// \param [in] dest The destination node address
+    /// \param [in] dest The destination node address. If the address is RH_BROADCAST_ADDRESS (255)
+    /// the message will be broadcast to all the nearby nodes, but not routed or relayed.
     /// \return The result code:
     ///         - RH_ROUTER_ERROR_NONE Message was routed and delivered to the next hop 
     ///           (not necessarily to the final dest address)

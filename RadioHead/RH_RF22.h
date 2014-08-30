@@ -1001,7 +1001,8 @@ public:
     /// \return true if the selected frquency centre + (fhch * fhs) is within range
     bool        setFHChannel(uint8_t fhch);
 
-    /// Reads and returns the current RSSI value from register RH_RF22_REG_26_RSSI. If you want to find the RSSI
+    /// Reads and returns the current RSSI value from register RH_RF22_REG_26_RSSI. Caution: this is
+    /// in internal units (see figure 31 of RFM22B/23B documentation), not in dBm. If you want to find the RSSI in dBm
     /// of the last received message, use lastRssi() instead.
     /// \return The current RSSI value 
     uint8_t        rssiRead();

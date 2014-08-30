@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.3 2014/06/29 06:32:36 mikem Exp mikem $
+// $Id: RH_RF95.h,v 1.1 2014/07/01 01:23:58 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h
@@ -239,7 +239,7 @@
 /// Up to 2 RFM95/96/97/98(W) modules can be connected to an Arduino (3 on a Mega),
 /// permitting the construction of translators and frequency changers, etc.
 ///
-/// Support for other RF69 features such as transmitter power control etc is
+/// Support for other features such as transmitter power control etc is
 /// also provided.
 ///
 /// Tested on MinWirelessLoRa with arduino-1.0.5
@@ -265,8 +265,8 @@
 /// If you have a bare RFM95/96/97/98  that you want to connect to an Arduino, you
 /// might use these connections (untested): CAUTION: you must use a 3.3V type
 /// Arduino, otherwise you will also need voltage level shifters between the
-/// Arduino and the RFM69.  CAUTION, you must also ensure you connect an
-/// antenna
+/// Arduino and the RFM95.  CAUTION, you must also ensure you connect an
+/// antenna.
 /// 
 /// \code
 ///                 Arduino      RFM95/96/97/98
@@ -301,10 +301,10 @@
 /// give 50mA. You may need to make provision for alternate power supply for
 /// the RFM module, especially if you wish to use full transmit power, and/or you have
 /// other shields demanding power. Inadequate power for the RFM is likely to cause symptoms such as:
-/// -reset's/bootups terminate with "init failed" messages
-/// -random termination of communication after 5-30 packets sent/received
-/// -"fake ok" state, where initialization passes fluently, but communication doesn't happen
-/// -shields hang Arduino boards, especially during the flashing
+/// - reset's/bootups terminate with "init failed" messages
+/// - random termination of communication after 5-30 packets sent/received
+/// - "fake ok" state, where initialization passes fluently, but communication doesn't happen
+/// - shields hang Arduino boards, especially during the flashing
 ///
 /// \par Interrupts
 ///
@@ -339,9 +339,15 @@
 /// - rf95_server mobile connected to 17.3cm 1/4 wavelength antenna at 1m height, no ground plane.
 /// - Both configured for 13dBm, 434MHz, Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, CRC on. Slow+long range
 /// - Minimum reported RSSI seen for successful comms was about -91
-/// - Range over flat ground through heavy trees and vegetation exceeded 2km.
+/// - Range over flat ground through heavy trees and vegetation approx 2km.
+/// - At 20dBm (100mW) otherwise identical conditions approx 3km.
+/// - At 20dBm, along salt water flat sandy beach, 3.2km.
 ///
 /// It should be noted that at this data rate, a 12 octet message takes 2 seconds to transmit.
+///
+/// At 20dBm (100mW) with Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. 
+/// (Default medium range) in the conditions described above.
+/// - Range over flat ground through heavy trees and vegetation approx 2km.
 /// 
 /// \par Transmitter Power
 ///
@@ -516,7 +522,7 @@ public:
     void           setTxPower(int8_t power);
 
 protected:
-    /// This is a low level function to handle the interrupts for one instance of RF69.
+    /// This is a low level function to handle the interrupts for one instance of RH_RF95.
     /// Called automatically by isr*()
     /// Should not need to be called by user code.
     void           handleInterrupt();

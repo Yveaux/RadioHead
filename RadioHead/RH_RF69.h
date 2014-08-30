@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.18 2014/06/24 00:12:57 mikem Exp $
+// $Id: RH_RF69.h,v 1.19 2014/07/01 01:23:58 mikem Exp mikem $
 //
 ///
 
@@ -666,7 +666,7 @@ public:
     void           setModemRegisters(const ModemConfig* config);
 
     /// Select one of the predefined modem configurations. If you need a modem configuration not provided 
-    /// here, use setModemRegisters() with your own ModemConfig.
+    /// here, use setModemRegisters() with your own ModemConfig. The default after init() is RH_RF69::GFSK_Rb250Fd250.
     /// \param[in] index The configuration choice.
     /// \return true if index is a valid choice.
     bool        setModemConfig(ModemConfigChoice index);

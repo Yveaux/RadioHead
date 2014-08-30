@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.13 2014/05/30 19:30:54 mikem Exp $
+// $Id: RH_RF69.cpp,v 1.14 2014/07/01 01:23:58 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -135,8 +135,8 @@ bool RH_RF69::init()
     // Set up default configuration
     uint8_t syncwords[] = { 0x2d, 0xd4 };
     setSyncWords(syncwords, sizeof(syncwords)); // Same as RF22's
-    // Some slow, reliable default speed and modulation
-    setModemConfig(FSK_Rb2Fd5);
+    // Reasnably fast and reliable default speed and modulation
+    setModemConfig(GFSK_Rb250Fd250);
     // 3 would be sufficient, but this is the same as RF22's
     setPreambleLength(4);
     // An innocuous ISM frequency, same as RF22's

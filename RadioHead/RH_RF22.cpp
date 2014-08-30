@@ -271,7 +271,7 @@ void RH_RF22::handleInterrupt()
     if (_lastInterruptFlags[1] & RH_RF22_IPREAVAL)
     {
 //	Serial.println("IPREAVAL");  
-	_lastRssi = (int8_t)(-(spiRead(RH_RF22_REG_26_RSSI) / 2));
+	_lastRssi = (int8_t)(-120 + ((spiRead(RH_RF22_REG_26_RSSI) / 2)));
 	_lastPreambleTime = millis();
 	resetRxFifo();
 	clearRxBuf();

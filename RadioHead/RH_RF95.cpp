@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.2 2014/06/29 06:32:36 mikem Exp mikem $
+// $Id: RH_RF95.cpp,v 1.1 2014/07/01 01:23:58 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -90,13 +90,14 @@ bool RH_RF95::init()
 
     // Set up default configuration
     // No Sync Words in LORA mode.
-    setModemConfig(Bw125Cr45Sf128); // Radio default
-//    setModemConfig(Bw125Cr48Sf4096);
+//    setModemConfig(Bw125Cr45Sf128); // Radio default
+    setModemConfig(Bw125Cr48Sf4096);
     setPreambleLength(8); // Default is 8
     // An innocuous ISM frequency, same as RF22's
     setFrequency(434.0);
     // Lowish power
-    setTxPower(13);
+//    setTxPower(13);
+    setTxPower(20);
 
     return true;
 }

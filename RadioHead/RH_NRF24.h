@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.9 2014/06/02 20:43:24 mikem Exp $
+// $Id: RH_NRF24.h,v 1.10 2014/07/01 01:23:58 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -390,10 +390,12 @@ public:
 	TransmitPowerm6dBm,             ///< On nRF24, -6 dBm
 	TransmitPower0dBm,              ///< On nRF24, 0 dBm
 	// Sigh, different power levels for the same bit patterns on RFM73:
+	// On RFM73P-S, there is a Tx power amp, so expect higher power levels, up to 20dBm. Alas
+	// there is no clear documentation on the power for different settings :-(
 	RFM73TransmitPowerm10dBm = 0,   ///< On RFM73, -10 dBm
 	RFM73TransmitPowerm5dBm,        ///< On RFM73, -5 dBm
 	RFM73TransmitPowerm0dBm,        ///< On RFM73, 0 dBm
-	RFM73TransmitPower5dBm          ///< On RFM73, 5 dBm
+	RFM73TransmitPower5dBm          ///< On RFM73, 5 dBm. 20dBm on RFM73P-S2 ?
 
     } TransmitPower;
 

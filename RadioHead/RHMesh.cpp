@@ -33,11 +33,14 @@ uint8_t RHMesh::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
     if (len > RH_MESH_MAX_MESSAGE_LEN)
 	return RH_ROUTER_ERROR_INVALID_LENGTH;
 
-    RoutingTableEntry* route = getRouteTo(address);
-    if (!route && !doArp(address))
-	return RH_ROUTER_ERROR_NO_ROUTE;
+    if (address != RH_BROADCAST_ADDRESS)
+    {
+	RoutingTableEntry* route = getRouteTo(address);
+	if (!route && !doArp(address))
+	    return RH_ROUTER_ERROR_NO_ROUTE;
+    }
 
-    // Now have a route. Contruct an applicaiotn layer message and dend it via that route
+    // Now have a route. Contruct an application layer message and send it via that route
     MeshApplicationMessage* a = (MeshApplicationMessage*)&_tmpMessage;
     a->header.msgType = RH_MESH_MESSAGE_TYPE_APPLICATION;
     memcpy(a->data, buf, len);

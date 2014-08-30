@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.29 2014/06/24 02:40:12 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.30 2014/07/01 01:23:58 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.22.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.23.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -357,6 +357,11 @@
 ///              Added support for Semtech SX1276/77/78 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios
 ///              in LoRa mode only. Tested with the excellent MiniWirelessLoRa from 
 ///              Anarduino http://www.anarduino.com/miniwireless<br>
+/// \version 1.23 2014-07-03<br>
+///              Changed the default modulation for RH_RF69 to GFSK_Rb250Fd250, since the previous default
+///              was not very reliable.<br>
+///              Documented RH_RF95 range tests.<br>
+///              Improvements to RH_RF22 RSSI readings so that lastRssi correctly returns the last message in dBm.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -365,7 +370,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 22
+#define RH_VERSION_MINOR 23
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1
