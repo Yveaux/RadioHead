@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.12 2014/06/03 20:58:28 mikem Exp mikem $
+// $Id: RH_NRF24.cpp,v 1.12 2014/06/03 20:58:28 mikem Exp $
 
 #include <RH_NRF24.h>
 

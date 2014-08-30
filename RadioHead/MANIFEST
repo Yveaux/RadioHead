@@ -5,6 +5,8 @@ RadioHead/project.cfg
 RadioHead/RadioHead.h
 RadioHead/RH_ASK.cpp
 RadioHead/RH_ASK.h
+RadioHead/RHCRC.cpp
+RadioHead/RHCRC.h
 RadioHead/RHDatagram.cpp
 RadioHead/RHDatagram.h
 RadioHead/RHGenericDriver.cpp
@@ -39,7 +41,6 @@ RadioHead/RHTcpProtocol.h
 RadioHead/RHNRFSPIDriver.cpp
 RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
-RadioHead/RHutil/crc16.h
 RadioHead/RHutil/atomic.h
 RadioHead/RHutil/simulator.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde

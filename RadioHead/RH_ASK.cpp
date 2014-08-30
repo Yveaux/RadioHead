@@ -1,16 +1,10 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.9 2014/05/08 22:56:52 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.10 2014/06/24 00:12:57 mikem Exp $
 
 #include <RH_ASK.h>
-
-// Arduino 1.0 includes crc16.h, so use it else can get clashes with other libraries
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (ARDUINO >= 100) && !defined(__arm__)
- #include <util/crc16.h>
-#else
- #include <RHutil/crc16.h>
-#endif
+#include <RHCRC.h>
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
@@ -370,21 +364,21 @@ bool RH_ASK::send(const uint8_t* data, uint8_t len)
     waitPacketSent();
 
     // Encode the message length
-    crc = _crc_ccitt_update(crc, count);
+    crc = RHcrc_ccitt_update(crc, count);
     p[index++] = symbols[count >> 4];
     p[index++] = symbols[count & 0xf];
 
     // Encode the headers
-    crc = _crc_ccitt_update(crc, _txHeaderTo);
+    crc = RHcrc_ccitt_update(crc, _txHeaderTo);
     p[index++] = symbols[_txHeaderTo >> 4];
     p[index++] = symbols[_txHeaderTo & 0xf];
-    crc = _crc_ccitt_update(crc, _txHeaderFrom);
+    crc = RHcrc_ccitt_update(crc, _txHeaderFrom);
     p[index++] = symbols[_txHeaderFrom >> 4];
     p[index++] = symbols[_txHeaderFrom & 0xf];
-    crc = _crc_ccitt_update(crc, _txHeaderId);
+    crc = RHcrc_ccitt_update(crc, _txHeaderId);
     p[index++] = symbols[_txHeaderId >> 4];
     p[index++] = symbols[_txHeaderId & 0xf];
-    crc = _crc_ccitt_update(crc, _txHeaderFlags);
+    crc = RHcrc_ccitt_update(crc, _txHeaderFlags);
     p[index++] = symbols[_txHeaderFlags >> 4];
     p[index++] = symbols[_txHeaderFlags & 0xf];
 
@@ -392,7 +386,7 @@ bool RH_ASK::send(const uint8_t* data, uint8_t len)
     // 2 6-bit symbols, high nybble first, low nybble second
     for (i = 0; i < len; i++)
     {
-	crc = _crc_ccitt_update(crc, data[i]);
+	crc = RHcrc_ccitt_update(crc, data[i]);
 	p[index++] = symbols[data[i] >> 4];
 	p[index++] = symbols[data[i] & 0xf];
     }
@@ -547,7 +541,7 @@ void RH_ASK::validateRxBuf()
     uint16_t crc = 0xffff;
     // The CRC covers the byte count, headers and user data
     for (uint8_t i = 0; i < _rxBufLen; i++)
-	crc = _crc_ccitt_update(crc, _rxBuf[i]);
+	crc = RHcrc_ccitt_update(crc, _rxBuf[i]);
     if (crc != 0xf0b8) // CRC when buffer and expected CRC are CRC'd
     {
 	// Reject and drop the message

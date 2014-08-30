@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.26 2014/06/02 20:43:24 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.28 2014/06/24 00:20:33 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.20.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.21.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -336,6 +336,12 @@
 /// \version 1.20 2014-06-24<br>
 ///              Fixed a problem with compiling on platforms such as ATTiny where SS is not defined.<br>
 ///              Added YIELD to RHMesh::recvfromAckTimeout().<br>
+/// \version 1.21 2014-06-24<br>
+///              Fixed an issue in RH_Serial where characters might be lost with back-to-back frames.
+///              Suggested by Steve Childress.<br>
+///              Brought previous RHutil/crc16.h code into mainline RHCRC.cpp to prevent name collisions
+///              with other similarly named code in other libraries. Suggested by Steve Childress.<br>
+///              Fix SPI bus speed errors on 8MHz Arduinos.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -344,7 +350,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 20
+#define RH_VERSION_MINOR 21
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1

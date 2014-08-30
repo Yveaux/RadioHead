@@ -1,7 +1,7 @@
 // RH_TCP.h
 // Author: Mike McCauley (mikem@aierspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_TCP.h,v 1.3 2014/05/30 19:30:54 mikem Exp mikem $
+// $Id: RH_TCP.h,v 1.3 2014/05/30 19:30:54 mikem Exp $
 #ifndef RH_TCP_h
 #define RH_TCP_h
 

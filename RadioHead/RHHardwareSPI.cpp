@@ -2,7 +2,7 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
 // Contributed by Joanna Rutkowska
-// $Id: RHHardwareSPI.cpp,v 1.8 2014/05/03 00:20:36 mikem Exp mikem $
+// $Id: RHHardwareSPI.cpp,v 1.8 2014/05/03 00:20:36 mikem Exp $
 
 #include <RHHardwareSPI.h>
 
@@ -90,23 +90,35 @@ void RHHardwareSPI::begin()
     {
 	case Frequency1MHz:
 	default:
+#if F_CPU == 8000000
+	    divider = SPI_CLOCK_DIV8;
+#else
 	    divider = SPI_CLOCK_DIV16;
+#endif
 	    break;
 
 	case Frequency2MHz:
+#if F_CPU == 8000000
+	    divider = SPI_CLOCK_DIV4;
+#else
 	    divider = SPI_CLOCK_DIV8;
+#endif
 	    break;
 
 	case Frequency4MHz:
+#if F_CPU == 8000000
+	    divider = SPI_CLOCK_DIV2;
+#else
 	    divider = SPI_CLOCK_DIV4;
+#endif
 	    break;
 
 	case Frequency8MHz:
-	    divider = SPI_CLOCK_DIV2;
+	    divider = SPI_CLOCK_DIV2; // 4MHz on an 8MHz Arduino
 	    break;
 
 	case Frequency16MHz:
-	    divider = SPI_CLOCK_DIV2; // Not really 16MHz, only 8
+	    divider = SPI_CLOCK_DIV2; // Not really 16MHz, only 8MHz. 4MHz on an 8MHz Arduino
 	    break;
 
     }
