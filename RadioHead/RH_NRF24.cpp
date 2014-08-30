@@ -16,6 +16,7 @@ RH_NRF24::RH_NRF24(uint8_t chipEnablePin, uint8_t slaveSelectPin, RHGenericSPI& 
 bool RH_NRF24::init()
 {
 #if defined (__MK20DX128__) || defined (__MK20DX256__)
+    // Teensy is unreliable at 8MHz:
     _spi.setFrequency(RHGenericSPI::Frequency1MHz);
 #else
     _spi.setFrequency(RHGenericSPI::Frequency8MHz);

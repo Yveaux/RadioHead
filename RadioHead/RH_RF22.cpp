@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.14 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RH_RF22.cpp,v 1.14 2014/04/29 12:18:27 mikem Exp $
 
 #include <RH_RF22.h>
 
@@ -70,6 +70,11 @@ bool RH_RF22::init()
     if (!RHSPIDriver::init())
 	return false;
 
+    // Determine the interrupt number that corresponds to the interruptPin
+    int interruptNumber = digitalPinToInterrupt(_interruptPin);
+    if (interruptNumber == NOT_AN_INTERRUPT)
+	return false;
+
     // Software reset the device
     reset();
 
@@ -83,10 +88,9 @@ bool RH_RF22::init()
     }
 
     // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
-#if defined (__MK20DX128__) || defined (__MK20DX256__)
     // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    // On all other platforms, its innocuous, belt and braces
     pinMode(_interruptPin, INPUT); 
-#endif
 
     // Enable interrupt output on the radio. Interrupt line will now go high until
     // an interrupt occurs
@@ -101,11 +105,11 @@ bool RH_RF22::init()
     // yourself based on knowledge of what Arduino board you are running on.
     _deviceForInterrupt[_interruptCount] = this;
     if (_interruptCount == 0)
-	attachInterrupt(_interruptPin, isr0, FALLING);
+	attachInterrupt(interruptNumber, isr0, FALLING);
     else if (_interruptCount == 1)
-	attachInterrupt(_interruptPin, isr1, FALLING);
+	attachInterrupt(interruptNumber, isr1, FALLING);
     else if (_interruptCount == 2)
-	attachInterrupt(_interruptPin, isr2, FALLING);
+	attachInterrupt(interruptNumber, isr2, FALLING);
     else
 	return false; // Too many devices, not enough interrupt vectors
     _interruptCount++;

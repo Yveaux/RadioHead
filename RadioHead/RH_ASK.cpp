@@ -1,18 +1,13 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.7 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.7 2014/04/29 12:18:27 mikem Exp $
 
 #include <RH_ASK.h>
 
 // Arduino 1.0 includes crc16.h, so use it else can get clashes with other libraries
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (ARDUINO >= 100)
- #if defined (__MK20DX128__) || defined (__MK20DX256__)
-  // Teensyduino for Arduino 1.0.5 does not have crc16.h
-  #include <RHutil/crc16.h>
- #else
-  #include <util/crc16.h>
- #endif
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (ARDUINO >= 100) && !defined(__arm__)
+ #include <util/crc16.h>
 #else
  #include <RHutil/crc16.h>
 #endif
@@ -176,13 +171,35 @@ void RH_ASK::timerSetup()
     // Set mask to fire interrupt when OCF0A bit is set in TIFR0
     TIMSK |= _BV(OCIE0A);
 
- #elif defined(__arm__) && defined(CORE_TEENSY)
+ #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(CORE_TEENSY)
     // on Teensy 3.0 (32 bit ARM), use an interval timer
     IntervalTimer *t = new IntervalTimer();
     void TIMER1_COMPA_vect(void);
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
- #else // ARDUINO
+ #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__)
+    // Arduino Due
+    // Due has 9 timers in 3 blocks of 3.
+    // We use timer 1 TC1_IRQn on TC0 channel 1, since timers 0, 2, 3, 4, 5 are used by the Servo library
+    #define RH_ASK_DUE_TIMER TC0
+    #define RH_ASK_DUE_TIMER_CHANNEL 1
+    #define RH_ASK_DUE_TIMER_IRQ TC1_IRQn
+    pmc_set_writeprotect(false);
+    pmc_enable_periph_clk(RH_ASK_DUE_TIMER_IRQ);
+    
+    // Clock speed 4 can handle all reasonable _speeds we might ask for. Its divisor is 128
+    // and we want 8 interrupts per bit
+    uint32_t rc = (VARIANT_MCK / _speed) / 128 / 8;
+    TC_Configure(RH_ASK_DUE_TIMER, RH_ASK_DUE_TIMER_CHANNEL, 
+		 TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK4);
+    TC_SetRC(RH_ASK_DUE_TIMER, RH_ASK_DUE_TIMER_CHANNEL, rc);
+    // Enable the RC Compare Interrupt
+    RH_ASK_DUE_TIMER->TC_CHANNEL[RH_ASK_DUE_TIMER_CHANNEL].TC_IER = TC_IER_CPCS;
+    NVIC_ClearPendingIRQ(RH_ASK_DUE_TIMER_IRQ);
+    NVIC_EnableIRQ(RH_ASK_DUE_TIMER_IRQ);
+    TC_Start(RH_ASK_DUE_TIMER, RH_ASK_DUE_TIMER_CHANNEL);
+
+ #else
     // This is the path for most Arduinos
     // figure out prescaler value and counter match value
     prescaler = timerCalc(_speed, (uint16_t)-1, &nticks);    
@@ -416,9 +433,17 @@ uint8_t RH_ASK::maxMessageLength()
  #define RH_ASK_TIMER_VECTOR _COMB(TIMER,RH_ASK_TIMER_INDEX,_COMPA_vect)
 #endif
 
-#if defined(__arm__) && defined(CORE_TEENSY)	
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(CORE_TEENSY)	
 void TIMER1_COMPA_vect(void)
 {
+    thisASKDriver->handleTimerInterrupt();
+}
+
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__)
+// Arduino Due
+void TC1_Handler()
+{
+    TC_GetStatus(TC0, 1);
     thisASKDriver->handleTimerInterrupt();
 }
 

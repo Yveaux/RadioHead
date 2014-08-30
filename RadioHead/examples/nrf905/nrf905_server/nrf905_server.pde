@@ -6,6 +6,7 @@
 // level messaging abilities.
 // It is designed to work with the other example nrf905_client
 // Tested on Teensy3.1 with nRF905 module
+// Tested on Arduino Due with nRF905 module (Caution: use the SPI headers for connecting)
 
 #include <SPI.h>
 #include <RH_NRF905.h>

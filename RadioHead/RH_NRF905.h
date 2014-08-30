@@ -1,7 +1,7 @@
 // RH_NRF905.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_NRF905.h,v 1.2 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RH_NRF905.h,v 1.3 2014/04/30 00:04:35 mikem Exp mikem $
 //
 
 #ifndef RH_NRF905_h
@@ -146,10 +146,11 @@
 ///
 /// The electrical connection between the nRF905 and the CPU require 3.3V, the 3 x SPI pins (SCK, SDI, SDO), 
 /// a Chip Enable pin, a Transmit Enable pin and a Slave Select pin.
-
-/// The examples below assume the commonly found cheap Chinese nRF905 modules
 ///
-/// Connect the nRF905 to Arduino Due or Teensy like this
+/// The examples below assume the commonly found cheap Chinese nRF905 modules. The RH_RF905 driver assumes the 
+/// the nRF905 has a 16MHz crystal.
+///
+/// Connect the nRF905 to Teensy like this
 /// \code
 ///                 CPU          nRF905 module
 ///                 3V3----------VCC   (3.3V)
@@ -162,17 +163,39 @@
 ///                 GND----------GND   (ground in)
 /// \endcode
 ///
+/// Caution: Arduino Due is a 3.3V part and is not 5V tolerant (so too is the nRF905 module
+/// so they can be connected directly together. Unlike other Arduinos the Due has it default SPI 
+/// connections on a dedicated 6 pin SPI header in the center of the board, which is 
+/// physically compatible with Uno, Leonardo and Mega2560. A little dot marks pin 1 on the header.
+/// You must connect to these
+/// and *not* to the usual Arduino SPI pins 11, 12 and 13.
+/// See http://21stdigitalhome.blogspot.com.au/2013/02/arduino-due-hardware-spi.html
+///
+/// Connect the nRF905 to Arduino Due like this
+/// \code
+///                      CPU          nRF905 module
+///                      3V3----------VCC   (3.3V)
+///                  pin D8-----------CE    (chip enable in)
+///                  pin D9-----------TX_EN (transmit enable in)
+///               SS pin D10----------CSN   (chip select in)
+///  SCK on SPI header pin 3----------SCK   (SPI clock in)
+/// MOSI on SPI header pin 4----------MOSI  (SPI Data in)
+/// MISO on SPI header pin 1----------MISO  (SPI data out)
+///                      GND----------GND   (ground in)
+/// \endcode
+///
 /// and you can then use the default constructor RH_NRF905(). 
 /// You can override the default settings for the CE, TX_EN and CSN pins 
 /// in the NRF905() constructor if you wish to connect the slave select CSN to other than the normal one for your 
 /// CPU.
 ///
 /// It is possible to have 2 radios conected to one CPU, provided each radio has its own 
-/// CSN and CE line (SCK, SDI and SDO are common to both radios)
+/// CSN, TX_EN and CE line (SCK, MOSI and MISO are common to both radios)
 ///
 /// \par Example programs
 ///
-/// Several example programs are provided. They work out opf the box with Teensy 3.1 connected as show above.
+/// Several example programs are provided. They work out of the box with Teensy 3.1 and Arduino Due 
+/// connected as show above.
 ///
 /// \par Radio Performance
 ///

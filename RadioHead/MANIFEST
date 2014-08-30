@@ -37,10 +37,9 @@ RadioHead/RHNRFSPIDriver.cpp
 RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
 RadioHead/RHutil/crc16.h
+RadioHead/RHutil/atomic.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde
 RadioHead/examples/ask/ask_reliable_datagram_server/ask_reliable_datagram_server.pde
-RadioHead/examples/maple/maple_rf22_reliable_datagram_client/maple_rf22_reliable_datagram_client.pde
-RadioHead/examples/maple/maple_rf22_reliable_datagram_server/maple_rf22_reliable_datagram_server.pde
 RadioHead/examples/rf22/rf22_client/rf22_client.pde
 RadioHead/examples/rf22/rf22_mesh_client/rf22_mesh_client.pde
 RadioHead/examples/rf22/rf22_mesh_server1/rf22_mesh_server1.pde
@@ -68,6 +67,4 @@ RadioHead/examples/nrf905/nrf905_reliable_datagram_server/nrf905_reliable_datagr
 RadioHead/examples/nrf905/nrf905_server/nrf905_server.pde
 RadioHead/examples/serial/serial_reliable_datagram_client/serial_reliable_datagram_client.pde
 RadioHead/examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.pde
-RadioHead/examples/uno32/uno32_rf22_reliable_datagram_client/uno32_rf22_reliable_datagram_client.pde
-RadioHead/examples/uno32/uno32_rf22_reliable_datagram_server/uno32_rf22_reliable_datagram_server.pde
 RadioHead/doc

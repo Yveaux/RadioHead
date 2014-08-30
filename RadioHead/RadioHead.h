@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.11 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.12 2014/04/30 00:04:35 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.6.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.7.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -229,8 +229,20 @@
 /// \version 1.5 2014-04-29<br>
 ///              Added support for Nordic Semiconductor nRF905 transceiver with RH_NRF905 driver. Also
 ///              added examples for nRF905 and tested on Teensy 3.1
-/// \version 1.5 2014-04-30<br>
-///              NRF905 edxamples were missing
+/// \version 1.6 2014-04-30<br>
+///              NRF905 examples were missing
+/// \version 1.7 2014-05-03<br>
+///              Added support for Arduino Due. Tested with RH_NRF905, RH_Serial, RH_ASK.
+///              IMPORTANT CHANGE to interrupt pins on Arduino with RH_RF22 and RH_RF69 constructors:
+///              previously, you had to specify the interrupt _number_ not hte interrupt _pin_. Arduinos and Uno32
+///              are now consistent with all other platforms: you must specify the interrupt pin number. Default
+///              changed to pin 2 (a common choice with RF22 shields).
+///              Removed examples/maple/maple_rf22_reliable_datagram_client and 
+///              examples/maple/maple_rf22_reliable_datagram_client since the rf22 examples now work out
+///              of the box with Flymaple.
+///              Removed examples/uno32/uno32_rf22_reliable_datagram_client and 
+///              examples/uno32/uno32_rf22_reliable_datagram_client since the rf22 examples now work out
+///              of the box with ChipKit Uno32.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -274,6 +286,7 @@
  #include <WProgram.h>
  #include <string.h>
  #define memcpy_P memcpy
+
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
  #include <wirish.h>	
  #include <stdint.h>
@@ -287,19 +300,25 @@
  #ifndef SS
   #define SS 10
  #endif
+
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) 
  #include <avr/io.h>
  #include <avr/interrupt.h>
  #include <util/delay.h>
  #include <string.h>
  #include <stdbool.h>
+
 #else
  #error Platform unknown!
 #endif
 
 // This is an attempt to make a portable atomic block
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
- #include <util/atomic.h>
+#if defined(__arm__)
+  #include <RHutil/atomic.h>
+ #else
+  #include <util/atomic.h>
+ #endif
  #define ATOMIC_BLOCK_START     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
  #define ATOMIC_BLOCK_END }
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
@@ -319,6 +338,42 @@
 #else
  #define YIELD
 #endif
+
+// digitalPinToInterrupt is not available prior to Arduino 1.5.6
+// See http://arduino.cc/en/Reference/attachInterrupt
+#ifndef digitalPinToInterrupt
+ #ifndef NOT_AN_INTERRUPT
+  #define NOT_AN_INTERRUPT -1
+ #endif
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && !defined(__arm__)
+
+  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  // Arduino Mega, Mega ADK, Mega Pro
+  // 2->0, 3->1, 21->2, 20->3, 19->4, 18->5
+  #define digitalPinToInterrupt(p) ((p) == 2 ? 0 : ((p) == 3 ? 1 : ((p) >= 18 && (p) <= 21 ? 23 - (p) : NOT_AN_INTERRUPT)))
+
+  #elif defined(__AVR_ATmega32U4__)
+  // Leonardo, Yun, Micro, Pro Micro, Flora, Esplora
+  // 3->0, 2->1, 0->2, 1->3, 7->4
+  #define digitalPinToInterrupt(p) ((p) == 0 ? 2 : ((p) == 1 ? 3 : ((p) == 2 ? 1 : ((p) == 3 ? 0 : ((p) == 7 ? 4 : NOT_AN_INTERRUPT)))))
+
+  #else
+  // All other arduino except Due:
+  // Serial Arduino, Extreme, NG, BT, Uno, Diecimila, Duemilanove, Nano, Menta, Pro, Mini 04, Fio, LilyPad, Ethernet etc
+  // 2->0, 3->1
+  #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p) == 3 ? 1 : NOT_AN_INTERRUPT))
+
+  #endif
+ 
+ #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+  #define digitalPinToInterrupt(p) ((p) == 38 ? 0 : ((p) == 2 ? 1 : ((p) == 7 ? 2 : ((p) == 8 ? 3 : ((p) == 735 ? 4 : NOT_AN_INTERRUPT)))))
+
+ #else
+  // Everything else (including Due and Teensy) interrupt number the same as the interrupt pin number
+  #define digitalPinToInterrupt(p) (p)
+ #endif
+#endif
+
 
 // These defs cause trouble on some versions of Arduino
 #undef abs

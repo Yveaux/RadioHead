@@ -71,6 +71,11 @@ bool RH_RF69::init()
     if (!RHSPIDriver::init())
 	return false;
 
+    // Determine the interrupt number that corresponds to the interruptPin
+    int interruptNumber = digitalPinToInterrupt(_interruptPin);
+    if (interruptNumber == NOT_AN_INTERRUPT)
+	return false;
+
     // Get the device type and check it
     // This also tests whether we are really connected to a device
     // My test devices return 0x24
@@ -78,6 +83,11 @@ bool RH_RF69::init()
     if (_deviceType == 00 ||
 	_deviceType == 0xff)
 	return false;
+
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    // On all other platforms, its innocuous, belt and braces
+    pinMode(_interruptPin, INPUT); 
 
     // Set up interrupt handler
     // Since there are a limited number of interrupt glue functions isr*() available,
@@ -87,11 +97,11 @@ bool RH_RF69::init()
     // yourself based on knwledge of what Arduino board you are running on.
     _deviceForInterrupt[_interruptCount] = this;
     if (_interruptCount == 0)
-	attachInterrupt(_interruptPin, isr0, RISING);
+	attachInterrupt(interruptNumber, isr0, RISING);
     else if (_interruptCount == 1)
-	attachInterrupt(_interruptPin, isr1, RISING);
+	attachInterrupt(interruptNumber, isr1, RISING);
     else if (_interruptCount == 2)
-	attachInterrupt(_interruptPin, isr2, RISING);
+	attachInterrupt(interruptNumber, isr2, RISING);
     else
 	return false; // Too many devices, not enough interrupt vectors
     _interruptCount++;
@@ -115,12 +125,6 @@ bool RH_RF69::init()
 //    spiWrite(RH_RF69_REG_38_PAYLOADLENGTH, RH_RF69_FIFO_SIZE); // max size only for RX
     // PACKETCONFIG 2 is default 
     spiWrite(RH_RF69_REG_6F_TESTDAGC, RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAOFF);
-
-    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
-#if defined (__MK20DX128__) || defined (__MK20DX256__)
-    // ARM M4 requires the below. else pin interrupt doesn't work properly.
-    pinMode(_interruptPin, INPUT); 
-#endif
 
     // Some of these can be changed by the user if necessary.
     // Set up default configuration

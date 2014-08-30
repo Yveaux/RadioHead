@@ -20,6 +20,10 @@
 /// Addresses (DEST and SRC) are 8 bit integers with an address of RH_BROADCAST_ADDRESS (0xff) 
 /// reserved for broadcast.
 ///
+/// \par Media Access Strategy
+///
+/// RHDatagram and the underlying drivers always transmit as soon as sendto() is called.
+///
 /// \par Message Lengths
 ///
 /// Not all Radio drivers supported by RadioHead can handle the same message lengths. Some radios can handle

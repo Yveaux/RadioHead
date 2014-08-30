@@ -4,6 +4,7 @@
 // with the RHReliableDatagram class, using the RH_NRF905 driver to control a NRF905 radio.
 // It is designed to work with the other example nrf905_reliable_datagram_server
 // Tested on Teensy3.1 with nRF905 module
+// Tested on Arduino Due with nRF905 module (Caution: use the SPI headers for connecting)
 
 #include <RHReliableDatagram.h>
 #include <RH_NRF905.h>

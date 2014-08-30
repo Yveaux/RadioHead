@@ -1,7 +1,7 @@
 // RH_NRF905.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF905.cpp,v 1.1 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RH_NRF905.cpp,v 1.1 2014/04/29 12:18:27 mikem Exp $
 
 #include <RH_NRF905.h>
 
@@ -16,6 +16,7 @@ RH_NRF905::RH_NRF905(uint8_t chipEnablePin, uint8_t txEnablePin, uint8_t slaveSe
 bool RH_NRF905::init()
 {
 #if defined (__MK20DX128__) || defined (__MK20DX256__)
+    // Teensy is unreliable at 8MHz:
     _spi.setFrequency(RHGenericSPI::Frequency1MHz);
 #else
     _spi.setFrequency(RHGenericSPI::Frequency8MHz);
@@ -30,7 +31,7 @@ bool RH_NRF905::init()
     digitalWrite(_txEnablePin, LOW);
 
     // Configure the chip
-    // CRC 16 bit enabled. 16MHz crystal freq
+    // CRC 16 bits enabled. 16MHz crystal freq
     spiWriteRegister(RH_NRF905_CONFIG_9, RH_NRF905_CONFIG_9_CRC_EN | RH_NRF905_CONFIG_9_CRC_MODE_16BIT | RH_NRF905_CONFIG_9_XOF_16MHZ);
 
     // Make sure we are powered down

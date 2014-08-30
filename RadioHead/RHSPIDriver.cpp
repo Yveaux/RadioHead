@@ -15,6 +15,7 @@ RHSPIDriver::RHSPIDriver(uint8_t slaveSelectPin, RHGenericSPI& spi)
 bool RHSPIDriver::init()
 {
     // start the SPI library with the default speeds etc:
+    // On Arduino Due this defaults to SPI1 on the central group of 6 SPI pins
     _spi.begin();
 
     // Initialise the slave select pin

@@ -11,6 +11,19 @@
 HardwareSPI SPI(1);
 #endif
 
+// Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
+// as per otherArduinos
+// http://21stdigitalhome.blogspot.com.au/2013/02/arduino-due-hardware-spi.html
+#if defined (__arm__) && !defined(CORE_TEENSY)
+ // Arduino Due in 1.5.5 has no definitions for SPI dividers
+ // SPI clock divider is based on MCK of 84MHz  
+ #define SPI_CLOCK_DIV16 (VARIANT_MCK/84000000) // 1MHz
+ #define SPI_CLOCK_DIV8  (VARIANT_MCK/42000000) // 2MHz
+ #define SPI_CLOCK_DIV4  (VARIANT_MCK/21000000) // 4MHz
+ #define SPI_CLOCK_DIV2  (VARIANT_MCK/10500000) // 8MHz
+ #define SPI_CLOCK_DIV1  (VARIANT_MCK/5250000)  // 16MHz
+#endif
+
 // Declare a single default instance of the hardware SPI interface class
 RHHardwareSPI hardware_spi;
 
@@ -53,14 +66,19 @@ void RHHardwareSPI::begin()
 	dataMode = SPI_MODE3;
     else
 	dataMode = SPI_MODE0;
-#if defined(__arm__) && defined(CORE_TEENSY)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(CORE_TEENSY)
     // Temporary work-around due to problem where avr_emulation.h does not work properly for the setDataMode() cal
     SPCR &= ~SPI_MODE_MASK;
 #else
     SPI.setDataMode(dataMode);
 #endif
 
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && !defined(CORE_TEENSY)
+    // Arduino Due in 1.5.5 has its own BitOrder :-(
+    ::BitOrder bitOrder;
+#else
     uint8_t bitOrder;
+#endif
     if (_bitOrder == BitOrderLSBFirst)
 	bitOrder = LSBFIRST;
     else
@@ -88,7 +106,7 @@ void RHHardwareSPI::begin()
 	    break;
 
 	case Frequency16MHz:
-	    divider = SPI_CLOCK_DIV2;
+	    divider = SPI_CLOCK_DIV2; // Not really 16MHz, only 8
 	    break;
 
     }

@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.13 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.13 2014/04/29 12:18:27 mikem Exp $
 //
 
 #ifndef RH_RF22_h
@@ -677,6 +677,12 @@
 /// RHReliableDatagram rf22(driver, CLIENT_ADDRESS);
 /// \endcode
 /// and any instance of RF22_MAX_MESSAGE_LEN to RH_RF22_MAX_MESSAGE_LEN
+///
+/// RadioHead version 1.6 changed the way the interrupt pin number is
+/// specified on Arduino and Uno32 platforms. If your code previously
+/// specifed a non-default interrupt pin number in the RH_RF22 constructor,
+/// you may need to review your code to specify the correct interrrupt pin
+/// (and not the interrupt number as before).
 class RH_RF22 : public RHSPIDriver
 {
 public:
@@ -772,16 +778,17 @@ public:
     /// \param[in] slaveSelectPin the Arduino pin number of the output to use to select the RH_RF22 before
     /// accessing it. Defaults to the normal SS pin for your Arduino (D10 for Diecimila, Uno etc, D53 for Mega, D10 for Maple)
     /// \param[in] interruptPin The interrupt Pin number that is connected to the RF22 NIRQ interrupt line. 
-    /// Caution: on Arduino boards, you have to pass the interrupt number of the
-    /// interrupt pin you want to use. See http://arduino.cc/en/Reference/attachInterrupt, for example 
-    /// on Arduino Uno, pass interruptPin = 0 to get interrupts on Arduino pin 2. On Chipkit Uno32, 
-    /// pass the interrupt number (Caution: on Uno32, the mapping from interrupt number to pin is different. 
-    /// For interrupts on pin 2, pass interruptPin = 1)
-    /// On other platforms, pass the actual pin number that is attached to the RF22 interrupt line. For
-    /// example, on Teensy, Maple or Flymaple, pass interruptPin = 2 for interrupts on digital pin 2
+    /// Defaults to pin 2, as required by sparkfun RFM22 module shields.
+    /// Caution: You must specify an interrupt capable pin.
+    /// On many Arduino boards, there are limitations as to which pins may be used as interrupts.
+    /// On Leonardo pins 0, 1, 2 or 3. On Mega2560 pins 2, 3, 18, 19, 20, 21. On Due and Teensy, any digital pin.
+    /// On other Arduinos pins 2 or 3. 
+    /// See http://arduino.cc/en/Reference/attachInterrupt for more details.
+    /// On Chipkit Uno32, pins 38, 2, 7, 8, 35.
+    /// On other boards, any digital pin may be used.
     /// \param[in] spi Pointer to the SPI interface object to use. 
     ///                Defaults to the standard Arduino hardware SPI interface
-    RH_RF22(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 0, RHGenericSPI& spi = hardware_spi);
+    RH_RF22(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 2, RHGenericSPI& spi = hardware_spi);
   
     /// Initialises this instance and the radio module connected to it.
     /// The following steps are taken:

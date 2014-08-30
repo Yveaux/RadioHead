@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.7 2014/04/29 12:18:27 mikem Exp mikem $
+// $Id: RHReliableDatagram.h,v 1.7 2014/04/29 12:18:27 mikem Exp $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -36,8 +36,15 @@
 /// - ID set to the ID of the original message
 /// - FLAGS with the RH_FLAGS_ACK bit set
 ///
-/// Part of the Arduino RH library for operating with HopeRF RH compatible transceivers 
-/// (see http://www.hoperf.com)
+/// \par Media Access Strategy
+///
+/// RHReliableDatagram and the underlying drivers always transmit as soon as
+/// sendtoWait() is called.  RHReliableDatagram waits for an acknowledgement,
+/// and if one is not received after a timeout period the message is
+/// transmitted again.  If no acknowledgement is received after several
+/// retries, the transmissions is deemed to have failed.
+/// No contention for media is detected.
+/// This will be recognised as "pure ALOHA". 
 class RHReliableDatagram : public RHDatagram
 {
 public:
@@ -148,10 +155,6 @@ private:
 
 /// @example rf22_reliable_datagram_client.pde
 /// @example rf22_reliable_datagram_server.pde
-/// @example uno32_rf22_reliable_datagram_client.pde
-/// @example uno32_rf22_reliable_datagram_server.pde
-/// @example maple_rf22_reliable_datagram_client.pde
-/// @example maple_rf22_reliable_datagram_server.pde
 
 #endif
 

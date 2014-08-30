@@ -3,8 +3,7 @@
 // Example sketch showing how to create a simple addressed, reliable messaging server
 // with the RHReliableDatagram class, using the RH_ASK driver to control a ASK radio.
 // It is designed to work with the other example ask_reliable_datagram_client
-// Tested on Duemilanove with Sparkfun RFM22 wireless shield
-
+// Tested on Arduino Mega, Duemilanova, Uno, Due, Teensy
 
 #include <RHReliableDatagram.h>
 #include <RH_ASK.h>

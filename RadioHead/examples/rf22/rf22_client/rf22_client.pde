@@ -5,7 +5,9 @@
 // reliability, so you should only use RH_RF22 if you do not need the higher
 // level messaging abilities.
 // It is designed to work with the other example rf22_server
-// Tested on Duemilanove with Sparkfun RFM22 wireless shield
+// Tested on Duemilanove, Uno with Sparkfun RFM22 wireless shield
+// Tested on Flymaple with sparkfun RFM22 wireless shield
+// Tested on ChiKit Uno32 with sparkfun RFM22 wireless shield
 
 #include <SPI.h>
 #include <RH_RF22.h>

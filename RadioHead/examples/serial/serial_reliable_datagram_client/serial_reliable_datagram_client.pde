@@ -8,7 +8,7 @@
 // Tested on Arduino Mega and ChipKit Uno32 (normal Arduinos only have one
 // serial port and so it not possible to test on them and still have debug
 // output)
-// Tested with Arduino Mega, Teensy 3.1, Moteino
+// Tested with Arduino Mega, Teensy 3.1, Moteino, Arduino Due
 
 #include <RHReliableDatagram.h>
 #include <RH_Serial.h>
