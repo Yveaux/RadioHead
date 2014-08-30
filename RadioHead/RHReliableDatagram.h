@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.5 2014/04/23 00:23:47 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.6 2014/04/28 23:07:14 mikem Exp mikem $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -65,7 +65,8 @@ public:
     /// Synchronous: any message other than the desired ACK received while waiting is discarded.
     /// Blocks until an ACK is received or all retries are exhausted (ie up to retries*timeout milliseconds).
     /// If the destination address is the broadcast address RH_BROADCAST_ADDRESS (255), the message will 
-    /// be sent as a broadcast, but receiving nodes do not acknowledge, and sendtoWait() returns true immediately.
+    /// be sent as a broadcast, but receiving nodes do not acknowledge, and sendtoWait() returns true immediately
+    /// without waiting for any acknowledgements.
     /// \param[in] address The address to send the message to.
     /// \param[in] buf Pointer to the binary message to send
     /// \param[in] len Number of octets to send

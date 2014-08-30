@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.5 2014/04/13 11:31:05 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.6 2014/04/28 23:07:14 mikem Exp mikem $
 
 #include <RH_ASK.h>
 
@@ -179,7 +179,7 @@ void RH_ASK::timerSetup()
  #elif defined(__arm__) && defined(CORE_TEENSY)
     // on Teensy 3.0 (32 bit ARM), use an interval timer
     IntervalTimer *t = new IntervalTimer();
-    void TIMER1_COMPA_vect(void); // External?
+    void TIMER1_COMPA_vect(void);
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
  #else // ARDUINO

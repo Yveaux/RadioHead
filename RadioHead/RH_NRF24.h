@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.5 2014/04/23 09:16:52 mikem Exp mikem $
+// $Id: RH_NRF24.h,v 1.6 2014/04/28 23:07:14 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -173,7 +173,7 @@
 /// This library provides functions for sending and receiving messages of up to 28 octets on any 
 /// frequency supported by the nRF24L01, at a selected data rate.
 ///
-/// Up several nRF24L01 modules can be connected to an Arduino, permitting the construction of translators
+/// Several nRF24L01 modules can be connected to an Arduino, permitting the construction of translators
 /// and frequency changers, etc.
 ///
 /// Example Arduino programs are included to show the main modes of use.
@@ -181,7 +181,7 @@
 /// \par Packet Format
 ///
 /// All messages sent and received by this class conform to this packet format, as specified by 
-/// the nRF24L01 product specificaiton:
+/// the nRF24L01 product specification:
 ///
 /// - 1 octets PREAMBLE
 /// - 4 octets NETWORK ADDRESS
@@ -196,7 +196,7 @@
 ///
 /// \par Connecting nRF24L01 to Arduino
 ///
-/// The physical connection between the nRF24L01 and the Arduino require 3.3V, the 3 x SPI pins (SCK, SDI, SDO), 
+/// The electrical connection between the nRF24L01 and the Arduino require 3.3V, the 3 x SPI pins (SCK, SDI, SDO), 
 /// a Chip Enable pin and a Slave Select pin.
 /// If you are using the Sparkfun WRL-00691 module, it has a voltage regulator on board and 
 /// can be run with 5V VCC
@@ -261,6 +261,8 @@
 /// CSN and CE line (SCK, SDI and SDO are common to both radios)
 ///
 /// \par Example programs
+///
+/// Several example programs are provided.
 ///
 /// \par Radio Performance
 ///
@@ -420,7 +422,7 @@ public:
 
     /// Blocks until the current message (if any) 
     /// has been transmitted
-    /// \return true on success, false if the Max retries were exceeded, or if the chip is not in transmit mode.
+    /// \return true on success, false if the chip is not in transmit mode or other transmit failure
     virtual bool waitPacketSent();
 
     /// Indicates if the chip is in transmit mode and 

@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.11 2014/04/28 10:43:48 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.12 2014/04/28 23:07:14 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -750,6 +750,7 @@ public:
 	OOK_Rb19_2Bw335,     ///< OOK, No Manchester, Rb = 19.2kbs, Rx Bandwidth = 335kHz
 	OOK_Rb38_4Bw335,     ///< OOK, No Manchester, Rb = 38.4kbs, Rx Bandwidth = 335kHz
 	OOK_Rb40Bw335        ///< OOK, No Manchester, Rb = 40kbs,   Rx Bandwidth = 335kHz
+
     } ModemConfigChoice;
 
     /// \brief Defines the available choices for CRC

@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.9 2014/04/23 09:16:52 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.10 2014/04/28 23:07:14 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.4.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.5.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -64,6 +64,9 @@
 /// - RH_NRF24
 /// Works with Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 and others.
 ///
+/// - RH_NRF905
+/// Works with Nordic nRF905 based 433/868/915 MHz radio modules.
+///
 /// - RH_ASK
 /// Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers such as RX-B1 
 /// (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver. Supports ASK (OOK).
@@ -87,10 +90,10 @@
 /// The following Mangers are provided:
 ///
 /// - RHDatagram
-/// Addressed, unreliable messages, with optional broadcast facilities.
+/// Addressed, unreliable variable length messages, with optional broadcast facilities.
 ///
 /// - RHReliableDatagram
-/// Addressed reliable, retransmitted, acknowledged messages.
+/// Addressed reliable, retransmitted, acknowledged variable length messages.
 ///
 /// - RHRouter
 /// Multi-hop delivery from source node to destination node via 0 or more intermediate nodes.
@@ -114,10 +117,11 @@
 /// - Maple and Flymaple boards with libmaple and the Maple-IDE development environment
 /// http://leaflabs.com/devices/maple/ and http://www.open-drone.org/flymaple
 ///
-/// - Teensy http://www.pjrc.com/teensy including Teensy 3.1 built using Arduino IDE 1.0.5 with 
+/// - Teensy including Teensy 3.1 built using Arduino IDE 1.0.5 with 
 ///   teensyduino addon 1.18 and later.
+///   http://www.pjrc.com/teensy 
 ///
-/// Other platforms are partially supported, such a the Teensy3, Generic AVR 8 bit processors, MSP430. 
+/// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
 ///
 /// \par History
@@ -222,6 +226,9 @@
 ///              poor wiring is in use.<br>
 ///              on some devices such as Teensy.<br>
 ///              Tested RH_NRF24 examples with Teensy 3.1: they now run out of the box.<br>
+/// \version 1.5 2014-04-29<br>
+///              Added support for Nordic Semiconductor nRF905 transceiver with RH_NRF905 driver. Also
+///              added examples for nRF905 and tested on Teensy 3.1
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
