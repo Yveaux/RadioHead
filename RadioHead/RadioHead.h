@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.17.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.18.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -326,6 +326,9 @@
 ///              RH_NRF24 now sets default power, data rate and channel in init(), in case another
 ///              app has previously set different values without powerdown.<br>
 ///              Caution: there are still problems with RH_NRF24 and Software SPI. Do not use.<br>
+/// \version 1.18 2014-06-02<br>
+///              Improvements to performance of RH_NRF24 statusRead, allowing RH_NRF24 and Software SPI
+///              to operate on slow devices like Arduino Uno.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -334,7 +337,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 17
+#define RH_VERSION_MINOR 18
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO      1

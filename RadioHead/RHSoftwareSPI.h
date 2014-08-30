@@ -15,6 +15,18 @@
 /// This concrete subclass of RHGenericSPI enapsulates a bit-banged software SPI interface.
 /// Caution: this software SPI interface will be much slower than hardware SPI on most
 /// platforms.
+///
+/// \par Usage
+///
+/// Usage varies slightly depending on what driver you are using.
+///
+/// For RF22, for example:
+/// \code
+/// #include <RHSoftwareSPI.h>
+/// RHSoftwareSPI spi;
+/// RH_RF22 driver(SS, 2, spi);
+/// RHReliableDatagram(driver, CLIENT_ADDRES);
+/// \endcode
 class RHSoftwareSPI : public RHGenericSPI 
 {
 public:

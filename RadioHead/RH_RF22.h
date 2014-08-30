@@ -651,14 +651,30 @@
 /// communicate with the RF22 module. However, if your RF22 SPI is connected to
 /// the Arduino through non-standard pins, or the standard Hardware SPI
 /// interface will not work for you, you can instead use a bit-banged Software
-/// SPI, which can be configured to work on any Arduino digital IO pins. A
-/// sample Software SPI class contributed by Chris Lapa is included in the
-/// RF22 library, and example sketches showing how to use it are in
-/// rf22_client_softwarespi and rf22_server_softwarespi. Thanks Chris!
+/// SPI class RHSoftwareSPI, which can be configured to work on any Arduino digital IO pins.
+/// See the documentation of RHSoftwareSPI for details.
 ///
 /// The advantages of the Software SPI interface are that it can be used on
 /// any Arduino pins, not just the usual dedicated hardware pins. The
-/// disadvantage is that it is slightly slower then hardware.
+/// disadvantage is that it is significantly slower then hardware.
+/// If you observe reliable behaviour with the default hardware SPI RHHardwareSPI, but unreliable behaviour 
+/// with Software SPI RHSoftwareSPI, it may be due to slow CPU performance.
+///
+/// Initialisation example with hardware SPI
+/// \code
+/// #include <RH_RF22.h>
+/// RH_RF22 driver;
+/// RHReliableDatagram manager(driver, CLIENT_ADDRESS);
+/// \endcode
+///
+/// Initialisation example with software SPI
+/// \code
+/// #include <RH_RF22.h>
+/// #include <RHSoftwareSPI.h>
+/// RHSoftwareSPI spi;
+/// RH_RF22 driver(10, 2, spi);
+/// RHReliableDatagram manager(driver, CLIENT_ADDRESS);
+/// \endcode
 ///
 /// \par Memory
 ///

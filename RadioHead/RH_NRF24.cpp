@@ -80,7 +80,8 @@ uint8_t RH_NRF24::spiBurstWriteRegister(uint8_t reg, uint8_t* src, uint8_t len)
 
 uint8_t RH_NRF24::statusRead()
 {
-    return spiReadRegister(RH_NRF24_REG_07_STATUS);
+    // status is a side-effect of NOP, faster than reading reg 07
+    return spiCommand(RH_NRF24_COMMAND_NOP); 
 }
 
 uint8_t RH_NRF24::flushTx()

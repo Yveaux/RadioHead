@@ -158,6 +158,8 @@
 /// Supported transceivers include:
 /// - Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01
 /// and other compatible transceivers.
+/// - Sparkfun WRL-00691 module with nRF24L01 https://www.sparkfun.com/products/691 
+/// or WRL-00705 https://www.sparkfun.com/products/705 etc.
 /// - Hope-RF RFM73 http://www.hoperf.com/rf/2.4g_module/RFM73.htm and 
 /// http://www.anarduino.com/details.jsp?pid=121
 /// and compatible devices (such as BK2423). nRF24L01 and RFM73 can interoperate
@@ -208,14 +210,14 @@
 /// The electrical connection between the nRF24L01 and the Arduino require 3.3V, the 3 x SPI pins (SCK, SDI, SDO), 
 /// a Chip Enable pin and a Slave Select pin.
 /// If you are using the Sparkfun WRL-00691 module, it has a voltage regulator on board and 
-/// can be run with 5V VCC
+/// can be should with 5V VCC if possible.
 /// The examples below assume the Sparkfun WRL-00691 module
 ///
 /// Connect the nRF24L01 to most Arduino's like this (Caution, Arduino Mega has different pins for SPI, 
 /// see below). Use these same connections for Teensy 3.1.
 /// \code
 ///                 Arduino      Sparkfun WRL-00691
-///                 3V3 or 5V----VCC   (3.3V to 7V in)
+///                 5V-----------VCC   (3.3V to 7V in)
 ///             pin D8-----------CE    (chip enable in)
 ///          SS pin D10----------CSN   (chip select in)
 ///         SCK pin D13----------SCK   (SPI clock in)
@@ -229,7 +231,7 @@
 /// appear on the ICSP header)
 /// \code
 ///                Leonardo      Sparkfun WRL-00691
-///                 3V3 or 5V----VCC   (3.3V to 7V in)
+///                 5V-----------VCC   (3.3V to 7V in)
 ///             pin D8-----------CE    (chip enable in)
 ///          SS pin D10----------CSN   (chip select in)
 ///      SCK ICSP pin 3----------SCK   (SPI clock in)
@@ -244,7 +246,7 @@
 /// For an Arduino Mega:
 /// \code
 ///                 Mega         Sparkfun WRL-00691
-///                 3V3 or 5V----VCC   (3.3V to 7V in)
+///                 5V-----------VCC   (3.3V to 7V in)
 ///             pin D8-----------CE    (chip enable in)
 ///          SS pin D53----------CSN   (chip select in)
 ///         SCK pin D52----------SCK   (SPI clock in)
@@ -269,6 +271,29 @@
 /// It is possible to have 2 radios conected to one arduino, provided each radio has its own 
 /// CSN and CE line (SCK, SDI and SDO are common to both radios)
 ///
+/// \par SPI Interface
+///
+/// You can interface to nRF24L01 with with hardware or software SPI. Use of software SPI with the RHSoftwareSPI 
+/// class depends on a fast enough processor and digitalOut() functions to achieve a high enough SPI bus frequency.
+/// If you observe reliable behaviour with the default hardware SPI RHHardwareSPI, but unreliable behaviour 
+/// with Software SPI RHSoftwareSPI, it may be due to slow CPU performance.
+///
+/// Initialisation example with hardware SPI
+/// \code
+/// #include <RH_NRF24.h>
+/// RH_NRF24 driver;
+/// RHReliableDatagram manager(driver, CLIENT_ADDRESS);
+/// \endcode
+///
+/// Initialisation example with software SPI
+/// \code
+/// #include <RH_NRF24.h>
+/// #include <RHSoftwareSPI.h>
+/// RHSoftwareSPI spi;
+/// RH_NRF24 driver(8, 10, spi);
+/// RHReliableDatagram manager(driver, CLIENT_ADDRESS);
+/// \endcode
+///
 /// \par Example programs
 ///
 /// Several example programs are provided.
@@ -289,7 +314,7 @@
 ///
 /// The radio is configured by default to Channel 2, 2Mbps, 0dBm power, 5 bytes address, payload width 1, CRC enabled
 /// 2 byte CRC, No Auto-Ack mode. Enhanced shockburst is used. 
-/// TX and P0 are set to the Network address. Node addresses and decoding are handled with the RH_NRF24 module
+/// TX and P0 are set to the Network address. Node addresses and decoding are handled with the RH_NRF24 module.
 ///
 /// \par Memory
 ///
