@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.34 2014/08/12 00:54:52 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.35 2014/08/20 11:29:54 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.28.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.29.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -410,6 +410,10 @@
 ///              Tested with the excellent
 ///              Anarduino Mini and RFM24W and RFM26W with the generous assistance of the good people at 
 ///              Anarduino http://www.anarduino.com.
+/// \version 1.29 2014-08-21
+///              Fixed a compile error in RH_RF24 introduced at the last minute in hte previous release.<br>
+///              Improvements to RH_RF69 modulation schemes: now include the AFCBW in teh ModemConfig.<br>
+///              ModemConfig RH_RF69::FSK_Rb2Fd5 and RH_RF69::GFSK_Rb2Fd5 are now working.<br> 
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -418,7 +422,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 28
+#define RH_VERSION_MINOR 29
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

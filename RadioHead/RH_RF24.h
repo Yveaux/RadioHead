@@ -1,7 +1,7 @@
 // RH_RF24.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF24.h,v 1.7 2014/08/20 05:37:55 mikem Exp mikem $
+// $Id: RH_RF24.h,v 1.8 2014/08/20 11:29:54 mikem Exp mikem $
 //
 // Supports RF24/RF26 and RFM24/RFM26 modules in FIFO mode
 // also Si4464/63/62/61/60-A1
@@ -971,8 +971,8 @@ public:
 
     /// Read one of the Fast Read Response registers.
     /// The Fast Read Response register must be previously configured with the matching
-    /// RH_RF24_PROPERTY_FRR_CTL_?_MODE property to select what chip property wil be available in that register.
-    /// \param[in] reg The index of the FRR regsiter to read. 0 means FRR A, 1 means B etc.
+    /// RH_RF24_PROPERTY_FRR_CTL_?_MODE property to select what chip property will be available in that register.
+    /// \param[in] reg The index of the FRR register to read. 0 means FRR A, 1 means B etc.
     /// \return the value read from the specified Fast Read Response register.
     uint8_t        frr_read(uint8_t reg);
 
@@ -1021,13 +1021,6 @@ protected:
     bool           cmd_clear_all_interrupts();
 
 private:
-// Defines the commands we can interrogate in printRegisters
-typedef struct
-{
-    uint8_t      cmd;       ///< The command number
-    uint8_t      replyLen;  ///< Number of bytes in the reply stream (after the CTS)
-}   CommandInfo;
-
 
     /// Low level interrupt service routine for RF24 connected to interrupt 0
     static void         isr0();

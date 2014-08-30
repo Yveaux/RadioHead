@@ -1,7 +1,7 @@
 // RH_RF24.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF24.cpp,v 1.7 2014/08/20 05:37:55 mikem Exp mikem $
+// $Id: RH_RF24.cpp,v 1.8 2014/08/20 11:29:54 mikem Exp mikem $
 
 #include <RH_RF24.h>
 // Generated with Silicon Labs WDS software:
@@ -858,6 +858,13 @@ uint8_t RH_RF24::frr_read(uint8_t reg)
     return ret;
 }
 
+// Defines the commands we can interrogate in printRegisters
+typedef struct
+{
+    uint8_t      cmd;       ///< The command number
+    uint8_t      replyLen;  ///< Number of bytes in the reply stream (after the CTS)
+}   CommandInfo;
+
 // List of command replies to be printed by prinRegisters()
 PROGMEM static const CommandInfo commands[] =
 {
@@ -873,7 +880,8 @@ PROGMEM static const CommandInfo commands[] =
     { RH_RF24_CMD_REQUEST_DEVICE_STATE, 2 },
 };
 #define NUM_COMMAND_INFO (sizeof(commands)/sizeof(CommandInfo))
-// List of properties to be printed by prinRegisters()
+
+// List of properties to be printed by printRegisters()
 PROGMEM static const uint16_t properties[] =
 {
     RH_RF24_PROPERTY_GLOBAL_XO_TUNE,                   

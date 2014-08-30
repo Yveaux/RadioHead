@@ -1,7 +1,7 @@
 // RHGenericDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.cpp,v 1.15 2014/08/12 00:54:52 mikem Exp mikem $
+// $Id: RHGenericDriver.cpp,v 1.16 2014/08/20 11:29:54 mikem Exp mikem $
 
 #include <RHGenericDriver.h>
 

@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.18 2014/08/12 00:54:52 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.19 2014/08/20 11:29:54 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -28,45 +28,50 @@ uint8_t RH_RF69::_interruptCount = 0; // Index into _deviceForInterrupt for next
 #define CONFIG_MANCHESTER (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_MANCHESTER | RH_RF69_PACKETCONFIG1_CRC_ON | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
 PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
 {
-    //  02,        03,   04,   05,   06,   19,   37
+    //  02,        03,   04,   05,   06,   19,   1a,  37
     // FSK, No Manchester, no shaping, whitening, CRC, no address filtering
     // AFC BW == RX BW == 2 x bit rate
-    { CONFIG_FSK,  0x3e, 0x80, 0x00, 0x52, 0xf6, CONFIG_WHITE}, // FSK_Rb2Fd5      hmmm, not working
-    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x27, 0xf6, CONFIG_WHITE}, // FSK_Rb2_4Fd2_4      hmmm, not working
-    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x4f, 0xf5, CONFIG_WHITE}, // FSK_Rb4_8Fd4_8  hmmm, unreliable
-    { CONFIG_FSK,  0x0d, 0x05, 0x00, 0x9d, 0xf4, CONFIG_WHITE}, // FSK_Rb9_6Fd9_6
-    { CONFIG_FSK,  0x06, 0x83, 0x01, 0x3b, 0xf3, CONFIG_WHITE}, // FSK_Rb19_2Fd19_2
-    { CONFIG_FSK,  0x03, 0x41, 0x02, 0x75, 0xf2, CONFIG_WHITE}, // FSK_Rb38_4Fd38_4
-    { CONFIG_FSK,  0x02, 0x2c, 0x07, 0xae, 0xe2, CONFIG_WHITE}, // FSK_Rb57_6Fd120
-    { CONFIG_FSK,  0x01, 0x00, 0x08, 0x00, 0xe1, CONFIG_WHITE}, // FSK_Rb125Fd125
-    { CONFIG_FSK,  0x00, 0x80, 0x10, 0x00, 0xe0, CONFIG_WHITE}, // FSK_Rb250Fd250
-    { CONFIG_FSK,  0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_WHITE}, // FSK_Rb55555Fd50 
+    { CONFIG_FSK,  0x3e, 0x80, 0x00, 0x52, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb2Fd5      
+    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x27, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb2_4Fd2_4
+    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb4_8Fd4_8
+    { CONFIG_FSK,  0x0d, 0x05, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb9_6Fd9_6
+    { CONFIG_FSK,  0x06, 0x83, 0x01, 0x3b, 0xf3, 0xf3, CONFIG_WHITE}, // FSK_Rb19_2Fd19_2
+    { CONFIG_FSK,  0x03, 0x41, 0x02, 0x75, 0xf2, 0xf2, CONFIG_WHITE}, // FSK_Rb38_4Fd38_4
+    { CONFIG_FSK,  0x02, 0x2c, 0x07, 0xae, 0xe2, 0xe2, CONFIG_WHITE}, // FSK_Rb57_6Fd120
+    { CONFIG_FSK,  0x01, 0x00, 0x08, 0x00, 0xe1, 0xe1, CONFIG_WHITE}, // FSK_Rb125Fd125
+    { CONFIG_FSK,  0x00, 0x80, 0x10, 0x00, 0xe0, 0xe0, CONFIG_WHITE}, // FSK_Rb250Fd250
+    { CONFIG_FSK,  0x02, 0x40, 0x03, 0x33, 0x42, 0x42, CONFIG_WHITE}, // FSK_Rb55555Fd50 
 
-    //  02,        03,   04,   05,   06,   19,   37
+    //  02,        03,   04,   05,   06,   19,   1a,  37
     // GFSK (BT=1.0), No Manchester, whitening, CRC, no address filtering
     // AFC BW == RX BW == 2 x bit rate
-    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0xf6, CONFIG_WHITE}, // GFSK_Rb2Fd5      hmmm, not working
-    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0xf6, CONFIG_WHITE}, // GFSK_Rb2_4Fd2_4  hmmm, not working
-    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0xf5, CONFIG_WHITE}, // GFSK_Rb4_8Fd4_8  hmmm, unreliable
-    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0xf4, CONFIG_WHITE}, // GFSK_Rb9_6Fd9_6
-    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0xf3, CONFIG_WHITE}, // GFSK_Rb19_2Fd19_2
-    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0xf2, CONFIG_WHITE}, // GFSK_Rb38_4Fd38_4
-    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0xe2, CONFIG_WHITE}, // GFSK_Rb57_6Fd120
-    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x00, 0xe1, CONFIG_WHITE}, // GFSK_Rb125Fd125
-    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0xe0, CONFIG_WHITE}, // GFSK_Rb250Fd250
-    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_WHITE}, // GFSK_Rb55555Fd50 
+    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0xf4, 0xf5, CONFIG_WHITE}, // GFSK_Rb2Fd5
+    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb2_4Fd2_4
+    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb4_8Fd4_8
+    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb9_6Fd9_6
+    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0xf3, 0xf3, CONFIG_WHITE}, // GFSK_Rb19_2Fd19_2
+    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0xf2, 0xf2, CONFIG_WHITE}, // GFSK_Rb38_4Fd38_4
+    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0xe2, 0xe2, CONFIG_WHITE}, // GFSK_Rb57_6Fd120
+    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x00, 0xe1, 0xe1, CONFIG_WHITE}, // GFSK_Rb125Fd125
+    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0xe0, 0xe0, CONFIG_WHITE}, // GFSK_Rb250Fd250
+    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, 0x42, CONFIG_WHITE}, // GFSK_Rb55555Fd50 
 
-    //  02,        03,   04,   05,   06,   19,   37
+    //  02,        03,   04,   05,   06,   19,   1a,  37
     // OOK, No Manchester, no shaping, whitening, CRC, no address filtering
     // with the help of the SX1231 configuration program
     // AFC BW == RX BW
-    { CONFIG_OOK,  0x7d, 0x00, 0x00, 0x10, 0x88, CONFIG_WHITE}, // OOK_Rb1Bw1
-    { CONFIG_OOK,  0x68, 0x2b, 0x00, 0x10, 0xf1, CONFIG_WHITE}, // OOK_Rb1_2Bw75
-    { CONFIG_OOK,  0x34, 0x15, 0x00, 0x10, 0xf5, CONFIG_WHITE}, // OOK_Rb2_4Bw4_8
-    { CONFIG_OOK,  0x1a, 0x0b, 0x00, 0x10, 0xf4, CONFIG_WHITE}, // OOK_Rb4_8Bw9_6
-    { CONFIG_OOK,  0x0d, 0x05, 0x00, 0x10, 0xf3, CONFIG_WHITE}, // OOK_Rb9_6Bw19_2
-    { CONFIG_OOK,  0x06, 0x83, 0x00, 0x10, 0xf2, CONFIG_WHITE}, // OOK_Rb19_2Bw38_4
-    { CONFIG_OOK,  0x03, 0xe8, 0x00, 0x10, 0xe2, CONFIG_WHITE}, // OOK_Rb32Bw64
+    { CONFIG_OOK,  0x7d, 0x00, 0x00, 0x10, 0x88, 0x88, CONFIG_WHITE}, // OOK_Rb1Bw1
+    { CONFIG_OOK,  0x68, 0x2b, 0x00, 0x10, 0xf1, 0xf1, CONFIG_WHITE}, // OOK_Rb1_2Bw75
+    { CONFIG_OOK,  0x34, 0x15, 0x00, 0x10, 0xf5, 0xf5, CONFIG_WHITE}, // OOK_Rb2_4Bw4_8
+    { CONFIG_OOK,  0x1a, 0x0b, 0x00, 0x10, 0xf4, 0xf4, CONFIG_WHITE}, // OOK_Rb4_8Bw9_6
+    { CONFIG_OOK,  0x0d, 0x05, 0x00, 0x10, 0xf3, 0xf3, CONFIG_WHITE}, // OOK_Rb9_6Bw19_2
+    { CONFIG_OOK,  0x06, 0x83, 0x00, 0x10, 0xf2, 0xf2, CONFIG_WHITE}, // OOK_Rb19_2Bw38_4
+    { CONFIG_OOK,  0x03, 0xe8, 0x00, 0x10, 0xe2, 0xe2, CONFIG_WHITE}, // OOK_Rb32Bw64
+
+//    { CONFIG_FSK,  0x68, 0x2b, 0x00, 0x52, 0x55, 0x55, CONFIG_WHITE}, // works: Rb1200 Fd 5000 bitrate? 5000 bw10000, DCC 400
+//    { CONFIG_FSK,  0x0c, 0x80, 0x02, 0x8f, 0x52, 0x52, CONFIG_WHITE}, // works 10/40/80
+//    { CONFIG_FSK,  0x0c, 0x80, 0x02, 0x8f, 0x53, 0x53, CONFIG_WHITE}, // works 10/40/40
+
 };
 RH_RF69::RH_RF69(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
     :
@@ -151,6 +156,7 @@ bool RH_RF69::init()
     setSyncWords(syncwords, sizeof(syncwords)); // Same as RF22's
     // Reasonably fast and reliable default speed and modulation
     setModemConfig(GFSK_Rb250Fd250);
+
     // 3 would be sufficient, but this is the same as RF22's
     setPreambleLength(4);
     // An innocuous ISM frequency, same as RF22's
@@ -376,7 +382,7 @@ void RH_RF69::setTxPower(int8_t power)
 void RH_RF69::setModemRegisters(const ModemConfig* config)
 {
     spiBurstWrite(RH_RF69_REG_02_DATAMODUL,     &config->reg_02, 5);
-    spiWrite(RH_RF69_REG_19_RXBW,                config->reg_19);
+    spiBurstWrite(RH_RF69_REG_19_RXBW,          &config->reg_19, 2);
     spiWrite(RH_RF69_REG_37_PACKETCONFIG1,       config->reg_37);
 }
 

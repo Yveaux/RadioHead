@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.22 2014/08/12 00:54:52 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.23 2014/08/20 11:29:54 mikem Exp mikem $
 //
 ///
 
@@ -543,6 +543,7 @@ public:
 	uint8_t    reg_05;   ///< Value for register RH_RF69_REG_05_FDEVMSB
 	uint8_t    reg_06;   ///< Value for register RH_RF69_REG_06_FDEVLSB
 	uint8_t    reg_19;   ///< Value for register RH_RF69_REG_19_RXBW
+	uint8_t    reg_1a;   ///< Value for register RH_RF69_REG_1A_AFCBW
 	uint8_t    reg_37;   ///< Value for register RH_RF69_REG_37_PACKETCONFIG1
     } ModemConfig;
   
@@ -556,9 +557,9 @@ public:
     /// CAUTION: some of these configurations do not work corectly and are marked as such.
     typedef enum
     {
-	FSK_Rb2Fd5 = 0,	   ///< FSK, Whitening, Rb = 2kbs,    Fd = 5kHz NOT WORKING
+	FSK_Rb2Fd5 = 0,	   ///< FSK, Whitening, Rb = 2kbs,    Fd = 5kHz
 	FSK_Rb2_4Fd2_4,    ///< FSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
-	FSK_Rb4_8Fd4_8,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz NOT WORKING
+	FSK_Rb4_8Fd4_8,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz UNRELIABLE
 	FSK_Rb9_6Fd9_6,    ///< FSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
 	FSK_Rb19_2Fd19_2,  ///< FSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
 	FSK_Rb38_4Fd38_4,  ///< FSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
@@ -567,7 +568,7 @@ public:
 	FSK_Rb250Fd250,    ///< FSK, Whitening, Rb = 250kbs,  Fd = 250kHz
 	FSK_Rb55555Fd50,   ///< FSK, Whitening, Rb = 55555kbs,Fd = 50kHz for RFM69 lib compatibility
 
-	GFSK_Rb2Fd5,	    ///< GFSK, Whitening, Rb = 2kbs,    Fd = 5kHz NOT WORKING
+	GFSK_Rb2Fd5,	    ///< GFSK, Whitening, Rb = 2kbs,    Fd = 5kHz
 	GFSK_Rb2_4Fd2_4,    ///< GFSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
 	GFSK_Rb4_8Fd4_8,    ///< GFSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz NOT WORKING
 	GFSK_Rb9_6Fd9_6,    ///< GFSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
