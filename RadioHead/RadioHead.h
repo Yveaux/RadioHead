@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.33 2014/08/10 20:55:17 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.34 2014/08/12 00:54:52 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.26.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.27.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -393,6 +393,11 @@
 ///              Added helpful documentation. Caution: RAM memory is *very* tight on this platform.<br>
 ///              RH_RF22 and RH_RF69, added setIdleMode() function to allow the idle mode radio operating state
 ///              to be controlled for lower idle power consumption at the expense of slower transitions to TX and RX.<br>
+/// \version 1.27 2014-08-13
+///              All RH_RF69 modulation schemes now have data whitening enabled by default.<br>
+///              Tested and added a number of OOK modulation schemes to RH_RF69 Modem config table.<br>
+///              Minor improvements to a number of the faster RH_RF69 modulation schemes, but some slower ones
+///              are still not working correctly.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -401,7 +406,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 26
+#define RH_VERSION_MINOR 27
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

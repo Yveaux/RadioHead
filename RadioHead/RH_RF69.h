@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.21 2014/08/10 20:55:17 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.22 2014/08/12 00:54:52 mikem Exp mikem $
 //
 ///
 
@@ -553,32 +553,38 @@ public:
     /// These are indexes into MODEM_CONFIG_TABLE. We strongly recommend you use these symbolic
     /// definitions and not their integer equivalents: its possible that new values will be
     /// introduced in later versions (though we will try to avoid it).
+    /// CAUTION: some of these configurations do not work corectly and are marked as such.
     typedef enum
     {
-	FSK_Rb2Fd5 = 0,	   ///< FSK, No Manchester, Rb = 2kbs,    Fd = 5kHz
-	FSK_Rb2_4Fd2_4,    ///< FSK, No Manchester, Rb = 2.4kbs,  Fd = 2.4kHz
-	FSK_Rb4_8Fd4_8,    ///< FSK, No Manchester, Rb = 4.8kbs,  Fd = 4.8kHz
-	FSK_Rb9_6Fd9_6,    ///< FSK, No Manchester, Rb = 9.6kbs,  Fd = 9.6kHz
-	FSK_Rb19_2Fd19_2,  ///< FSK, No Manchester, Rb = 19.2kbs, Fd = 19.2kHz
-	FSK_Rb38_4Fd38_4,  ///< FSK, No Manchester, Rb = 38.4kbs, Fd = 38.4kHz
-	FSK_Rb57_6Fd120,   ///< FSK, No Manchester, Rb = 57.6kbs, Fd = 120kHz
-	FSK_Rb125Fd125,    ///< FSK, No Manchester, Rb = 125kbs,  Fd = 125kHz
-	FSK_Rb250Fd250,    ///< FSK, No Manchester, Rb = 250kbs,  Fd = 250kHz
-	FSK_Rb55555Fd50,   ///< FSK, No Manchester, Rb = 55555kbs,Fd = 50kHz for RFM69 lib compatibility
+	FSK_Rb2Fd5 = 0,	   ///< FSK, Whitening, Rb = 2kbs,    Fd = 5kHz NOT WORKING
+	FSK_Rb2_4Fd2_4,    ///< FSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
+	FSK_Rb4_8Fd4_8,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz NOT WORKING
+	FSK_Rb9_6Fd9_6,    ///< FSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
+	FSK_Rb19_2Fd19_2,  ///< FSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
+	FSK_Rb38_4Fd38_4,  ///< FSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
+	FSK_Rb57_6Fd120,   ///< FSK, Whitening, Rb = 57.6kbs, Fd = 120kHz
+	FSK_Rb125Fd125,    ///< FSK, Whitening, Rb = 125kbs,  Fd = 125kHz
+	FSK_Rb250Fd250,    ///< FSK, Whitening, Rb = 250kbs,  Fd = 250kHz
+	FSK_Rb55555Fd50,   ///< FSK, Whitening, Rb = 55555kbs,Fd = 50kHz for RFM69 lib compatibility
 
-	GFSK_Rb2Fd5,	    ///< GFSK, No Manchester, Rb = 2kbs,    Fd = 5kHz
-	GFSK_Rb2_4Fd2_4,    ///< GFSK, No Manchester, Rb = 2.4kbs,  Fd = 2.4kHz
-	GFSK_Rb4_8Fd4_8,    ///< GFSK, No Manchester, Rb = 4.8kbs,  Fd = 4.8kHz
-	GFSK_Rb9_6Fd9_6,    ///< GFSK, No Manchester, Rb = 9.6kbs,  Fd = 9.6kHz
-	GFSK_Rb19_2Fd19_2,  ///< GFSK, No Manchester, Rb = 19.2kbs, Fd = 19.2kHz
-	GFSK_Rb38_4Fd38_4,  ///< GFSK, No Manchester, Rb = 38.4kbs, Fd = 38.4kHz
-	GFSK_Rb57_6Fd120,   ///< GFSK, No Manchester, Rb = 57.6kbs, Fd = 120kHz
-	GFSK_Rb125Fd125,    ///< GFSK, No Manchester, Rb = 125kbs,  Fd = 125kHz
-	GFSK_Rb250Fd250,    ///< GFSK, No Manchester, Rb = 250kbs,  Fd = 250kHz
-	GFSK_Rb55555Fd50,   ///< GFSK, No Manchester, Rb = 55555kbs,Fd = 50kHz
+	GFSK_Rb2Fd5,	    ///< GFSK, Whitening, Rb = 2kbs,    Fd = 5kHz NOT WORKING
+	GFSK_Rb2_4Fd2_4,    ///< GFSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
+	GFSK_Rb4_8Fd4_8,    ///< GFSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz NOT WORKING
+	GFSK_Rb9_6Fd9_6,    ///< GFSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
+	GFSK_Rb19_2Fd19_2,  ///< GFSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
+	GFSK_Rb38_4Fd38_4,  ///< GFSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
+	GFSK_Rb57_6Fd120,   ///< GFSK, Whitening, Rb = 57.6kbs, Fd = 120kHz
+	GFSK_Rb125Fd125,    ///< GFSK, Whitening, Rb = 125kbs,  Fd = 125kHz
+	GFSK_Rb250Fd250,    ///< GFSK, Whitening, Rb = 250kbs,  Fd = 250kHz
+	GFSK_Rb55555Fd50,   ///< GFSK, Whitening, Rb = 55555kbs,Fd = 50kHz
 
-//	OOK_Rb1_2Bw75,       ///< OOK, No Manchester, Rb = 1.2kbs,  Rx Bandwidth = 75kHz. Not reliable: do not use
-
+	OOK_Rb1Bw1,         ///< OOK, Whitening, Rb = 1kbs,    Rx Bandwidth = 1kHz. 
+	OOK_Rb1_2Bw75,      ///< OOK, Whitening, Rb = 1.2kbs,  Rx Bandwidth = 75kHz. 
+	OOK_Rb2_4Bw4_8,     ///< OOK, Whitening, Rb = 2.4kbs,  Rx Bandwidth = 4.8kHz. 
+	OOK_Rb4_8Bw9_6,     ///< OOK, Whitening, Rb = 4.8kbs,  Rx Bandwidth = 9.6kHz. 
+	OOK_Rb9_6Bw19_2,    ///< OOK, Whitening, Rb = 9.6kbs,  Rx Bandwidth = 19.2kHz. 
+	OOK_Rb19_2Bw38_4,   ///< OOK, Whitening, Rb = 19.2kbs, Rx Bandwidth = 38.4kHz. 
+	OOK_Rb32Bw64,       ///< OOK, Whitening, Rb = 32kbs,   Rx Bandwidth = 64kHz. 
     } ModemConfigChoice;
 
     /// Constructor. You can have multiple instances, but each instance must have its own

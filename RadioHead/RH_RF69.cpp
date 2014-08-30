@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.17 2014/08/10 20:55:17 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.18 2014/08/12 00:54:52 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -17,47 +17,56 @@ uint8_t RH_RF69::_interruptCount = 0; // Index into _deviceForInterrupt for next
 // modulation index = 2 * Fdev / BR
 // Note that I have not had much success with FSK with Fd > ~5
 // You have to construct these by hand, using the data from the RF69 Datasheet :-(
+// or use the SX1231 starter kit software (Ctl-Alt-N to use that without a connected radio)
 #define CONFIG_FSK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_FSK | RH_RF69_DATAMODUL_MODULATIONSHAPING_FSK_NONE)
 #define CONFIG_GFSK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_FSK | RH_RF69_DATAMODUL_MODULATIONSHAPING_FSK_BT1_0)
 #define CONFIG_OOK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_OOK | RH_RF69_DATAMODUL_MODULATIONSHAPING_OOK_NONE)
 
 // Choices for RH_RF69_REG_37_PACKETCONFIG1:
 #define CONFIG_NOWHITE (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_NONE | RH_RF69_PACKETCONFIG1_CRC_ON | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
-#define CONFIG_WHITE (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_WHITENING | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
-#define CONFIG_MANCHESTER (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_MANCHESTER | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
+#define CONFIG_WHITE (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_WHITENING | RH_RF69_PACKETCONFIG1_CRC_ON | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
+#define CONFIG_MANCHESTER (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_MANCHESTER | RH_RF69_PACKETCONFIG1_CRC_ON | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
 PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
 {
     //  02,        03,   04,   05,   06,   19,   37
-    // FSK, No Manchester, no shaping, no whitening, CRC, no address filtering
-    { CONFIG_FSK,  0x3e, 0x80, 0x00, 0x52, 0x56, CONFIG_NOWHITE}, // FSK_Rb2Fd5
-    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x27, 0x56, CONFIG_NOWHITE}, // FSK_Rb2_4Fd2_4
-    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x4f, 0x55, CONFIG_NOWHITE}, // FSK_Rb4_8Fd4_8
-    { CONFIG_FSK,  0x0d, 0x05, 0x00, 0x9d, 0x54, CONFIG_NOWHITE}, // FSK_Rb9_6Fd9_6
-    { CONFIG_FSK,  0x06, 0x83, 0x01, 0x3b, 0x53, CONFIG_NOWHITE}, // FSK_Rb19_2Fd19_2
-    { CONFIG_FSK,  0x03, 0x41, 0x02, 0x75, 0x52, CONFIG_NOWHITE}, // FSK_Rb38_4Fd38_4
-    { CONFIG_FSK,  0x02, 0x2c, 0x07, 0xae, 0x4a, CONFIG_NOWHITE}, // FSK_Rb57_6Fd120
-    { CONFIG_FSK,  0x01, 0x00, 0x08, 0x22, 0x41, CONFIG_NOWHITE}, // FSK_Rb125Fd125
-    { CONFIG_FSK,  0x00, 0x80, 0x10, 0x00, 0x40, CONFIG_NOWHITE}, // FSK_Rb250Fd250
-    { CONFIG_FSK,  0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_NOWHITE}, // FSK_Rb55555Fd50 
+    // FSK, No Manchester, no shaping, whitening, CRC, no address filtering
+    // AFC BW == RX BW == 2 x bit rate
+    { CONFIG_FSK,  0x3e, 0x80, 0x00, 0x52, 0xf6, CONFIG_WHITE}, // FSK_Rb2Fd5      hmmm, not working
+    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x27, 0xf6, CONFIG_WHITE}, // FSK_Rb2_4Fd2_4      hmmm, not working
+    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x4f, 0xf5, CONFIG_WHITE}, // FSK_Rb4_8Fd4_8  hmmm, unreliable
+    { CONFIG_FSK,  0x0d, 0x05, 0x00, 0x9d, 0xf4, CONFIG_WHITE}, // FSK_Rb9_6Fd9_6
+    { CONFIG_FSK,  0x06, 0x83, 0x01, 0x3b, 0xf3, CONFIG_WHITE}, // FSK_Rb19_2Fd19_2
+    { CONFIG_FSK,  0x03, 0x41, 0x02, 0x75, 0xf2, CONFIG_WHITE}, // FSK_Rb38_4Fd38_4
+    { CONFIG_FSK,  0x02, 0x2c, 0x07, 0xae, 0xe2, CONFIG_WHITE}, // FSK_Rb57_6Fd120
+    { CONFIG_FSK,  0x01, 0x00, 0x08, 0x00, 0xe1, CONFIG_WHITE}, // FSK_Rb125Fd125
+    { CONFIG_FSK,  0x00, 0x80, 0x10, 0x00, 0xe0, CONFIG_WHITE}, // FSK_Rb250Fd250
+    { CONFIG_FSK,  0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_WHITE}, // FSK_Rb55555Fd50 
 
     //  02,        03,   04,   05,   06,   19,   37
-    // GFSK (BT=0.5), No Manchester, BT=0.5 shaping, no whitening, CRC, no address filtering
-    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0x56, CONFIG_NOWHITE}, // GFSK_Rb2Fd5
-    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0x56, CONFIG_NOWHITE}, // GFSK_Rb2_4Fd2_4
-    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0x55, CONFIG_NOWHITE}, // GFSK_Rb4_8Fd4_8
-    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0x54, CONFIG_NOWHITE}, // GFSK_Rb9_6Fd9_6
-    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0x53, CONFIG_NOWHITE}, // GFSK_Rb19_2Fd19_2
-    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0x52, CONFIG_NOWHITE}, // GFSK_Rb38_4Fd38_4 working most but not all the time
-    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0x4a, CONFIG_NOWHITE}, // GFSK_Rb57_6Fd120 occasionally works
-    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x22, 0x41, CONFIG_NOWHITE}, // GFSK_Rb125Fd125
-    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0x40, CONFIG_NOWHITE}, // GFSK_Rb250Fd250
-    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_NOWHITE}, // GFSK_Rb55555Fd50 
+    // GFSK (BT=1.0), No Manchester, whitening, CRC, no address filtering
+    // AFC BW == RX BW == 2 x bit rate
+    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0xf6, CONFIG_WHITE}, // GFSK_Rb2Fd5      hmmm, not working
+    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0xf6, CONFIG_WHITE}, // GFSK_Rb2_4Fd2_4  hmmm, not working
+    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0xf5, CONFIG_WHITE}, // GFSK_Rb4_8Fd4_8  hmmm, unreliable
+    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0xf4, CONFIG_WHITE}, // GFSK_Rb9_6Fd9_6
+    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0xf3, CONFIG_WHITE}, // GFSK_Rb19_2Fd19_2
+    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0xf2, CONFIG_WHITE}, // GFSK_Rb38_4Fd38_4
+    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0xe2, CONFIG_WHITE}, // GFSK_Rb57_6Fd120
+    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x00, 0xe1, CONFIG_WHITE}, // GFSK_Rb125Fd125
+    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0xe0, CONFIG_WHITE}, // GFSK_Rb250Fd250
+    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_WHITE}, // GFSK_Rb55555Fd50 
 
     //  02,        03,   04,   05,   06,   19,   37
-    // OOK, No Manchester, no shaping, no whitening, CRC, no address filtering
-    // Caution: this mode has been observed to not be reliable when encryption is enabled
-    // Also it does not interoperate with RF22 in similar mode.
-//    { CONFIG_OOK,  0x68, 0x2b, 0x00, 0x00, 0x51, CONFIG_NOWHITE}, // OOK_Rb1_2Bw75
+    // OOK, No Manchester, no shaping, whitening, CRC, no address filtering
+    // with the help of the SX1231 configuration program
+    // AFC BW == RX BW
+    { CONFIG_OOK,  0x7d, 0x00, 0x00, 0x10, 0x88, CONFIG_WHITE}, // OOK_Rb1Bw1
+    { CONFIG_OOK,  0x68, 0x2b, 0x00, 0x10, 0xf1, CONFIG_WHITE}, // OOK_Rb1_2Bw75
+    { CONFIG_OOK,  0x34, 0x15, 0x00, 0x10, 0xf5, CONFIG_WHITE}, // OOK_Rb2_4Bw4_8
+    { CONFIG_OOK,  0x1a, 0x0b, 0x00, 0x10, 0xf4, CONFIG_WHITE}, // OOK_Rb4_8Bw9_6
+    { CONFIG_OOK,  0x0d, 0x05, 0x00, 0x10, 0xf3, CONFIG_WHITE}, // OOK_Rb9_6Bw19_2
+    { CONFIG_OOK,  0x06, 0x83, 0x00, 0x10, 0xf2, CONFIG_WHITE}, // OOK_Rb19_2Bw38_4
+    { CONFIG_OOK,  0x03, 0xe8, 0x00, 0x10, 0xe2, CONFIG_WHITE}, // OOK_Rb32Bw64
 };
 RH_RF69::RH_RF69(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
     :
