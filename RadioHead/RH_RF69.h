@@ -558,8 +558,8 @@ public:
     typedef enum
     {
 	FSK_Rb2Fd5 = 0,	   ///< FSK, Whitening, Rb = 2kbs,    Fd = 5kHz
-	FSK_Rb2_4Fd2_4,    ///< FSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
-	FSK_Rb4_8Fd4_8,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz UNRELIABLE
+	FSK_Rb2_4Fd4_8,    ///< FSK, Whitening, Rb = 2.4kbs,  Fd = 4.8kHz 
+	FSK_Rb4_8Fd9_6,    ///< FSK, Whitening, Rb = 4.8kbs,  Fd = 9.6kHz 
 	FSK_Rb9_6Fd9_6,    ///< FSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
 	FSK_Rb19_2Fd19_2,  ///< FSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
 	FSK_Rb38_4Fd38_4,  ///< FSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz
@@ -569,8 +569,8 @@ public:
 	FSK_Rb55555Fd50,   ///< FSK, Whitening, Rb = 55555kbs,Fd = 50kHz for RFM69 lib compatibility
 
 	GFSK_Rb2Fd5,	    ///< GFSK, Whitening, Rb = 2kbs,    Fd = 5kHz
-	GFSK_Rb2_4Fd2_4,    ///< GFSK, Whitening, Rb = 2.4kbs,  Fd = 2.4kHz NOT WORKING
-	GFSK_Rb4_8Fd4_8,    ///< GFSK, Whitening, Rb = 4.8kbs,  Fd = 4.8kHz NOT WORKING
+	GFSK_Rb2_4Fd4_8,    ///< GFSK, Whitening, Rb = 2.4kbs,  Fd = 4.8kHz
+	GFSK_Rb4_8Fd9_6,    ///< GFSK, Whitening, Rb = 4.8kbs,  Fd = 9.6kHz
 	GFSK_Rb9_6Fd9_6,    ///< GFSK, Whitening, Rb = 9.6kbs,  Fd = 9.6kHz
 	GFSK_Rb19_2Fd19_2,  ///< GFSK, Whitening, Rb = 19.2kbs, Fd = 19.2kHz
 	GFSK_Rb38_4Fd38_4,  ///< GFSK, Whitening, Rb = 38.4kbs, Fd = 38.4kHz

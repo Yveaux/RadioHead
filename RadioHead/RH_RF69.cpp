@@ -31,9 +31,10 @@ PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
     //  02,        03,   04,   05,   06,   19,   1a,  37
     // FSK, No Manchester, no shaping, whitening, CRC, no address filtering
     // AFC BW == RX BW == 2 x bit rate
+    // Low modulation indexes of ~ 1 at slow speeds do not seem to work very well. Choose MI of 2.
     { CONFIG_FSK,  0x3e, 0x80, 0x00, 0x52, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb2Fd5      
-    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x27, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb2_4Fd2_4
-    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb4_8Fd4_8
+    { CONFIG_FSK,  0x34, 0x15, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb2_4Fd4_8
+    { CONFIG_FSK,  0x1a, 0x0b, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb4_8Fd9_6
     { CONFIG_FSK,  0x0d, 0x05, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // FSK_Rb9_6Fd9_6
     { CONFIG_FSK,  0x06, 0x83, 0x01, 0x3b, 0xf3, 0xf3, CONFIG_WHITE}, // FSK_Rb19_2Fd19_2
     { CONFIG_FSK,  0x03, 0x41, 0x02, 0x75, 0xf2, 0xf2, CONFIG_WHITE}, // FSK_Rb38_4Fd38_4
@@ -46,8 +47,8 @@ PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
     // GFSK (BT=1.0), No Manchester, whitening, CRC, no address filtering
     // AFC BW == RX BW == 2 x bit rate
     { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0xf4, 0xf5, CONFIG_WHITE}, // GFSK_Rb2Fd5
-    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb2_4Fd2_4
-    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb4_8Fd4_8
+    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x4f, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb2_4Fd4_8
+    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb4_8Fd9_6
     { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0xf4, 0xf4, CONFIG_WHITE}, // GFSK_Rb9_6Fd9_6
     { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0xf3, 0xf3, CONFIG_WHITE}, // GFSK_Rb19_2Fd19_2
     { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0xf2, 0xf2, CONFIG_WHITE}, // GFSK_Rb38_4Fd38_4
@@ -60,6 +61,11 @@ PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
     // OOK, No Manchester, no shaping, whitening, CRC, no address filtering
     // with the help of the SX1231 configuration program
     // AFC BW == RX BW
+    // All OOK configs have the default:
+    // Threshold Type: Peak
+    // Peak Threshold Step: 0.5dB
+    // Peak threshiold dec: ONce per chip
+    // Fixed threshold: 6dB
     { CONFIG_OOK,  0x7d, 0x00, 0x00, 0x10, 0x88, 0x88, CONFIG_WHITE}, // OOK_Rb1Bw1
     { CONFIG_OOK,  0x68, 0x2b, 0x00, 0x10, 0xf1, 0xf1, CONFIG_WHITE}, // OOK_Rb1_2Bw75
     { CONFIG_OOK,  0x34, 0x15, 0x00, 0x10, 0xf5, 0xf5, CONFIG_WHITE}, // OOK_Rb2_4Bw4_8
@@ -165,6 +171,8 @@ bool RH_RF69::init()
     setEncryptionKey(NULL);
     // +13dBm, same as power-on default
     setTxPower(13); 
+
+    setModemConfig(GFSK_Rb4_8Fd9_6);
 
     return true;
 }

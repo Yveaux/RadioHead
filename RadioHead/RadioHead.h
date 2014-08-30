@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.30.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.31.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -419,6 +419,9 @@
 ///              ModemConfig RH_RF69::FSK_Rb2Fd5 and RH_RF69::GFSK_Rb2Fd5 are now working.<br> 
 /// \version 1.30 2014-08-25
 ///              Fixed some compile problems with ATtiny84 on Arduinbo 1.5.5 reported by Glen Cook.<br>
+/// \version 1.31 2014-08-27
+///              Changed RH_RF69 FSK and GFSK modulations from Rb2_4Fd2_4 to Rb2_4Fd4_8 and FSK_Rb4_8Fd4_8 to FSK_Rb4_8Fd9_6
+///              since the previous ones were unreliable (they had modulation indexes of 1).<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -427,7 +430,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 30
+#define RH_VERSION_MINOR 31
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
