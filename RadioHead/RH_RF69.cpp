@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.8 2014/04/28 23:07:14 mikem Exp $
+// $Id: RH_RF69.cpp,v 1.9 2014/05/03 00:20:36 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -18,9 +18,13 @@ uint8_t RH_RF69::_interruptCount = 0; // Index into _deviceForInterrupt for next
 // Note that I have not had much success with FSK with Fd > ~5
 // You have to construct these by hand, using the data from the RF69 Datasheet :-(
 #define CONFIG_FSK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_FSK | RH_RF69_DATAMODUL_MODULATIONSHAPING_FSK_NONE)
-#define CONFIG_GFSK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_FSK | RH_RF69_DATAMODUL_MODULATIONSHAPING_FSK_BT0_5)
+#define CONFIG_GFSK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_FSK | RH_RF69_DATAMODUL_MODULATIONSHAPING_FSK_BT1_0)
 #define CONFIG_OOK (RH_RF69_DATAMODUL_DATAMODE_PACKET | RH_RF69_DATAMODUL_MODULATIONTYPE_OOK | RH_RF69_DATAMODUL_MODULATIONSHAPING_OOK_NONE)
+
+// Choices for RH_RF69_REG_37_PACKETCONFIG1:
 #define CONFIG_NOWHITE (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_NONE | RH_RF69_PACKETCONFIG1_CRC_ON | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
+#define CONFIG_WHITE (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_WHITENING | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
+#define CONFIG_MANCHESTER (RH_RF69_PACKETCONFIG1_PACKETFORMAT_VARIABLE | RH_RF69_PACKETCONFIG1_DCFREE_MANCHESTER | RH_RF69_PACKETCONFIG1_ADDRESSFILTERING_NONE)
 PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
 {
     //  02,        03,   04,   05,   06,   19,   37
@@ -38,16 +42,16 @@ PROGMEM static const RH_RF69::ModemConfig MODEM_CONFIG_TABLE[] =
 
     //  02,        03,   04,   05,   06,   19,   37
     // GFSK (BT=0.5), No Manchester, BT=0.5 shaping, no whitening, CRC, no address filtering
-    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0x56, CONFIG_NOWHITE}, // FSK_Rb2Fd5
-    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0x56, CONFIG_NOWHITE}, // FSK_Rb2_4Fd2_4
-    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0x55, CONFIG_NOWHITE}, // FSK_Rb4_8Fd4_8
-    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0x54, CONFIG_NOWHITE}, // FSK_Rb9_6Fd9_6
-    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0x53, CONFIG_NOWHITE}, // FSK_Rb19_2Fd19_2
-    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0x52, CONFIG_NOWHITE}, // FSK_Rb38_4Fd38_4
-    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0x4a, CONFIG_NOWHITE}, // FSK_Rb57_6Fd120
-    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x22, 0x41, CONFIG_NOWHITE}, // FSK_Rb125Fd125
-    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0x40, CONFIG_NOWHITE}, // FSK_Rb250Fd250
-    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_NOWHITE}, // FSK_Rb55555Fd50 
+    { CONFIG_GFSK, 0x3e, 0x80, 0x00, 0x52, 0x56, CONFIG_NOWHITE}, // GFSK_Rb2Fd5
+    { CONFIG_GFSK, 0x34, 0x15, 0x00, 0x27, 0x56, CONFIG_NOWHITE}, // GFSK_Rb2_4Fd2_4
+    { CONFIG_GFSK, 0x1a, 0x0b, 0x00, 0x4f, 0x55, CONFIG_NOWHITE}, // GFSK_Rb4_8Fd4_8
+    { CONFIG_GFSK, 0x0d, 0x05, 0x00, 0x9d, 0x54, CONFIG_NOWHITE}, // GFSK_Rb9_6Fd9_6
+    { CONFIG_GFSK, 0x06, 0x83, 0x01, 0x3b, 0x53, CONFIG_NOWHITE}, // GFSK_Rb19_2Fd19_2
+    { CONFIG_GFSK, 0x03, 0x41, 0x02, 0x75, 0x52, CONFIG_NOWHITE}, // GFSK_Rb38_4Fd38_4 working most but not all the time
+    { CONFIG_GFSK, 0x02, 0x2c, 0x07, 0xae, 0x4a, CONFIG_NOWHITE}, // GFSK_Rb57_6Fd120 occasionally works
+    { CONFIG_GFSK, 0x01, 0x00, 0x08, 0x22, 0x41, CONFIG_NOWHITE}, // GFSK_Rb125Fd125
+    { CONFIG_GFSK, 0x00, 0x80, 0x10, 0x00, 0x40, CONFIG_NOWHITE}, // GFSK_Rb250Fd250
+    { CONFIG_GFSK, 0x02, 0x40, 0x03, 0x33, 0x42, CONFIG_NOWHITE}, // GFSK_Rb55555Fd50 
 
     //  02,        03,   04,   05,   06,   19,   37
     // OOK, No Manchester, no shaping, no whitening, CRC, no address filtering
@@ -113,8 +117,9 @@ bool RH_RF69::init()
     // 4 bytes preamble
     // 2 SYNC words 2d, d4
     // 2 CRC CCITT octets computed on the header, length and data (this in the modem config data)
-    // 0 to 61 bytes data???? REVISIT: check this
-    // We dont use the RH_RF69s address checking: instead we prepend our own headers to the beginning
+    // 0 to 60 bytes data
+    // RSSI Threshold -114dBm
+    // We dont use the RH_RF69s address filtering: instead we prepend our own headers to the beginning
     // of the RH_RF69 payload
     spiWrite(RH_RF69_REG_3C_FIFOTHRESH, RH_RF69_FIFOTHRESH_TXSTARTCONDITION_NOTEMPTY | 0x0f); // thresh 15 is default
     // RSSITHRESH is default
@@ -126,9 +131,8 @@ bool RH_RF69::init()
     // PACKETCONFIG 2 is default 
     spiWrite(RH_RF69_REG_6F_TESTDAGC, RH_RF69_TESTDAGC_CONTINUOUSDAGC_IMPROVED_LOWBETAOFF);
 
-    // Some of these can be changed by the user if necessary.
+    // The following can be changed later by the user if necessary.
     // Set up default configuration
-
     uint8_t syncwords[] = { 0x2d, 0xd4 };
     setSyncWords(syncwords, sizeof(syncwords)); // Same as RF22's
     // Some slow, reliable default speed and modulation
@@ -151,7 +155,6 @@ bool RH_RF69::init()
 // We use this to get PACKETSDENT and PAYLOADRADY interrupts.
 void RH_RF69::handleInterrupt()
 {
-//    Serial.println("interrupt");
     // Get the interrupt cause
     uint8_t irqflags2 = spiRead(RH_RF69_REG_28_IRQFLAGS2);
     if (_mode == RHModeTx && (irqflags2 & RH_RF69_IRQFLAGS2_PACKETSENT))
@@ -210,7 +213,7 @@ void RH_RF69::readFifo()
 
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_RF69.
-// 2 interrupts allows us to have 2 different devices
+// 3 interrupts allows us to have 3 different devices
 void RH_RF69::isr0()
 {
     if (_deviceForInterrupt[0])

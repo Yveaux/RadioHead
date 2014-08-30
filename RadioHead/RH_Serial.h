@@ -6,8 +6,8 @@
 // Works with any serial port. Tested with Arduino Mega connected to Serial1
 // Also works with 3DR Radio V1.3 Telemetry kit (serial at 57600baud)
 
-#ifndef RH_ASK_h
-#define RH_ASK_h
+#ifndef RH_Serial_h
+#define RH_Serial_h
 
 #include <RHGenericDriver.h>
 
@@ -49,7 +49,7 @@ class HardwareSerial;
 /// - HopeRF HM-TR module http://www.hoperf.com/upload/rf_app/HM-TRS.pdf
 /// - Others
 ///
-/// The packetised messages include message encapsulation, headers, a message payload and a checksum
+/// The packetised messages include message encapsulation, headers, a message payload and a checksum.
 ///
 /// \par Packet Format
 ///
@@ -79,18 +79,18 @@ class HardwareSerial;
 /// which is shared with the USB host connections. On such Arduinos, it is not possible to use both 
 /// RH_Serial on the Serial port as well as using the Serial port for debugand other printing or communications.
 /// 
-/// On Arduino Mega, there are 4 serial ports:
-/// - Serial: this is the serial port comnnnected to the USB interface and the programming host.
+/// On Arduino Mega and Due, there are 4 serial ports:
+/// - Serial: this is the serial port connected to the USB interface and the programming host.
 /// - Serial1: on pins 18 (Tx) and 19 (Rx)
 /// - Serial2: on pins 16 (Tx) and 17 (Rx)
 /// - Serial3: on pins 14 (Tx) and 15 (Rx)
 ///
 /// On Uno32, there are 2 serial ports:
-/// - SerialUSB: this is the port to the USB host connection.
+/// - SerialUSB: this is the port for the USB host connection.
 /// - Serial1: on pins 39 (Rx) and 40 (Tx) 
 ///
 /// On Maple and Flymaple, there are 4 serial ports:
-/// - SerialUSB: this is the port to the USB host connection.
+/// - SerialUSB: this is the port for the USB host connection.
 /// - Serial1: on pins 7 (Tx) and 8 (Rx)
 /// - Serial2: on pins 0 (Rx) and 1 (Tx)
 /// - Serial3: on pins 29 (Tx) and 30 (Rx)
@@ -101,7 +101,7 @@ class RH_Serial : public RHGenericDriver
 {
 public:
     /// Constructor
-    /// \param[in] serial Reference to the HArdwareSerial port which will be used by this instance
+    /// \param[in] serial Reference to the HardwareSerial port which will be used by this instance
     RH_Serial(HardwareSerial& serial);
 
     /// Initialise the Driver transport hardware and software.

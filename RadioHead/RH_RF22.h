@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.13 2014/04/29 12:18:27 mikem Exp $
+// $Id: RH_RF22.h,v 1.14 2014/05/03 00:20:36 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h
@@ -892,8 +892,10 @@ public:
 
     /// Sets the transmitter power output level in register RH_RF22_REG_6D_TX_POWER.
     /// Be a good neighbour and set the lowest power level you need.
-    /// After init(), the power will be set to RH_RF22_TXPOW_8DBM.
-    /// Caution: In some countries you may only select RH_RF22_TXPOW_17DBM if you
+    /// After init(), the power will be set to RH_RF22::RH_RF22_TXPOW_8DBM.
+    /// The highest power available on RF22B is RH_RF22::RH_RF22_TXPOW_11DBM (11dBm).
+    /// Higher powers are only available on RF23BP, and then only with adequate power supply.
+    /// Caution: In some countries you may only select RH_RF22::RH_RF22_TXPOW_17DBM if you
     /// are also using frequency hopping.
     /// \param[in] power Transmitter power level, one of RH_RF22_TXPOW_*
     void           setTxPower(uint8_t power);

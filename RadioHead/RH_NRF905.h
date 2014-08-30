@@ -1,7 +1,7 @@
 // RH_NRF905.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_NRF905.h,v 1.3 2014/04/30 00:04:35 mikem Exp mikem $
+// $Id: RH_NRF905.h,v 1.4 2014/05/03 00:20:36 mikem Exp mikem $
 //
 
 #ifndef RH_NRF905_h
@@ -287,13 +287,12 @@ public:
     /// \return true on success, false if len is not in the range 1-4 inclusive.
     bool setNetworkAddress(uint8_t* address, uint8_t len);
 
-    /// Sets the data rate and tranmitter power to use
+    /// Sets the transmitter power to use
     /// \param [in] power Transmitter power. One of NRF905::TransmitPower.
     /// \return true on success
     bool setRF(TransmitPower power);
 
-    /// Sets the radio in power down mode, with the configuration set to the
-    /// last value from setOpMode().
+    /// Sets the radio in power down mode.
     /// Sets chip enable to LOW.
     /// \return true on success
     void setModeIdle();

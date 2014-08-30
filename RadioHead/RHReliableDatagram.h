@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.7 2014/04/29 12:18:27 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.8 2014/05/03 00:20:36 mikem Exp mikem $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -10,6 +10,8 @@
 #include <RHDatagram.h>
 
 // The acknowledgement bit in the FLAGS
+// The top 4 bits of the flags are reserved for RadioHead. The lower 4 bits are reserved
+// for application layer use.
 #define RH_FLAGS_ACK 0x80
 
 /////////////////////////////////////////////////////////////////////

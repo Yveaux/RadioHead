@@ -4,11 +4,11 @@
 #
 # Author: Mike McCauley (mikem@airspayce.com)
 # Copyright (C) 2014 Mike McCauley
-# $Id: Makefile,v 1.5 2014/04/30 00:04:35 mikem Exp mikem $
+# $Id: Makefile,v 1.6 2014/05/03 00:20:36 mikem Exp mikem $
 
 PROJNAME = RadioHead
 # Dont forget to also change the version at the top of RadioHead.h:
-DISTFILE = $(PROJNAME)-1.7.zip
+DISTFILE = $(PROJNAME)-1.8.zip
 
 all:	doxygen dist upload
 

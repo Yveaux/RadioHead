@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.12 2014/04/30 00:04:35 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.13 2014/05/03 00:20:36 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.7.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.8.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -243,6 +243,12 @@
 ///              Removed examples/uno32/uno32_rf22_reliable_datagram_client and 
 ///              examples/uno32/uno32_rf22_reliable_datagram_client since the rf22 examples now work out
 ///              of the box with ChipKit Uno32.
+/// \version 1.8 2014-05-08 <br>
+///              Added support for YIELD in Teensy 2 and 3, suggested by Steve Childress.<br>
+///              Documentation updates. Clarify use of headers and Flags<br>
+///              Fixed misalignment in RH_RF69 between ModemConfigChoice definitions and the implemented choices
+///              which meant you didnt get the choice you thought and GFSK_Rb55555Fd50 hung the transmitter.<br>
+///              Preliminary work on Linux simulator.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -255,6 +261,7 @@
 #define RH_PLATFORM_STM32        3
 #define RH_PLATFORM_GENERIC_AVR8 4
 #define RH_PLATFORM_UNO32        5
+#define RH_PLATFORM_SIMULATOR    6
 
 //	Select platform automatically, if possible
 #ifndef RH_PLATFORM
@@ -266,6 +273,8 @@
   #define RH_PLATFORM RH_PLATFORM_MSP430
  #elif defined(MCU_STM32F103RE)
   #define RH_PLATFORM RH_PLATFORM_STM32
+ #elif defined(__unix__)
+  #define RH_PLATFORM RH_PLATFORM_SIMULATOR
  #else
   #error Platform not defined! 	
  #endif
@@ -308,6 +317,9 @@
  #include <string.h>
  #include <stdbool.h>
 
+#elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
+ // Simulate the sketch on Linux
+ #include <RHutil/simulator.h>
 #else
  #error Platform unknown!
 #endif
@@ -333,7 +345,7 @@
 
 // Try to be compatible with systems that support yield() and multitasking
 // instead of spin-loops
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (TEENSYDUINO)
  #define YIELD yield();
 #else
  #define YIELD

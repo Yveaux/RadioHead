@@ -33,7 +33,7 @@
 //	http://xv4y.radioclub.asia/
 //	
 
-/* $Id: crc16.h 2136 2010-06-08 12:03:38Z joerg_wunsch $ */
+/* $Id: crc16.h,v 1.1 2014/05/07 06:14:39 mikem Exp mikem $ */
 
 #ifndef _UTIL_CRC16_H_
 #define _UTIL_CRC16_H_

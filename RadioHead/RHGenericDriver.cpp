@@ -10,7 +10,9 @@ RHGenericDriver::RHGenericDriver()
     _mode(RHModeInitialising),
     _thisAddress(RH_BROADCAST_ADDRESS),
     _txHeaderTo(RH_BROADCAST_ADDRESS),
-    _txHeaderFrom(RH_BROADCAST_ADDRESS)
+    _txHeaderFrom(RH_BROADCAST_ADDRESS),
+    _txHeaderFlags(0),
+    _txHeaderId(0)
 {
 }
 

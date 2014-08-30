@@ -1,7 +1,7 @@
 // RF22Datagram.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.h,v 1.6 2014/04/28 23:07:14 mikem Exp $
+// $Id: RHDatagram.h,v 1.7 2014/05/03 00:20:36 mikem Exp mikem $
 
 #ifndef RHDatagram_h
 #define RHDatagram_h
@@ -28,10 +28,19 @@
 ///
 /// Not all Radio drivers supported by RadioHead can handle the same message lengths. Some radios can handle
 /// up to 255 octets, and some as few as 28. If you attempt to send a message that is too long for 
-/// the underlying driver, sendTo() will return false and will not transmit the mesage. 
+/// the underlying driver, sendTo() will return false and will not transmit the message. 
 /// It is the programmers responsibility to make
 /// sure that messages passed to sendto() do not exceed the capability of the radio. You can use the 
-/// *_MAX_MESSAGE_LENGTH definitions to help.
+/// *_MAX_MESSAGE_LENGTH definitions or driver->maxMessageLength() to help.
+///
+/// \par Headers
+///
+/// Each message sent and received by a RadioHead driver includes 4 headers:
+/// -TO The node address that the message is being sent to (broadcast RH_BROADCAST_ADDRESS (255) is permitted)
+/// -FROM The node address of the sending node
+/// -ID A message ID, distinct (over short time scales) for each message sent by a particilar node
+/// -FLAGS A bitmask of flags. The most significant 4 bits are reserved for use by RadioHead. The least
+/// significant 4 bits are reserved for applications.
 class RHDatagram
 {
 public:

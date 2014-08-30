@@ -13,13 +13,22 @@
 /// \brief Abstract base class for a RadioHead driver.
 ///
 /// This class defines the functions that must be provided by any RadioHead driver.
-/// Different types of driver wil implement all the abstract functions, and willperhaps override 
+/// Different types of driver will implement all the abstract functions, and will perhaps override 
 /// other functions in this subclass, or perhaps add new functions specifically required by that driver.
 /// Do not directly instantiate this class: it is only to be subclassed by driver classes.
 ///
 /// Subclasses are expected to implement a half-duplex, unreliable, error checked, unaddressed packet transport.
 /// They are expected to carry a message payload with an appropriate maximum length for the transport hardware
 /// and to also carry unaltered 4 message headers: TO, FROM, ID, FLAGS
+///
+/// \par Headers
+///
+/// Each message sent and received by a RadioHead driver includes 4 headers:
+/// -TO The node address that the message is being sent to (broadcast RH_BROADCAST_ADDRESS (255) is permitted)
+/// -FROM The node address of the sending node
+/// -ID A message ID, distinct (over short time scales) for each message sent by a particilar node
+/// -FLAGS A bitmask of flags. The most significant 4 bits are reserved for use by RadioHead. The least
+/// significant 4 bits are reserved for applications.
 class RHGenericDriver
 {
 public:

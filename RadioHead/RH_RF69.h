@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.9 2014/04/28 23:07:14 mikem Exp $
+// $Id: RH_RF69.h,v 1.10 2014/05/03 00:20:36 mikem Exp mikem $
 //
 ///
 
@@ -482,7 +482,6 @@ public:
 	FSK_Rb125Fd125,    ///< FSK, No Manchester, Rb = 125kbs,  Fd = 125kHz
 	FSK_Rb250Fd250,    ///< FSK, No Manchester, Rb = 250kbs,  Fd = 250kHz
 	FSK_Rb55555Fd50,   ///< FSK, No Manchester, Rb = 55555kbs,Fd = 50kHz for RFM69 lib compatibility
-	FSK_Rb_512Fd2_5,   ///< FSK, No Manchester, Rb = 512bs,   Fd = 2.5kHz for POCSAG compatibility
 
 	GFSK_Rb2Fd5,	    ///< GFSK, No Manchester, Rb = 2kbs,    Fd = 5kHz
 	GFSK_Rb2_4Fd2_4,    ///< GFSK, No Manchester, Rb = 2.4kbs,  Fd = 2.4kHz
