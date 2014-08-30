@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.23 2014/08/20 11:29:54 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.24 2014/08/21 05:50:47 mikem Exp mikem $
 //
 ///
 
@@ -586,6 +586,8 @@ public:
 	OOK_Rb9_6Bw19_2,    ///< OOK, Whitening, Rb = 9.6kbs,  Rx Bandwidth = 19.2kHz. 
 	OOK_Rb19_2Bw38_4,   ///< OOK, Whitening, Rb = 19.2kbs, Rx Bandwidth = 38.4kHz. 
 	OOK_Rb32Bw64,       ///< OOK, Whitening, Rb = 32kbs,   Rx Bandwidth = 64kHz. 
+
+//	Test,
     } ModemConfigChoice;
 
     /// Constructor. You can have multiple instances, but each instance must have its own

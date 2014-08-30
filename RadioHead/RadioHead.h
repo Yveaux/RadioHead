@@ -1,16 +1,16 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.35 2014/08/20 11:29:54 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.36 2014/08/21 05:50:47 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
 /// This is the RadioHead Packet Radio library for embedded microprocessors.
 /// It provides a complete object-oriented library for sending and receiving packetized messages
-/// via a variety of common data radios on a range of embedded microprocessors.
+/// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.29.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.30.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -142,9 +142,12 @@
 /// - Maple and Flymaple boards with libmaple and the Maple-IDE development environment
 /// http://leaflabs.com/devices/maple/ and http://www.open-drone.org/flymaple
 ///
-/// - Teensy including Teensy 3.1 built using Arduino IDE 1.0.5 with 
+/// - Teensy including Teensy 3.1 and earlier built using Arduino IDE 1.0.5 with 
 ///   teensyduino addon 1.18 and later.
-///   http://www.pjrc.com/teensy 
+///   http://www.pjrc.com/teensy
+///
+/// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
+///   (Caution: these are very small processors and not all RadioHead features may work, depending on memory requirements)
 ///
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
@@ -414,6 +417,8 @@
 ///              Fixed a compile error in RH_RF24 introduced at the last minute in hte previous release.<br>
 ///              Improvements to RH_RF69 modulation schemes: now include the AFCBW in teh ModemConfig.<br>
 ///              ModemConfig RH_RF69::FSK_Rb2Fd5 and RH_RF69::GFSK_Rb2Fd5 are now working.<br> 
+/// \version 1.30 2014-08-25
+///              Fixed some compile problems with ATtiny84 on Arduinbo 1.5.5 reported by Glen Cook.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -422,7 +427,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 29
+#define RH_VERSION_MINOR 30
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -546,7 +551,7 @@
 // Try to be compatible with systems that support yield() and multitasking
 // instead of spin-loops
 // Recent Arduino IDE or Teensy 3 has yield()
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (TEENSYDUINO && defined(__MK20DX128__))
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155 && !defined(RH_PLATFORM_ATTINY)) || (TEENSYDUINO && defined(__MK20DX128__))
  #define YIELD yield();
 #else
  #define YIELD

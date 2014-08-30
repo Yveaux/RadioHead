@@ -56,7 +56,7 @@ void loop()
     uint8_t len = sizeof(buf);
     if (rf69.recv(buf, &len))
     {
-//      RF69::printBuffer("request: ", buf, len);
+//      RH_RF69::printBuffer("request: ", buf, len);
       Serial.print("got request: ");
       Serial.println((char*)buf);
 //      Serial.print("RSSI: ");

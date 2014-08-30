@@ -189,8 +189,13 @@ void RH_ASK::timerSetup()
     OCR0A = uint8_t(nticks);
 
     // Set mask to fire interrupt when OCF0A bit is set in TIFR0
+#ifdef TIMSK0
+    // ATtiny84
+    TIMSK0 |= _BV(OCIE0A);
+#else
+    // ATtiny85
     TIMSK |= _BV(OCIE0A);
-
+#endif
 
 
  #elif defined(__arm__) && defined(CORE_TEENSY)

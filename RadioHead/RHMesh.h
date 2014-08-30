@@ -175,7 +175,7 @@ public:
     /// \param[in] id If present and not NULL, the referenced uint8_t will be set to the ID
     /// \param[in] flags If present and not NULL, the referenced uint8_t will be set to the FLAGS
     /// (not just those addressed to this node).
-    /// \return true if a valid message was recvived for this node and copied to buf
+    /// \return true if a valid message was received for this node and copied to buf
     bool recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source = NULL, uint8_t* dest = NULL, uint8_t* id = NULL, uint8_t* flags = NULL);
 
     /// Starts the receiver if it is not running already.
