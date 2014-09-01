@@ -434,6 +434,16 @@ void RH_RF22::setModeIdle()
     }
 }
 
+bool RH_RF22::sleep()
+{
+    if (_mode != RHModeSleep)
+    {
+	setOpMode(0);
+	_mode = RHModeSleep;
+    }
+    return true;
+}
+
 void RH_RF22::setModeRx()
 {
     if (_mode != RHModeRx)

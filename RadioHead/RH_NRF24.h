@@ -214,7 +214,7 @@
 /// The examples below assume the Sparkfun WRL-00691 module
 ///
 /// Connect the nRF24L01 to most Arduino's like this (Caution, Arduino Mega has different pins for SPI, 
-/// see below). Use these same connections for Teensy 3.1.
+/// see below). Use these same connections for Teensy 3.1 (use 3.3V not 5V Vcc).
 /// \code
 ///                 Arduino      Sparkfun WRL-00691
 ///                 5V-----------VCC   (3.3V to 7V in)
@@ -546,6 +546,13 @@ public:
     /// The maximum message length supported by this driver
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
+
+    /// Sets the radio into Power Down mode.
+    /// If successful, the radio will stay in Power Down mode until woken by 
+    /// changing mode it idle, transmit or receive (eg by calling send(), recv(), available() etc)
+    /// Caution: there is a time penalty as the radio takes a finite time to wake from sleep mode.
+    /// \return true if sleep mode was successfully entered.
+    virtual bool    sleep();
 
 protected:
     /// Flush the TX FIFOs

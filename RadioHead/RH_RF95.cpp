@@ -279,6 +279,16 @@ void RH_RF95::setModeIdle()
     }
 }
 
+bool RH_RF95::sleep()
+{
+    if (_mode != RHModeSleep)
+    {
+	spiWrite(RH_RF95_REG_01_OP_MODE, RH_RF95_MODE_SLEEP);
+	_mode = RHModeSleep;
+    }
+    return true;
+}
+
 void RH_RF95::setModeRx()
 {
     if (_mode != RHModeRx)

@@ -131,6 +131,11 @@ void  RHGenericDriver::setMode(RHMode mode)
     _mode = mode;
 }
 
+bool  RHGenericDriver::sleep()
+{
+    return false;
+}
+
 // Diagnostic help
 void RHGenericDriver::printBuffer(const char* prompt, const uint8_t* buf, uint8_t len)
 {

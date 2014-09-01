@@ -35,11 +35,9 @@
 // The headers are inside the RF24's payload
 #define RH_RF24_HEADER_LEN 4
 
-// This is the maximum message length that can be supported by this driver. Limited by
-// the size of the FIFO, since we are unable to support on-the-fly filling and emptying 
-// of the FIFO. REVISIT????
+// This is the maximum message length that can be supported by this driver. 
 // Can be pre-defined to a smaller size (to save SRAM) prior to including this header
-// Here we allow for message length 4 bytes of address and header and payload to be included in FIFO size limit.
+// Here we allow for message length 4 bytes of address and header and payload to be included in payload size limit.
 #ifndef RH_RF24_MAX_MESSAGE_LEN
 #define RH_RF24_MAX_MESSAGE_LEN (RH_RF24_MAX_PAYLOAD_LEN - RH_RF24_HEADER_LEN - 1)
 #endif
@@ -798,7 +796,6 @@ public:
   
     /// Initialises this instance and the radio module connected to it.
     /// The following steps are taken:
-/// REVISIT:
     /// - Initialise the slave select and shutdown pins and the SPI interface library
     /// - Checks the connected RF24 module can be communicated
     /// - Attaches an interrupt handler
@@ -975,6 +972,13 @@ public:
     /// \param[in] reg The index of the FRR register to read. 0 means FRR A, 1 means B etc.
     /// \return the value read from the specified Fast Read Response register.
     uint8_t        frr_read(uint8_t reg);
+
+    /// Sets the radio into low-power sleep mode.
+    /// If successful, the transport will stay in sleep mode until woken by 
+    /// changing mode it idle, transmit or receive (eg by calling send(), recv(), available() etc)
+    /// Caution: there is a time penalty as the radio takes a finte time to wake from sleep mode.
+    /// \return true if sleep mode was successfully entered.
+    virtual bool    sleep();
 
 protected:
     /// This is a low level function to handle the interrupts for one instance of RF24.

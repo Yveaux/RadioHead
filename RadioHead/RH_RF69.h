@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.25 2014/08/27 22:00:36 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.26 2014/08/31 01:52:00 mikem Exp mikem $
 //
 ///
 
@@ -752,6 +752,13 @@ public:
     /// idle current but slower transitions. Call this function after init().
     /// \param[in] idleMode The chip operating mode to use when the driver is idle. One of RH_RF69_OPMODE_*
     void setIdleMode(uint8_t idleMode);
+
+    /// Sets the radio into low-power sleep mode.
+    /// If successful, the transport will stay in sleep mode until woken by 
+    /// changing mode it idle, transmit or receive (eg by calling send(), recv(), available() etc)
+    /// Caution: there is a time penalty as the radio takes a finite time to wake from sleep mode.
+    /// \return true if sleep mode was successfully entered.
+    virtual bool    sleep();
 
 protected:
     /// This is a low level function to handle the interrupts for one instance of RF69.

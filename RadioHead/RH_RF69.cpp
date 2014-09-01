@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.21 2014/08/27 22:00:36 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.22 2014/08/31 01:52:00 mikem Exp mikem $
 
 #include <RH_RF69.h>
 
@@ -322,6 +322,16 @@ void RH_RF69::setModeIdle()
 	setOpMode(_idleMode);
 	_mode = RHModeIdle;
     }
+}
+
+bool RH_RF69::sleep()
+{
+    if (_mode != RHModeSleep)
+    {
+	spiWrite(RH_RF69_REG_01_OPMODE, RH_RF69_OPMODE_MODE_SLEEP);
+	_mode = RHModeSleep;
+    }
+    return true;
 }
 
 void RH_RF69::setModeRx()

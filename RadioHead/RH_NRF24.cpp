@@ -144,6 +144,16 @@ void RH_NRF24::setModeIdle()
     }
 }
 
+bool RH_NRF24::sleep()
+{
+    if (_mode != RHModeSleep)
+    {
+	spiWriteRegister(RH_NRF24_REG_00_CONFIG, 0); // Power Down mode
+	digitalWrite(_chipEnablePin, LOW);
+	_mode = RHModeSleep;
+    }
+}
+
 void RH_NRF24::setModeRx()
 {
     if (_mode != RHModeRx)

@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.37 2014/08/27 22:00:36 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.38 2014/08/31 01:52:00 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.32.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.33.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -429,6 +429,10 @@
 ///              Testing with RedBearLab Blend board http://redbearlab.com/blend/. OK.<br>
 ///              Changed more RH_RF69 FSK and GFSK slowish modulations to have modulation index of 2 instead of 1. 
 ///              This required chnaging the symbolic names.<br>
+/// \version 1.33 2014-09-01
+///              Added support for sleep mode in RHGeneric driver, with new mode 
+///              RHModeSleep and new virtual function sleep().<br>
+///              Added support for sleep to RH_RF69, RH_RF22, RH_NRF24, RH_RF24, RH_RF95 drivers.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -437,7 +441,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 32
+#define RH_VERSION_MINOR 33
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

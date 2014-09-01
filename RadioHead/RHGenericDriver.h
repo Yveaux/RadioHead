@@ -45,6 +45,7 @@ public:
     typedef enum
     {
 	RHModeInitialising = 0, ///< Transport is initialising. Initial default value until init() is called..
+	RHModeSleep,            ///< Transport hardware is in low power sleep mode (if supported)
 	RHModeIdle,             ///< Transport is idle.
 	RHModeTx,               ///< Transport is in the process of transmitting a message.
 	RHModeRx                ///< Transport is in the process of receiving a message.
@@ -172,6 +173,14 @@ public:
 
     /// Sets the operating mode of the transport.
     void            setMode(RHMode mode);
+
+    /// Sets the transport hardware into low-power sleep mode
+    /// (if supported). May be overridden by specific drivers to initialte sleep mode.
+    /// If successful, the transport will stay in sleep mode until woken by 
+    /// changing mode it idle, transmit or receive (eg by calling send(), recv(), available() etc)
+    /// \return true if sleep mode is supported by transport hardware and the RadioHead driver, and if sleep mode
+    ///         was successfully entered. If sleep mode is not suported, return false.
+    virtual bool    sleep();
 
     /// Prints a data buffer in HEX.
     /// For diagnostic use

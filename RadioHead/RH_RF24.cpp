@@ -633,6 +633,18 @@ void RH_RF24::setModeIdle()
     }
 }
 
+bool RH_RF24::sleep()
+{
+    if (_mode != RHModeSleep)
+    {
+	uint8_t state[] = { RH_RF24_DEVICE_STATE_SLEEP };
+	command(RH_RF24_CMD_REQUEST_DEVICE_STATE, state, sizeof(state));
+
+	_mode = RHModeSleep;
+    }
+    return true;
+}
+
 void RH_RF24::setModeRx()
 {
     if (_mode != RHModeRx)

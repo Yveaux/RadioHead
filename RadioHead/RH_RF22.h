@@ -1124,6 +1124,13 @@ public:
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
 
+    /// Sets the radio into low-power sleep mode.
+    /// If successful, the transport will stay in sleep mode until woken by 
+    /// changing mode it idle, transmit or receive (eg by calling send(), recv(), available() etc)
+    /// Caution: there is a time penalty as the radio takes a finite time to wake from sleep mode.
+    /// \return true if sleep mode was successfully entered.
+    virtual bool    sleep();
+
 protected:
     /// This is a low level function to handle the interrupts for one instance of RH_RF22.
     /// Called automatically by isr*()
