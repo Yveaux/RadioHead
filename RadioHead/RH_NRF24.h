@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.11 2014/07/23 07:49:42 mikem Exp $
+// $Id: RH_NRF24.h,v 1.12 2014/09/17 22:41:47 mikem Exp $
 //
 
 #ifndef RH_NRF24_h
@@ -114,6 +114,7 @@
 #define RH_NRF24_PWR_m12dBm                                0x02
 #define RH_NRF24_PWR_m6dBm                                 0x04
 #define RH_NRF24_PWR_0dBm                                  0x06
+#define RH_NRF24_LNA_HCURR                                 0x01
 
 // #define RH_NRF24_REG_07_STATUS                             0x07
 #define RH_NRF24_RX_DR                                     0x40

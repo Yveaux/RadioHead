@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.38 2014/08/31 01:52:00 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.41 2014/09/18 00:25:01 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.33.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.34.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -433,6 +433,14 @@
 ///              Added support for sleep mode in RHGeneric driver, with new mode 
 ///              RHModeSleep and new virtual function sleep().<br>
 ///              Added support for sleep to RH_RF69, RH_RF22, RH_NRF24, RH_RF24, RH_RF95 drivers.<br>
+/// \version 1.34 2014-09-19
+///              Fixed compile errors in example rf22_router_test.<br>
+///              Fixed a problem with RH_NRF24::setNetworkAddress, also improvements to RH_NRF24 register printing.
+///              Patched by Yveaux.<br>
+///              Improvements to RH_NRF24 initialisation for version 2.0 silicon.<br>
+///              Fixed problem with ambigiguous print call in RH_RFM69 when compiling for Codec2.<br>
+///              Fixed a problem with RH_NRF24 on RFM73 where the LNA gain was not set properly, reducing the sensitivity
+///              of the receiver.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -441,7 +449,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 33
+#define RH_VERSION_MINOR 34
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

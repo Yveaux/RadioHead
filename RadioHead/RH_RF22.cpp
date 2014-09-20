@@ -1,7 +1,7 @@
 // RH_RF22.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.cpp,v 1.21 2014/08/20 11:29:54 mikem Exp $
+// $Id: RH_RF22.cpp,v 1.22 2014/09/17 22:41:47 mikem Exp $
 
 #include <RH_RF22.h>
 

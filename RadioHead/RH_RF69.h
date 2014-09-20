@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.26 2014/08/31 01:52:00 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.27 2014/09/17 22:41:47 mikem Exp $
 //
 ///
 
@@ -390,6 +390,12 @@
 /// for Mega) or the interrupt request to other than pin D2 (Caution,
 /// different processors have different constraints as to the pins available
 /// for interrupts).
+///
+/// If you have a Teensy 3.1 and a compatible RFM69 breakout board, you will need to 
+/// construct the RH_RF69 instance like this:
+/// \code
+/// RH_RF69 driver(15, 16);
+/// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided
 /// each radio has its own SS and interrupt line (SCK, SDI and SDO are common

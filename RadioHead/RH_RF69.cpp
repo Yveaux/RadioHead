@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.22 2014/08/31 01:52:00 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.23 2014/09/17 22:41:47 mikem Exp $
 
 #include <RH_RF69.h>
 
@@ -522,15 +522,15 @@ bool RH_RF69::printRegisters()
 	Serial.println(spiRead(i), HEX);
     }
     // 0x58
-    Serial.print(0x58, HEX);
+    Serial.print((uint8_t)0x58, HEX);
     Serial.print(" ");
     Serial.println(spiRead(0x58), HEX);
     // 0x6f
-    Serial.print(0x6f, HEX);
+    Serial.print((uint8_t)0x6f, HEX);
     Serial.print(" ");
     Serial.println(spiRead(0x6f), HEX);
     // 0x71
-    Serial.print(0x71, HEX);
+    Serial.print((uint8_t)0x71, HEX);
     Serial.print(" ");
     Serial.println(spiRead(0x71), HEX);
     
