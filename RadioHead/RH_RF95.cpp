@@ -52,6 +52,12 @@ bool RH_RF95::init()
 //	Serial.println(spiRead(RH_RF95_REG_01_OP_MODE), HEX);
 	return false; // No device present?
     }
+
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    // On all other platforms, its innocuous, belt and braces
+    pinMode(_interruptPin, INPUT); 
+
     // Set up interrupt handler
     // Since there are a limited number of interrupt glue functions isr*() available,
     // we can only support a limited number of devices simultaneously
@@ -81,11 +87,6 @@ bool RH_RF95::init()
     // payload is TO + FROM + ID + FLAGS + message data
     // RX mode is implmented with RXCONTINUOUS
     // max message data length is 255 - 4 = 251 octets
-
-    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
-    // ARM M4 requires the below. else pin interrupt doesn't work properly.
-    // On all other platforms, its innocuous, belt and braces
-    pinMode(_interruptPin, INPUT); 
 
     setModeIdle();
 

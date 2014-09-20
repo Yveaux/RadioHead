@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.34.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.35.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -441,6 +441,8 @@
 ///              Fixed problem with ambigiguous print call in RH_RFM69 when compiling for Codec2.<br>
 ///              Fixed a problem with RH_NRF24 on RFM73 where the LNA gain was not set properly, reducing the sensitivity
 ///              of the receiver.
+/// \version 1.35 2014-0-19
+///              Fixed a problem with interrupt setup on RH_RF95 with Teensy3.1. Reported by AD.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -449,7 +451,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 34
+#define RH_VERSION_MINOR 35
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
