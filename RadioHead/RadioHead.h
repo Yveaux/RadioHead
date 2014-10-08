@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.35.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.36.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -441,8 +441,12 @@
 ///              Fixed problem with ambigiguous print call in RH_RFM69 when compiling for Codec2.<br>
 ///              Fixed a problem with RH_NRF24 on RFM73 where the LNA gain was not set properly, reducing the sensitivity
 ///              of the receiver.
-/// \version 1.35 2014-0-19
+/// \version 1.35 2014-09-19
 ///              Fixed a problem with interrupt setup on RH_RF95 with Teensy3.1. Reported by AD.<br>
+/// \version 1.36 2014-09-22
+///              Improvements to interrupt pin assignments for __AVR_ATmega1284__ and__AVR_ATmega1284P__, provided by
+///              Peter Scargill.<br>
+///              Work around a bug in Arduino 1.0.6 where digitalPinToInterrupt is defined but NOT_AN_INTERRUPT is not.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -451,7 +455,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 35
+#define RH_VERSION_MINOR 36
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -582,29 +586,34 @@
 #endif
 
 ////////////////////////////////////////////////////
-// digitalPinToInterrupt is not available prior to Arduino 1.5.6
+// digitalPinToInterrupt is not available prior to Arduino 1.5.6 and 1.0.6
 // See http://arduino.cc/en/Reference/attachInterrupt
+#ifndef NOT_AN_INTERRUPT
+ #define NOT_AN_INTERRUPT -1
+#endif
 #ifndef digitalPinToInterrupt
- #ifndef NOT_AN_INTERRUPT
-  #define NOT_AN_INTERRUPT -1
- #endif
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && !defined(__arm__)
+ #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && !defined(__arm__)
 
-  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1284__)|| defined(__AVR_ATmega1284p__)
-  // Arduino Mega, Mega ADK, Mega Pro
-  // 2->0, 3->1, 21->2, 20->3, 19->4, 18->5
-  #define digitalPinToInterrupt(p) ((p) == 2 ? 0 : ((p) == 3 ? 1 : ((p) >= 18 && (p) <= 21 ? 23 - (p) : NOT_AN_INTERRUPT)))
+  #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+   // Arduino Mega, Mega ADK, Mega Pro
+   // 2->0, 3->1, 21->2, 20->3, 19->4, 18->5
+   #define digitalPinToInterrupt(p) ((p) == 2 ? 0 : ((p) == 3 ? 1 : ((p) >= 18 && (p) <= 21 ? 23 - (p) : NOT_AN_INTERRUPT)))
+
+  #elif defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__) 
+   // Arduino 1284 and 1284P - See Manicbug and Optiboot
+   // 10->0, 11->1, 2->2
+   #define digitalPinToInterrupt(p) ((p) == 10 ? 0 : ((p) == 11 ? 1 : ((p) == 2 ? 2 : NOT_AN_INTERRUPT)))
 
   #elif defined(__AVR_ATmega32U4__)
-  // Leonardo, Yun, Micro, Pro Micro, Flora, Esplora
-  // 3->0, 2->1, 0->2, 1->3, 7->4
-  #define digitalPinToInterrupt(p) ((p) == 0 ? 2 : ((p) == 1 ? 3 : ((p) == 2 ? 1 : ((p) == 3 ? 0 : ((p) == 7 ? 4 : NOT_AN_INTERRUPT)))))
+   // Leonardo, Yun, Micro, Pro Micro, Flora, Esplora
+   // 3->0, 2->1, 0->2, 1->3, 7->4
+   #define digitalPinToInterrupt(p) ((p) == 0 ? 2 : ((p) == 1 ? 3 : ((p) == 2 ? 1 : ((p) == 3 ? 0 : ((p) == 7 ? 4 : NOT_AN_INTERRUPT)))))
 
   #else
-  // All other arduino except Due:
-  // Serial Arduino, Extreme, NG, BT, Uno, Diecimila, Duemilanove, Nano, Menta, Pro, Mini 04, Fio, LilyPad, Ethernet etc
-  // 2->0, 3->1
-  #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p) == 3 ? 1 : NOT_AN_INTERRUPT))
+   // All other arduino except Due:
+   // Serial Arduino, Extreme, NG, BT, Uno, Diecimila, Duemilanove, Nano, Menta, Pro, Mini 04, Fio, LilyPad, Ethernet etc
+   // 2->0, 3->1
+   #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p) == 3 ? 1 : NOT_AN_INTERRUPT))
 
   #endif
  
