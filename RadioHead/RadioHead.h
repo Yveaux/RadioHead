@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.36.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.37.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -34,7 +34,7 @@
 /// It is also possible to use a Driver on its own, without a Manager, although this only allows unaddressed, 
 /// unreliable transport via the Driver's facilities.
 ///
-/// In some specialised cases, it is possible to instantiate more than one Driver and more than one Manager.
+/// In some specialised use cases, it is possible to instantiate more than one Driver and more than one Manager.
 ///
 /// A range of different common embedded microprocessor platforms are supported, allowing your project to run
 /// on your choice of processor.
@@ -70,7 +70,7 @@
 /// boards from LowPowerLab http://lowpowerlab.com/moteino/ )
 /// and compatible chips and modules such as RFM69W, RFM69HW, RFM69CW, RFM69HCW (Semtech SX1231, SX1231H).
 /// Also works with Anarduino MiniWireless -CW and -HW boards http://www.anarduino.com/miniwireless/ including
-/// the marvellous high powered MinWireless-HW (with 20dBm output for excelent range).
+/// the marvellous high powered MinWireless-HW (with 20dBm output for excellent range).
 /// Supports GFSK, FSK.
 ///
 /// - RH_NRF24
@@ -121,7 +121,7 @@
 /// Addressed, reliable, retransmitted, acknowledged variable length messages.
 ///
 /// - RHRouter
-/// Multi-hop delivery from source node to destination node via 0 or more intermediate nodes.
+/// Multi-hop delivery from source node to destination node via 0 or more intermediate nodes, with manual routing.
 ///
 /// - RHMesh
 /// Multi-hop delivery with automatic route discovery and rediscovery.
@@ -137,6 +137,9 @@
 ///  - Moteino http://lowpowerlab.com/moteino/ 
 ///  - Anarduino Mini http://www.anarduino.com/mini/ 
 ///  - RedBearLab Blend V1.0 http://redbearlab.com/blend/ (with Arduino 1.0.5 and RedBearLab Blend Add-On version 20140701) 
+///  -  MoteinoMEGA https://lowpowerlab.com/shop/moteinomega 
+///     (with Arduino 1.0.5 and the MoteinoMEGA Arduino Core 
+///     https://github.com/LowPowerLab/Moteino/tree/master/MEGA/Core)
 ///  - etc.
 ///
 /// - ChipKit Uno32 board and the MPIDE development environment
@@ -150,7 +153,7 @@
 ///   http://www.pjrc.com/teensy
 ///
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
-///   (Caution: these are very small processors and not all RadioHead features may work, depending on memory requirements)
+///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
 ///
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
@@ -225,7 +228,8 @@
 ///
 /// This is the appropriate option if you are creating proprietary applications
 /// and you are not prepared to distribute and share the source code of your
-/// application. Contact info@airspayce.com for details.
+/// application. Contact info@airspayce.com for details (do not use this address for anything other than 
+/// commercial license enquiries. For all other queries, using the RadioHead mailing list).
 ///
 /// \par Revision History
 /// \version 1.1 2014-04-14<br>
@@ -447,6 +451,12 @@
 ///              Improvements to interrupt pin assignments for __AVR_ATmega1284__ and__AVR_ATmega1284P__, provided by
 ///              Peter Scargill.<br>
 ///              Work around a bug in Arduino 1.0.6 where digitalPinToInterrupt is defined but NOT_AN_INTERRUPT is not.<br>
+///  \version 1.37 2014-10-19
+///              Updated doc for connecting RH_NRF24 to Arduino Mega.<br>
+///              Changes to RHGenericDriver::setHeaderFlags(), so that the default for the clear argument
+///              is now RH_FLAGS_APPLICATION_SPECIFIC, which is less surprising to users.
+///              Testing with the excellent MoteinoMEGA from LowPowerLab 
+///              https://lowpowerlab.com/shop/moteinomega with on-board RFM69W.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -455,7 +465,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 36
+#define RH_VERSION_MINOR 37
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

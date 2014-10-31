@@ -14,6 +14,12 @@
 // for application layer use.
 #define RH_FLAGS_ACK 0x80
 
+/// the default retry timeout in milliseconds
+#define RH_DEFAULT_TIMEOUT 200
+
+/// The default number of retries
+#define RH_DEFAULT_RETRIES 3
+
 /////////////////////////////////////////////////////////////////////
 /// \class RHReliableDatagram RHReliableDatagram.h <RHReliableDatagram.h>
 /// \brief RHDatagram subclass for sending addressed, acknowledged, retransmitted datagrams.
@@ -80,10 +86,17 @@ public:
     /// \param[in] timeout The new timeout period in milliseconds
     void setTimeout(uint16_t timeout);
 
-    /// Sets the max number of retries. Defaults to 3. If set to 0, the message will only be sent once.
-    /// sendtoWait will give up and return false if there is no ack received after all transmissions time out.
+    /// Sets the maximum number of retries. Defaults to 3 at construction time. 
+    /// If set to 0, each message will only ever be sent once.
+    /// sendtoWait will give up and return false if there is no ack received after all transmissions time out
+    /// and the retries count is exhausted.
     /// param[in] retries The maximum number a retries.
     void setRetries(uint8_t retries);
+
+    /// Returns the currently configured maximum retries count.
+    /// Can be changed with setRetries().
+    /// \return The currently configured maximum number of retries.
+    uint8_t retries();
 
     /// Send the message (with retries) and waits for an ack. Returns true if an acknowledgement is received.
     /// Synchronous: any message other than the desired ACK received while waiting is discarded.

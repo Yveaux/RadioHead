@@ -20,8 +20,8 @@ RHReliableDatagram::RHReliableDatagram(RHGenericDriver& driver, uint8_t thisAddr
 {
     _retransmissions = 0;
     _lastSequenceNumber = 0;
-    _timeout = 200;
-    _retries = 3;
+    _timeout = RH_DEFAULT_TIMEOUT;
+    _retries = RH_DEFAULT_RETRIES;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -35,6 +35,12 @@ void RHReliableDatagram::setTimeout(uint16_t timeout)
 void RHReliableDatagram::setRetries(uint8_t retries)
 {
     _retries = retries;
+}
+
+////////////////////////////////////////////////////////////////////
+uint8_t RHReliableDatagram::retries()
+{
+    return _retries;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -93,6 +99,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	// Timeout exhausted, maybe retry
 	YIELD;
     }
+    // Retries exhausted
     return false;
 }
 

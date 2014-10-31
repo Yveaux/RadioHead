@@ -136,9 +136,13 @@ public:
     virtual void           setHeaderId(uint8_t id);
 
     /// Sets and clears bits in the FLAGS header to be sent in all subsequent messages
-    /// \param[in] set bitmask of bits to be set
-    /// \param[in] clear bitmask of flags to clear
-    virtual void           setHeaderFlags(uint8_t set, uint8_t clear = RH_FLAGS_NONE);
+    /// First it clears he FLAGS according to the clear argument, then sets the flags according to the 
+    /// set argument. The default for clear always clears the application specific flags.
+    /// \param[in] set bitmask of bits to be set. Flags are cleared with the clear mask before being set.
+    /// \param[in] clear bitmask of flags to clear. Defaults to RH_FLAGS_APPLICATION_SPECIFIC
+    ///            which clears the application specific flags, resultiung in new application specific flags
+    ///            identical to the set.
+    virtual void           setHeaderFlags(uint8_t set, uint8_t clear = RH_FLAGS_APPLICATION_SPECIFIC);
 
     /// Tells the receiver to accept messages with any TO address, not just messages
     /// addressed to thisAddress or the broadcast address

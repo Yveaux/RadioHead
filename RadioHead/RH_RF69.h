@@ -397,6 +397,16 @@
 /// RH_RF69 driver(15, 16);
 /// \endcode
 ///
+/// If you have a MoteinoMEGA https://lowpowerlab.com/shop/moteinomega
+/// with RFM69 on board, you dont need to make any wiring connections 
+/// (the RFM69 module is soldered onto the MotienoMEGA), but you must initialise the RH_RF69
+/// constructor like this:
+/// \code
+/// RH_RF69 driver(4, 2);
+/// \endcode
+/// Make sure you have the MoteinoMEGA core installed in your Arduino hardware folder as described in the
+/// documentation for the MoteinoMEGA.
+///
 /// It is possible to have 2 or more radios connected to one Arduino, provided
 /// each radio has its own SS and interrupt line (SCK, SDI and SDO are common
 /// to all radios)

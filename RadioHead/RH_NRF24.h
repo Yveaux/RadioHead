@@ -138,7 +138,7 @@
 #define RH_NRF24_RX_EMPTY                                  0x01
 
 // #define RH_NRF24_REG_1C_DYNPD                              0x1c
-#define RH_NRF24_DPL_ALL                                   0x2f
+#define RH_NRF24_DPL_ALL                                   0x3f
 #define RH_NRF24_DPL_P5                                    0x20
 #define RH_NRF24_DPL_P4                                    0x10
 #define RH_NRF24_DPL_P3                                    0x08
@@ -256,7 +256,7 @@
 ///                              IRQ   (Interrupt output, not connected)
 ///                 GND----------GND   (ground in)
 /// \endcode
-/// and you can then use the default constructor RH_NRF24(). 
+/// and you can then use the constructor RH_NRF24(8, 53). 
 ///
 /// For an Itead Studio IBoard Pro http://imall.iteadstudio.com/iboard-pro.html, connected by hardware SPI to the 
 /// ITDB02 Parallel LCD Module Interface pins:
@@ -506,8 +506,7 @@ public:
     /// Sends data to the address set by setTransmitAddress()
     /// Sets the radio to TX mode
     /// \param [in] data Data bytes to send.
-    /// \param [in] len Number of data bytes to set in teh TX buffer. The actual size of the 
-    /// transmitted data payload is set by setPayloadSize
+    /// \param [in] len Number of data bytes to send
     /// \return true on success (which does not necessarily mean the receiver got the message, only that the message was
     /// successfully transmitted).
     bool send(const uint8_t* data, uint8_t len);

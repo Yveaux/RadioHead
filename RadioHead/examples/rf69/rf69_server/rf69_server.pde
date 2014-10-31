@@ -17,6 +17,7 @@
 // Singleton instance of the radio driver
 RH_RF69 rf69;
 //RH_RF69 rf69(15, 16); // For RF69 on PJRC breakout board with Teensy 3.1
+//RH_RF69 rf69(4, 2); // For MoteinoMEGA https://lowpowerlab.com/shop/moteinomega
 
 void setup() 
 {

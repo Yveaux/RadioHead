@@ -211,24 +211,24 @@ protected:
     /// Try to resolve a route for the given address. Blocks while discovering the route
     /// which may take up to 4000 msec.
     /// Virtual so subclasses can override.
-    /// \param [in] address The physical addres to resolve
+    /// \param [in] address The physical address to resolve
     /// \return true if the address was resolved and added to the local routing table
     virtual bool doArp(uint8_t address);
 
     /// Tests if the given address of length addresslen is indentical to the
-    /// physical addres of this node.
+    /// physical address of this node.
     /// RHMesh always ikmplements p[hysical addresses as the 1 octet address of the node
     /// given by _thisAddress
     /// Called by recvfromAck() to test whether a RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_REQUEST
     /// is for this node.
-    /// Subclasses may want to override to implemnt mode complicated or longer physical addresses
+    /// Subclasses may want to override to implement more complicated or longer physical addresses
     /// \param [in] address Address of the pyysical addres being tested
     /// \param [in] addresslen Lengthof the address in bytes
     /// \return true if the physical address of this node is identical to address
     virtual bool isPhysicalAddress(uint8_t* address, uint8_t addresslen);
 
 private:
-    /// Temporary mesage buffer
+    /// Temporary message buffer
     static uint8_t _tmpMessage[RH_ROUTER_MAX_MESSAGE_LEN];
 
 };
