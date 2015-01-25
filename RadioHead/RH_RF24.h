@@ -912,7 +912,8 @@ public:
     /// \param[in] power Transmitter power level. For RFM24/Si4460, valid values are 0x00 to 0x4f. For others, 0x00 to 0x7f
     void           setTxPower(uint8_t power);
 
-    /// Dump the values of available command replies and properties to Serial.
+    /// Dump the values of available command replies and properties
+    /// to the Serial device if RH_HAVE_SERIAL is defined for the current platform
     /// Not all commands have valid replies, therefore they are not all printed.
     /// Caution: the list is very long
     bool           printRegisters();

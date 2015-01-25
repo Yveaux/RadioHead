@@ -522,7 +522,8 @@ public:
     bool isSending();
 
     /// Prints the value of all chip registers
-    /// for debugging purposes
+    /// to the Serial device if RH_HAVE_SERIAL is defined for the current platform
+    /// For debugging purposes only.
     /// \return true on success
     bool printRegisters();
 

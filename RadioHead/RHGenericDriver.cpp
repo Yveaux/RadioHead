@@ -141,6 +141,7 @@ void RHGenericDriver::printBuffer(const char* prompt, const uint8_t* buf, uint8_
 {
     uint8_t i;
 
+#ifdef RH_HAVE_SERIAL
     Serial.println(prompt);
     for (i = 0; i < len; i++)
     {
@@ -153,6 +154,7 @@ void RHGenericDriver::printBuffer(const char* prompt, const uint8_t* buf, uint8_
 	}
     }
     Serial.println("");
+#endif
 }
 
 uint16_t RHGenericDriver::rxBad()

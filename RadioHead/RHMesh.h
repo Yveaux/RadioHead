@@ -94,6 +94,15 @@
 ///
 /// Part of the Arduino RH library for operating with HopeRF RH compatible transceivers 
 /// (see http://www.hoperf.com)
+///
+/// \par Memory
+///
+/// RHMesh programs require significant amount of SRAM, often approaching 2kbytes, 
+/// which is beyond or at the limits of some Arduinos and other processors. Programs 
+/// with additional software besides basic RHMesh programs may well require even more. If you have insufficient
+/// SRAM for your program, it may result in failure to run, or wierd crashes and other hard to trace behaviour.
+/// In this event you should consider a processor with more SRAM, such as the MotienoMEGA with 16k
+/// (https://lowpowerlab.com/shop/moteinomega) or others.
 class RHMesh : public RHRouter
 {
 public:

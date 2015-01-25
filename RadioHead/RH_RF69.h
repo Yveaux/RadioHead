@@ -747,7 +747,7 @@ public:
     /// encryption is disabled.
     void           setEncryptionKey(uint8_t* key = NULL);
 
-    /// Returns the time in millis since the last preamble was received, and when the last
+    /// Returns the time in millis since the most recent preamble was received, and when the most recent
     /// RSSI measurement was made.
     uint32_t getLastPreambleTime();
 
@@ -755,7 +755,14 @@ public:
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
 
-    /// Prints the value of all the RF69 registers to Serial.
+    /// Prints the value of a single register
+    /// to the Serial device if RH_HAVE_SERIAL is defined for the current platform
+    /// For debugging/testing only
+    /// \return true if successful
+    bool printRegister(uint8_t reg);
+
+    /// Prints the value of all the RF69 registers
+    /// to the Serial device if RH_HAVE_SERIAL is defined for the current platform
     /// For debugging/testing only
     /// \return true if successful
     bool printRegisters();

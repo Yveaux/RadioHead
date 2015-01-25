@@ -512,27 +512,25 @@ uint8_t RH_RF69::maxMessageLength()
     return RH_RF69_MAX_MESSAGE_LEN;
 }
 
+bool RH_RF69::printRegister(uint8_t reg)
+{  
+#ifdef RH_HAVE_SERIAL
+    Serial.print(reg, HEX);
+    Serial.print(" ");
+    Serial.println(spiRead(reg), HEX);
+#endif
+    return true;
+}
+
 bool RH_RF69::printRegisters()
 {  
     uint8_t i;
     for (i = 0; i < 0x50; i++)
-    {
-	Serial.print(i, HEX);
-	Serial.print(" ");
-	Serial.println(spiRead(i), HEX);
-    }
-    // 0x58
-    Serial.print((uint8_t)0x58, HEX);
-    Serial.print(" ");
-    Serial.println(spiRead(0x58), HEX);
-    // 0x6f
-    Serial.print((uint8_t)0x6f, HEX);
-    Serial.print(" ");
-    Serial.println(spiRead(0x6f), HEX);
-    // 0x71
-    Serial.print((uint8_t)0x71, HEX);
-    Serial.print(" ");
-    Serial.println(spiRead(0x71), HEX);
+	printRegister(i);
+    // Non-contiguous registers
+    printRegister(RH_RF69_REG_58_TESTLNA);
+    printRegister(RH_RF69_REG_6F_TESTDAGC);
+    printRegister(RH_RF69_REG_71_TESTAFC);
     
     return true;
 }

@@ -355,6 +355,7 @@ bool RH_RF24::send(const uint8_t* data, uint8_t len)
 
     sendNextFragment();
     setModeTx();
+    return true;
 }
 
 // This is different to command() since we must not wait for CTS
@@ -369,6 +370,7 @@ bool RH_RF24::writeTxFifo(uint8_t *data, uint8_t len)
 	_spi.transfer(*data++);
     digitalWrite(_slaveSelectPin, HIGH);
     ATOMIC_BLOCK_END;
+    return true;
 }
 
 void RH_RF24::sendNextFragment()
@@ -675,7 +677,7 @@ void RH_RF24::setModeTx()
 	command(RH_RF24_CMD_GPIO_PIN_CFG, config, sizeof(config));
 
 	uint8_t tx_params[] = { 0x00, 
-				(_idleMode << 4) | RH_RF24_CONDITION_RETRANSMIT_NO | RH_RF24_CONDITION_START_IMMEDIATE};
+				(uint8_t)(_idleMode << 4) | RH_RF24_CONDITION_RETRANSMIT_NO | RH_RF24_CONDITION_START_IMMEDIATE};
 	command(RH_RF24_CMD_START_TX, tx_params, sizeof(tx_params));
 	_mode = RHModeTx;
     }
@@ -1110,6 +1112,7 @@ PROGMEM static const uint16_t properties[] =
 
 bool RH_RF24::printRegisters()
 {  
+#ifdef RH_HAVE_SERIAL
     uint8_t i;
     // First print the commands that return interesting data
     for (i = 0; i < NUM_COMMAND_INFO; i++)
@@ -1146,4 +1149,6 @@ bool RH_RF24::printRegisters()
 	Serial.print(result, HEX);
         Serial.println("");
     }
+#endif
+
 }

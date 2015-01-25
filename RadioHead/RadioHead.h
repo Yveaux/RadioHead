@@ -10,14 +10,17 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.37.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.38.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
 /// http://groups.google.com/group/radiohead-arduino
 /// Please use that group for all questions and discussions on this topic. 
 /// Do not contact the author directly, unless it is to discuss commercial licensing.
-/// Before asking a question or reporting a bug, please read http://www.catb.org/esr/faqs/smart-questions.html
+/// Before asking a question or reporting a bug, please read 
+/// - http://en.wikipedia.org/wiki/Wikipedia:Reference_desk/How_to_ask_a_software_question
+/// - http://www.catb.org/esr/faqs/smart-questions.html
+/// - http://www.chiark.greenend.org.uk/~shgtatham/bugs.html
 ///
 /// \par Overview
 ///
@@ -457,6 +460,14 @@
 ///              is now RH_FLAGS_APPLICATION_SPECIFIC, which is less surprising to users.
 ///              Testing with the excellent MoteinoMEGA from LowPowerLab 
 ///              https://lowpowerlab.com/shop/moteinomega with on-board RFM69W.
+///  \version 1.38 2014-12-29
+///              Fixed compile warning on some platforms where RH_RF24::send and RH_RF24::writeTxFifo 
+///              did not return a value.<br>
+///              Fixed some more compiler warnings in RH_RF24 on some platforms.<br>
+///              Refactored printRegisters for some radios. Printing to Serial
+///              is now controlled by the definition of RH_HAVE_SERIAL.<br>
+///              Added partial support for ARM M4 w/CMSIS with STM's Hardware Abstraction lib for 
+///              Steve Childress.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -465,7 +476,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 37
+#define RH_VERSION_MINOR 38
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -475,6 +486,7 @@
 #define RH_PLATFORM_UNO32            5
 #define RH_PLATFORM_SIMULATOR        6
 #define RH_PLATFORM_STM32STD         7
+#define RH_PLATFORM_STM32F4_HAL      8 
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -514,11 +526,14 @@
   #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
  #endif
+ #define RH_HAVE_SERIAL
+
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"
  #include "Energia.h"
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
+ #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
  #include <WProgram.h>
@@ -526,6 +541,7 @@
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
  #define memcpy_P memcpy
+ #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple, Flymaple etc
  #include <wirish.h>	
@@ -538,6 +554,7 @@
  #define PROGMEM
  #define memcpy_P memcpy
  #define Serial SerialUSB
+ #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32 with STM32F4xx_StdPeriph_Driver 
  #include <stm32f4xx.h>
@@ -548,6 +565,7 @@
  #include <HardwareSPI.h>
  #define RH_HAVE_HARDWARE_SPI
  #define Serial SerialUSB
+ #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) 
  #include <avr/io.h>
@@ -558,9 +576,21 @@
  #define RH_HAVE_HARDWARE_SPI
  #include <SPI.h>
 
+// For Steve Childress port to ARM M4 w/CMSIS with STM's Hardware Abstraction lib. 
+// See ArduinoWorkarounds.h (not supplied)
+#elif (RH_PLATFORM == RH_PLATFORM_STM32F4_HAL) 
+ #include <ArduinoWorkarounds.h>
+ #include <stm32f4xx.h> // Also using ST's CubeMX to generate I/O and CPU setup source code for IAR/EWARM, not GCC ARM.
+ #include <stdint.h>
+ #include <string.h>
+ #include <math.h>
+ #define RH_HAVE_HARDWARE_SPI // using HAL (Hardware Abstraction Libraries from ST along with CMSIS, not arduino libs or pins concept.
+
 #elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
  // Simulate the sketch on Linux
  #include <RHutil/simulator.h>
+ #define RH_HAVE_SERIAL
+
 #else
  #error Platform unknown!
 #endif

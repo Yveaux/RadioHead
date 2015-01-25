@@ -225,6 +225,7 @@ bool RH_NRF24::isSending()
 
 bool RH_NRF24::printRegisters()
 {
+#ifdef RH_HAVE_SERIAL
     // Iterate over register range, but don't process registers not in use.
     for (uint8_t r = RH_NRF24_REG_00_CONFIG; r <= RH_NRF24_REG_1D_FEATURE; r++)
     {
@@ -250,6 +251,8 @@ bool RH_NRF24::printRegisters()
         Serial.println("");
       }
     }
+#endif
+
     return true;
 }
 

@@ -172,6 +172,7 @@ void RH_RF22::handleInterrupt()
     spiBurstRead(RH_RF22_REG_03_INTERRUPT_STATUS1, _lastInterruptFlags, 2);
 
 #if 0
+    // DEVELOPER TESTING ONLY
     // Caution: Serial printing in this interrupt routine can cause mysterious crashes
     Serial.print("interrupt ");
     Serial.print(_lastInterruptFlags[0], HEX);
@@ -182,6 +183,7 @@ void RH_RF22::handleInterrupt()
 #endif
 
 #if 0
+    // DEVELOPER TESTING ONLY
     // TESTING: fake an RH_RF22_IFFERROR
     static int counter = 0;
     if (_lastInterruptFlags[0] & RH_RF22_IPKSENT && counter++ == 10)

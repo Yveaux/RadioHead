@@ -172,17 +172,22 @@ bool RH_NRF905::isSending()
     return !(statusRead() & RH_NRF905_STATUS_DR);
 }
 
+bool RH_NRF905::printRegister(uint8_t reg)
+{
+#ifdef RH_HAVE_SERIAL
+    Serial.print(reg, HEX);
+    Serial.print(": ");
+    Serial.println(spiReadRegister(reg), HEX);
+#endif
+}
+
 bool RH_NRF905::printRegisters()
 {
     uint8_t registers[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09};
 
     uint8_t i;
     for (i = 0; i < sizeof(registers); i++)
-    {
-	Serial.print(i, HEX);
-	Serial.print(": ");
-	Serial.println(spiReadRegister(registers[i]), HEX);
-    }
+	printRegister(registers[i]);
     return true;
 }
 
