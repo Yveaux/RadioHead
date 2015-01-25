@@ -276,7 +276,7 @@ int8_t RH_RF69::temperatureRead()
 bool RH_RF69::setFrequency(float centre, float afcPullInRange)
 {
     // Frf = FRF / FSTEP
-    uint32_t frf = (centre * 1000000.0) / RH_RF69_FSTEP;
+    uint32_t frf = (uint32_t)((centre * 1000000.0) / RH_RF69_FSTEP);
     spiWrite(RH_RF69_REG_07_FRFMSB, (frf >> 16) & 0xff);
     spiWrite(RH_RF69_REG_08_FRFMID, (frf >> 8) & 0xff);
     spiWrite(RH_RF69_REG_09_FRFLSB, frf & 0xff);

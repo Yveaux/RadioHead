@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.38.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.39.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -468,6 +468,9 @@
 ///              is now controlled by the definition of RH_HAVE_SERIAL.<br>
 ///              Added partial support for ARM M4 w/CMSIS with STM's Hardware Abstraction lib for 
 ///              Steve Childress.<br>
+///  \version 1.39 2014-12-30
+///              Fix some compiler warnings under IAR.<br>
+///              RH_HAVE_SERIAL and Serial.print calls removed for ATTiny platforms.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -476,7 +479,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 38
+#define RH_VERSION_MINOR 39
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -525,8 +528,8 @@
  #else
   #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
+  #define RH_HAVE_SERIAL
  #endif
- #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"
