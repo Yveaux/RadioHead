@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.14 2014/08/27 22:00:36 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.15 2015/03/09 06:04:26 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -12,7 +12,8 @@ HardwareTimer timer(MAPLE_TIMER);
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
 // Define RH_ASK_ARDUINO_USE_TIMER2 if you want to use Timer 2 instead of Timer 1 on Arduino
-// You may need this to work around other librraies that insiston using timer 1
+// You may need this to work around other librraies that insist on using timer 1
+// Should be moved to header file
 //#define RH_ASK_ARDUINO_USE_TIMER2
 
 // Interrupt handler uses this to find the most recently initialised instance of this driver

@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.12 2014/09/17 22:41:47 mikem Exp $
+// $Id: RH_NRF24.h,v 1.14 2015/03/09 06:04:26 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -170,14 +170,6 @@
 /// of arbitrary length to 28 octets per packet. Use one of the Manager classes to get addressing and 
 /// acknowledgement reliability, routing, meshes etc.
 ///
-/// The nRF24 transceiver is configured to use Enhanced Shockburst with no acknowledgement and no retransmits.
-/// TX_ADDR and RX_ADDR_P0 are set to the network address. If you need the low level auto-acknowledgement
-/// feature supported by this chip, you can use our original NRF24 library 
-/// at http://www.airspayce.com/mikem/arduino/NRF24
-///
-/// Naturally, for any 2 radios to communicate that must be configured to use the same frequency and 
-/// data rate, and with identical network addresses.
-///
 /// The nRF24L01 (http://www.sparkfun.com/datasheets/Wireless/Nordic/nRF24L01P_Product_Specification_1_0.pdf)
 /// is a low-cost 2.4GHz ISM transceiver module. It supports a number of channel frequencies in the 2.4GHz band
 /// and a range of data rates.
@@ -187,6 +179,14 @@
 ///
 /// Several nRF24L01 modules can be connected to an Arduino, permitting the construction of translators
 /// and frequency changers, etc.
+///
+/// The nRF24 transceiver is configured to use Enhanced Shockburst with no acknowledgement and no retransmits.
+/// TX_ADDR and RX_ADDR_P0 are set to the network address. If you need the low level auto-acknowledgement
+/// feature supported by this chip, you can use our original NRF24 library 
+/// at http://www.airspayce.com/mikem/arduino/NRF24
+///
+/// Naturally, for any 2 radios to communicate that must be configured to use the same frequency and 
+/// data rate, and with identical network addresses.
 ///
 /// Example Arduino programs are included to show the main modes of use.
 ///

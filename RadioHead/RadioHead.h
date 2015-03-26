@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.41 2014/09/18 00:25:01 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.43 2015/03/09 06:04:26 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.39.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.40.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and disussion at 
@@ -160,6 +160,9 @@
 ///
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
+///
+/// RadioHead is available for PlatformIO. PlatformIO is a cross-platform code builder and the missing library manager.
+/// http://platformio.org/#!/lib/show/124/RadioHead
 ///
 /// \par History
 ///
@@ -471,6 +474,10 @@
 ///  \version 1.39 2014-12-30
 ///              Fix some compiler warnings under IAR.<br>
 ///              RH_HAVE_SERIAL and Serial.print calls removed for ATTiny platforms.<br>
+///  \version 1.40 2015-03-09
+///              Added notice about availability on PlatformIO, thanks to Ivan Kravets.<br>
+///              Fixed a problem with RH_NRF24 where short packet lengths would occasionally not be trasmitted
+///              due to a race condition with RH_NRF24_TX_DS. Reported by MArk Fox.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -479,7 +486,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 39
+#define RH_VERSION_MINOR 40
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

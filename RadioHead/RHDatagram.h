@@ -1,7 +1,7 @@
-// RF22Datagram.h
+// RHDatagram.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.h,v 1.12 2014/07/23 09:40:42 mikem Exp $
+// $Id: RHDatagram.h,v 1.13 2015/03/09 06:04:26 mikem Exp mikem $
 
 #ifndef RHDatagram_h
 #define RHDatagram_h
@@ -105,7 +105,7 @@ public:
     /// Blocks until the transmitter is no longer transmitting.
     /// or until the timeout occuers, whichever happens first
     /// \param[in] timeout Maximum time to wait in milliseconds.
-    /// \return true if the RF22 completed transmission within the timeout period. False if it timed out.
+    /// \return true if the radio completed transmission within the timeout period. False if it timed out.
     bool            waitPacketSent(uint16_t timeout);
 
     /// Starts the Driver receiver and blocks until a received message is available or a timeout

@@ -1,7 +1,7 @@
 // RH_NRF905.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_NRF905.h,v 1.5 2014/05/08 08:53:26 mikem Exp $
+// $Id: RH_NRF905.h,v 1.7 2015/03/09 06:04:26 mikem Exp mikem $
 //
 
 #ifndef RH_NRF905_h
@@ -275,8 +275,10 @@ public:
   
     /// Sets the transmit and receive channel number.
     /// The RF frequency used is (422.4 + channel/10) * (1+hiFrequency) MHz
+    /// \param[in] channel The channel number. 
+    /// \param[in] hiFrequency false for low frequency band (422.4MHz and up), true for high frequency band (845MHz and up)
     /// \return true on success
-    bool setChannel(uint16_t channel, bool hiFrequency = LOW);
+    bool setChannel(uint16_t channel, bool hiFrequency = false);
 
     /// Sets the Network address.
     /// Only nodes with the same network address can communicate with each other. You 

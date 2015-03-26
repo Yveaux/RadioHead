@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.h,v 1.11 2014/08/27 22:00:36 mikem Exp $
+// $Id: RHMesh.h,v 1.13 2015/03/09 06:04:26 mikem Exp mikem $
 
 #ifndef RHMesh_h
 #define RHMesh_h
@@ -165,7 +165,9 @@ public:
     ///           (usually because it dod not acknowledge due to being off the air or out of range
     uint8_t sendtoWait(uint8_t* buf, uint8_t len, uint8_t dest, uint8_t flags = 0);
 
-    /// Starts the receiver if it is not running already.
+    /// Starts the receiver if it is not running already, processes and possibly routes any received messages
+    /// addressed to other nodes
+    /// and delivers any messages addressed to this node.
     /// If there is a valid application layer message available for this node (or RH_BROADCAST_ADDRESS), 
     /// send an acknowledgement to the last hop
     /// address (blocking until this is complete), then copy the application message payload data

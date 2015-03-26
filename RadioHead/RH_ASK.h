@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.10 2014/08/12 00:54:52 mikem Exp $
+// $Id: RH_ASK.h,v 1.11 2015/03/09 06:04:26 mikem Exp mikem $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -62,9 +62,10 @@
 /// \brief Driver to send and receive unaddressed, unreliable datagrams via inexpensive ASK (Amplitude Shift Keying) or 
 /// OOK (On Off Keying) RF transceivers.
 ///
-/// The message format and software technology is based on our VirtualWire library 
+/// The message format and software technology is based on our earlier VirtualWire library 
 /// (http://www.airspayce.com/mikem/arduino/VirtualWire), with which it is compatible.
-/// See http://www.airspayce.com/mikem/arduino/VirtualWire.pdf for more details.
+/// See http://www.airspayce.com/mikem/arduino/VirtualWire.pdf for more details. 
+/// VirtualWire is now obsolete and unsupported and is replaced by this library.
 ///
 /// RH_ASK is a Driver for Arduino, Maple and others that provides features to send short
 /// messages, without addressing, retransmit or acknowledgment, a bit like UDP
@@ -93,6 +94,36 @@
 ///
 /// See ASH Transceiver Software Designer's Guide of 2002.08.07
 ///   http://www.rfm.com/products/apnotes/tr_swg05.pdf
+///
+/// http://web.engr.oregonstate.edu/~moon/research/files/cas2_mar_07_dpll.pdf while not directly relevant 
+/// is also interesting.
+/// \par Implementation Details
+///
+/// Messages of up to RH_ASK_MAX_PAYLOAD_LEN (67) bytes can be sent
+/// Each message is transmitted as:
+///
+/// - 36 bit training preamble consisting of 0-1 bit pairs
+/// - 12 bit start symbol 0xb38
+/// - 1 byte of message length byte count (4 to 30), count includes byte count and FCS bytes
+/// - n message bytes (uincluding 4 bytes of header), maximum n is RH_ASK_MAX_MESSAGE_LEN + 4 (64)
+/// - 2 bytes FCS, sent low byte-hi byte
+///
+/// Everything after the start symbol is encoded 4 to 6 bits, Therefore a byte in the message
+/// is encoded as 2x6 bit symbols, sent hi nybble, low nybble. Each symbol is sent LSBit
+/// first. The message may consist of any binary digits.
+/// 
+/// The Arduino Diecimila clock rate is 16MHz => 62.5ns/cycle.
+/// For an RF bit rate of 2000 bps, need 500microsec bit period.
+/// The ramp requires 8 samples per bit period, so need 62.5microsec per sample => interrupt tick is 62.5microsec.
+///
+/// The maximum packet length consists of
+/// (6 + 2 + RH_ASK_MAX_MESSAGE_LEN*2) * 6 = 768 bits = 0.384 secs (at 2000 bps).
+/// where RH_ASK_MAX_MESSAGE_LEN is RH_ASK_MAX_PAYLOAD_LEN - 7 (= 60).
+/// The code consists of an ISR interrupt handler. Most of the work is done in the interrupt
+/// handler for both transmit and receive, but some is done from the user level. Expensive
+/// functions like CRC computations are always done in the user level.
+/// Caution: VirtualWire takes over Arduino Timer1, and this will affect the PWM capabilities of the 
+/// digital pins 9 and 10.
 ///
 /// \par Supported Hardware
 ///
