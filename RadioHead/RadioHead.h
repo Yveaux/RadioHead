@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.45 2015/03/29 03:53:47 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.46 2015/05/17 00:11:26 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -157,6 +157,11 @@
 ///
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
 ///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
+///
+/// - Raspberry Pi
+///   Uses BCM2835 library for GPIO
+///   Currently works only with RH_NRF24 driver or other drivers that do not require interrupt support.
+///   Contributed by Mike Poublon
 ///
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
@@ -482,6 +487,12 @@
 ///              RH_RF22, RH_RF24, RH_RF69 and RH_RF95 improved to allow driver.init() to be called multiple
 ///              times without reallocating a new interrupt, allowing the driver to be reinitialised
 ///              after sleeping or powering down.
+///  \version 1.42 2015-05-17
+///              Added support for RH_NRF24 driver on Raspberry Pi, using BCM2835
+///              library for GPIO pin IO. Contributed by Mike Poublon.<br>
+///              Tested RH_NRF24 module with NRF24L01+PA+LNA SMA Antenna Wireless Transceiver modules
+///              similar to: http://www.elecfreaks.com/wiki/index.php?title=2.4G_Wireless_nRF24L01p_with_PA_and_LNA
+///              works with no software changes. Measured max power output 18dBm.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -501,6 +512,7 @@
 #define RH_PLATFORM_SIMULATOR        6
 #define RH_PLATFORM_STM32STD         7
 #define RH_PLATFORM_STM32F4_HAL      8 
+#define RH_PLATFORM_RASPI            9
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -511,10 +523,12 @@
   #define RH_PLATFORM RH_PLATFORM_ARDUINO
  #elif defined(__MSP430G2452__) || defined(__MSP430G2553__)
   #define RH_PLATFORM RH_PLATFORM_MSP430
-#elif defined(MCU_STM32F103RE)
+ #elif defined(MCU_STM32F103RE)
   #define RH_PLATFORM RH_PLATFORM_STM32
-#elif defined(USE_STDPERIPH_DRIVER)
+ #elif defined(USE_STDPERIPH_DRIVER)
   #define RH_PLATFORM RH_PLATFORM_STM32STD
+ #elif defined(RASPBERRY_PI)
+  #define RH_PLATFORM RH_PLATFORM_RASPI
  #elif defined(__unix__)
   #define RH_PLATFORM RH_PLATFORM_SIMULATOR
  #else
@@ -599,6 +613,15 @@
  #include <string.h>
  #include <math.h>
  #define RH_HAVE_HARDWARE_SPI // using HAL (Hardware Abstraction Libraries from ST along with CMSIS, not arduino libs or pins concept.
+
+#elif (RH_PLATFORM == RH_PLATFORM_RASPI)
+ #define RH_HAVE_HARDWARE_SPI
+ #define RH_HAVE_SERIAL
+ #define PROGMEM
+ #include <RHutil/RasPi.h>
+ #include <string.h>
+ //Define SS for CS0 or pin 24
+ #define SS 8
 
 #elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
  // Simulate the sketch on Linux

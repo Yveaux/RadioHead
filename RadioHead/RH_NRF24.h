@@ -158,7 +158,9 @@
 ///
 /// Supported transceivers include:
 /// - Nordic nRF24 based 2.4GHz radio modules, such as nRF24L01 http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01
-/// and other compatible transceivers.
+/// and other compatible transceivers. 
+/// - nRF24L01p with PA and LNA modules that produce a higher power output similar to this one: 
+/// http://www.elecfreaks.com/wiki/index.php?title=2.4G_Wireless_nRF24L01p_with_PA_and_LNA
 /// - Sparkfun WRL-00691 module with nRF24L01 https://www.sparkfun.com/products/691 
 /// or WRL-00705 https://www.sparkfun.com/products/705 etc.
 /// - Hope-RF RFM73 http://www.hoperf.com/rf/2.4g_module/RFM73.htm and 
@@ -281,7 +283,7 @@
 /// compatible with other modules running hardware SPI.
 /// \code
 ///  IBoard Signal=Module pin          Sparkfun WRL-00691
-///        3.3V      2-----------VCC  (3.3V to 7V in)
+///        3.3V      2----------VCC   (3.3V to 7V in)
 ///         D12      3-----------CE   (chip enable in)
 ///         D29      4----------CSN   (chip select in)
 ///         D9       5----------SCK   (SPI clock in)
@@ -302,6 +304,30 @@
 ///     spi.setPins(7, 8, 9);
 ///     ....
 /// \endcode
+///
+///
+/// For Raspberry Pi with Sparkfun WRL-00691 
+///     Raspberry Pi P1 pin          Sparkfun WRL-00691
+///             5V      2-----------VCC   (3.3V to 7V in)
+///         GPIO25      22-----------CE   (chip enable in)
+///         GPIO8       24----------CSN   (chip select in)
+///         GPIO11      23----------SCK   (SPI clock in)
+///         GPIO10      19----------SDI   (SPI Data in)
+///         GPIO9       21----------SDO   (SPI data out)
+///                                 IRQ   (Interrupt output, not connected)
+///            GND       6----------GND   (ground in)
+/// \endcode
+/// and initialise like this:
+/// \code
+///  RH_NRF24 nrf24(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24);
+/// \endcode
+/// See the example program and Makefile in examples/raspi. Requires bcm2835 library to be previously installed.
+/// \code
+/// cd examples/raspi
+/// make
+/// sudo ./RasPiRH
+/// \endcode
+/// \code
 ///
 /// You can override the default settings for the CSN and CE pins 
 /// in the NRF24() constructor if you wish to connect the slave select CSN to other than the normal one for your 
@@ -351,6 +377,8 @@
 /// my Yaesu VR-5000 receiver indicated the center frequency for my test radios
 /// was 2401.121 MHz. Its not clear to me if the Yaesu
 /// is the source of the error, but I tend to believe it, which would make the nRF24l01 frequency out by 121kHz.
+///
+/// The measured power output for a nRF24L01p with PA and LNA set to 0dBm output is about 18dBm.
 /// 
 /// \par Radio operating strategy and defaults
 ///
@@ -386,6 +414,7 @@ public:
     /// To be passed to setRF();
     typedef enum
     {
+	// Add 20dBm for nRF24L01p with PA and LNA modules
 	TransmitPowerm18dBm = 0,        ///< On nRF24, -18 dBm
 	TransmitPowerm12dBm,            ///< On nRF24, -12 dBm
 	TransmitPowerm6dBm,             ///< On nRF24, -6 dBm
@@ -591,6 +620,6 @@ private:
 /// @example nrf24_server.pde
 /// @example nrf24_reliable_datagram_client.pde
 /// @example nrf24_reliable_datagram_server.pde
-
+/// @example RasPiRH.cpp
 
 #endif 

@@ -48,6 +48,8 @@ RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
 RadioHead/RHutil/atomic.h
 RadioHead/RHutil/simulator.h
+RadioHead/RHutil/RasPi.cpp
+RadioHead/RHutil/RasPi.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde
 RadioHead/examples/ask/ask_reliable_datagram_server/ask_reliable_datagram_server.pde
 RadioHead/examples/ask/ask_transmitter/ask_transmitter.pde
@@ -89,6 +91,8 @@ RadioHead/examples/serial/serial_reliable_datagram_client/serial_reliable_datagr
 RadioHead/examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.pde
 RadioHead/examples/simulator/simulator_reliable_datagram_client/simulator_reliable_datagram_client.pde
 RadioHead/examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.pde
+RadioHead/examples/raspi/RasPiRH.cpp
+RadioHead/examples/raspi/Makefile
 RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp
