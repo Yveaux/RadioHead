@@ -89,6 +89,7 @@ RH_RF69::RH_RF69(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
 {
     _interruptPin = interruptPin;
     _idleMode = RH_RF69_OPMODE_MODE_STDBY;
+    _myInterruptIndex = 0xff; // Not allocated yet
 }
 
 void RH_RF69::setIdleMode(uint8_t idleMode)
@@ -125,16 +126,23 @@ bool RH_RF69::init()
     // ON some devices, notably most Arduinos, the interrupt pin passed in is actuallt the 
     // interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
     // yourself based on knwledge of what Arduino board you are running on.
-    _deviceForInterrupt[_interruptCount] = this;
-    if (_interruptCount == 0)
+    if (_myInterruptIndex == 0xff)
+    {
+	// First run, no interrupt allocated yet
+	if (_interruptCount <= RH_RF69_NUM_INTERRUPTS)
+	    _myInterruptIndex = _interruptCount++;
+	else
+	    return false; // Too many devices, not enough interrupt vectors
+    }
+    _deviceForInterrupt[_myInterruptIndex] = this;
+    if (_myInterruptIndex == 0)
 	attachInterrupt(interruptNumber, isr0, RISING);
-    else if (_interruptCount == 1)
+    else if (_myInterruptIndex == 1)
 	attachInterrupt(interruptNumber, isr1, RISING);
-    else if (_interruptCount == 2)
+    else if (_myInterruptIndex == 2)
 	attachInterrupt(interruptNumber, isr2, RISING);
     else
 	return false; // Too many devices, not enough interrupt vectors
-    _interruptCount++;
 
     setModeIdle();
 

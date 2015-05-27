@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.19 2015/01/02 21:38:24 mikem Exp $
+// $Id: RH_NRF24.cpp,v 1.21 2015/03/29 03:53:47 mikem Exp mikem $
 
 #include <RH_NRF24.h>
 
@@ -212,10 +212,10 @@ bool RH_NRF24::waitPacketSent()
 	YIELD;
 
     // Must clear RH_NRF24_MAX_RT if it is set, else no further comm
-    spiWriteRegister(RH_NRF24_REG_07_STATUS, RH_NRF24_TX_DS | RH_NRF24_MAX_RT);
     if (status & RH_NRF24_MAX_RT)
 	flushTx();
     setModeIdle();
+    spiWriteRegister(RH_NRF24_REG_07_STATUS, RH_NRF24_TX_DS | RH_NRF24_MAX_RT);
     // Return true if data sent, false if MAX_RT
     return status & RH_NRF24_TX_DS;
 }

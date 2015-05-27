@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.43 2015/03/09 06:04:26 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.45 2015/03/29 03:53:47 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,10 +10,10 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.40.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.41.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
-/// You can also find online help and disussion at 
+/// You can also find online help and discussion at 
 /// http://groups.google.com/group/radiohead-arduino
 /// Please use that group for all questions and discussions on this topic. 
 /// Do not contact the author directly, unless it is to discuss commercial licensing.
@@ -305,7 +305,7 @@
 ///              messages between simulated sketches and can simulate random message loss etc.<br>
 ///              Fixed a number of typos and improved some documentation.<br>
 /// \version 1.10 2014-05-15 <br>
-///              Added support for RFM73 modules to RH_NRF24. These 2 radios are very similar, anc can interoperate
+///              Added support for RFM73 modules to RH_NRF24. These 2 radios are very similar, and can interoperate
 ///              with each other. Added new RH_NRF24::TransmitPower enums for the RFM73, which has a different 
 ///              range of available powers<br>
 ///              reduced the default SPI bus speed for RH_NRF24 to 1MHz, since so many modules and CPU have problems
@@ -392,7 +392,7 @@
 ///              Default modulation for RH_RF95 was incorrectly set to a very slow Bw125Cr48Sf4096
 /// \version 1.25 2014-07-25
 ///              The available() function will longer terminate any current transmission, and force receive mode. 
-///              Now, if there is no unprocessed incoming message abd an outgoing message is currently being transmitted, 
+///              Now, if there is no unprocessed incoming message and an outgoing message is currently being transmitted, 
 ///              available() will return false.<br>
 ///              RHRouter::sendtoWait(uint8_t*, uint8_t, uint8_t, uint8_t) renamed to sendtoFromSourceWait due to conflicts
 ///              with new sendtoWait() with optional flags.<br>
@@ -477,7 +477,11 @@
 ///  \version 1.40 2015-03-09
 ///              Added notice about availability on PlatformIO, thanks to Ivan Kravets.<br>
 ///              Fixed a problem with RH_NRF24 where short packet lengths would occasionally not be trasmitted
-///              due to a race condition with RH_NRF24_TX_DS. Reported by MArk Fox.<br>
+///              due to a race condition with RH_NRF24_TX_DS. Reported by Mark Fox.<br>
+///  \version 1.41 2015-03-29
+///              RH_RF22, RH_RF24, RH_RF69 and RH_RF95 improved to allow driver.init() to be called multiple
+///              times without reallocating a new interrupt, allowing the driver to be reinitialised
+///              after sleeping or powering down.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -486,7 +490,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 40
+#define RH_VERSION_MINOR 41
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

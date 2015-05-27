@@ -63,6 +63,7 @@ RH_RF22::RH_RF22(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
     _interruptPin = interruptPin;
     _idleMode = RH_RF22_XTON; // Default idle state is READY mode
     _polynomial = CRC_16_IBM; // Historical
+    _myInterruptIndex = 0xff; // Not allocated yet
 }
 
 void RH_RF22::setIdleMode(uint8_t idleMode)
@@ -108,22 +109,29 @@ bool RH_RF22::init()
     // On some devices, notably most Arduinos, the interrupt pin passed in is actually the 
     // interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
     // yourself based on knowledge of what Arduino board you are running on.
-    _deviceForInterrupt[_interruptCount] = this;
-    if (_interruptCount == 0)
+    if (_myInterruptIndex == 0xff)
+    {
+	// First run, no interrupt allocated yet
+	if (_interruptCount <= RH_RF22_NUM_INTERRUPTS)
+	    _myInterruptIndex = _interruptCount++;
+	else
+	    return false; // Too many devices, not enough interrupt vectors
+    }
+    _deviceForInterrupt[_myInterruptIndex] = this;
+    if (_myInterruptIndex == 0)
 	attachInterrupt(interruptNumber, isr0, FALLING);
-    else if (_interruptCount == 1)
+    else if (_myInterruptIndex == 1)
 	attachInterrupt(interruptNumber, isr1, FALLING);
-    else if (_interruptCount == 2)
+    else if (_myInterruptIndex == 2)
 	attachInterrupt(interruptNumber, isr2, FALLING);
     else
 	return false; // Too many devices, not enough interrupt vectors
-    _interruptCount++;
 
     setModeIdle();
 
     clearTxBuf();
     clearRxBuf();
-  
+
     // Most of these are the POR default
     spiWrite(RH_RF22_REG_7D_TX_FIFO_CONTROL2, RH_RF22_TXFFAEM_THRESHOLD);
     spiWrite(RH_RF22_REG_7E_RX_FIFO_CONTROL,  RH_RF22_RXFFAFULL_THRESHOLD);

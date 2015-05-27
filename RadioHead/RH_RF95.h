@@ -577,6 +577,10 @@ private:
     /// The configured interrupt pin connected to this instance
     uint8_t             _interruptPin;
 
+    /// The index into _deviceForInterrupt[] for this device (if an interrupt is already allocated)
+    /// else 0xff
+    uint8_t             _myInterruptIndex;
+
     /// Number of octets in the buffer
     volatile uint8_t    _bufLen;
     

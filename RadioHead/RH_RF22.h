@@ -900,7 +900,7 @@ public:
     typedef enum
     {
 	CRC_CCITT = 0,       ///< CCITT
-	CRC_16_IBM = 1,      ///< CRC-16 (IBM) The default used by RH_RF22 library
+	CRC_16_IBM = 1,      ///< CRC-16 (IBM) The default used by RH_RF22 driver
 	CRC_IEC_16 = 2,      ///< IEC-16
 	CRC_Biacheva = 3     ///< Biacheva
     } CRCPolynomial;
@@ -1221,10 +1221,16 @@ protected:
 
     /// Array of instances connected to interrupts 0 and 1
     static RH_RF22*     _deviceForInterrupt[];
+
     /// Index of next interrupt number to use in _deviceForInterrupt
     static uint8_t      _interruptCount;
+
     /// The configured interrupt pin connected to this instance
     uint8_t             _interruptPin;
+
+    /// The index into _deviceForInterrupt[] for this device (if an interrupt is already allocated)
+    /// else 0xff
+    uint8_t             _myInterruptIndex;
 
     /// The radio mode to use when mode is idle
     uint8_t             _idleMode; 
