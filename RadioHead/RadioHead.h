@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.46 2015/05/17 00:11:26 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.47 2015/07/01 00:46:05 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.41.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.43.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -85,6 +85,9 @@
 /// - RH_NRF905
 /// Works with Nordic nRF905 based 433/868/915 MHz radio modules.
 ///
+/// - RH_NRF51
+/// Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
+///
 /// - RH_RF95
 /// Works with Semtech SX1276/77/78 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
 /// Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
@@ -135,7 +138,7 @@
 /// 
 /// A range of platforms is supported:
 ///
-/// - Arduino and the Arduino IDE (version 1.0 to 1.5.5 and later)
+/// - Arduino and the Arduino IDE (version 1.0 to 1.6.4 and later)
 /// Including Diecimila, Uno, Mega, Leonardo, Yun etc. http://arduino.cc/, Also similar boards such as 
 ///  - Moteino http://lowpowerlab.com/moteino/ 
 ///  - Anarduino Mini http://www.anarduino.com/mini/ 
@@ -151,12 +154,15 @@
 /// - Maple and Flymaple boards with libmaple and the Maple-IDE development environment
 /// http://leaflabs.com/devices/maple/ and http://www.open-drone.org/flymaple
 ///
-/// - Teensy including Teensy 3.1 and earlier built using Arduino IDE 1.0.5 with 
-///   teensyduino addon 1.18 and later.
+/// - Teensy including Teensy 3.1 and earlier built using Arduino IDE 1.0.5 to 1.6.4 and later with 
+///   teensyduino addon 1.18 to 1.23 and later.
 ///   http://www.pjrc.com/teensy
 ///
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
 ///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
+///
+/// - nRF51 compatible Arm chips with Arduino 1.6.4 and later using the procedures
+///   in http://redbearlab.com/getting-started-nrf51822/
 ///
 /// - Raspberry Pi
 ///   Uses BCM2835 library for GPIO
@@ -166,12 +172,13 @@
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
 ///
-/// RadioHead is available for PlatformIO. PlatformIO is a cross-platform code builder and the missing library manager.
+/// RadioHead is available (through the efforts of others) 
+/// for PlatformIO. PlatformIO is a cross-platform code builder and the missing library manager.
 /// http://platformio.org/#!/lib/show/124/RadioHead
 ///
 /// \par History
 ///
-/// RadioHead was created in April 2014, substantially based on code from some of our other earlier libraries:
+/// RadioHead was created in April 2014, substantially based on code from some of our other earlier Radio libraries:
 ///
 /// - RHMesh, RHRouter, RHReliableDatagram and RHDatagram are derived from the RF22 library version 1.39.
 /// - RH_RF22 is derived from the RF22 library version 1.39.
@@ -493,6 +500,10 @@
 ///              Tested RH_NRF24 module with NRF24L01+PA+LNA SMA Antenna Wireless Transceiver modules
 ///              similar to: http://www.elecfreaks.com/wiki/index.php?title=2.4G_Wireless_nRF24L01p_with_PA_and_LNA
 ///              works with no software changes. Measured max power output 18dBm.<br>
+///  \version 1.43 2015-08-02
+///              Added RH_NRF51 driver to support Nordic nRF51 family processor with 2.4GHz radio such 
+///              as nRF51822, to be built on Arduino 1.6.4 and later. Tested with RedBearLabs nRF51822 board
+///              and BLE Nano kit<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -501,7 +512,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 41
+#define RH_VERSION_MINOR 43
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -513,12 +524,15 @@
 #define RH_PLATFORM_STM32STD         7
 #define RH_PLATFORM_STM32F4_HAL      8 
 #define RH_PLATFORM_RASPI            9
+#define RH_PLATFORM_NRF51            10
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
 #ifndef RH_PLATFORM
  #if defined(MPIDE)
   #define RH_PLATFORM RH_PLATFORM_UNO32
+ #elif defined(NRF51)
+  #define RH_PLATFORM RH_PLATFORM_NRF51
  #elif defined(ARDUINO)
   #define RH_PLATFORM RH_PLATFORM_ARDUINO
  #elif defined(__MSP430G2452__) || defined(__MSP430G2553__)
@@ -622,6 +636,11 @@
  #include <string.h>
  //Define SS for CS0 or pin 24
  #define SS 8
+
+#elif (RH_PLATFORM == RH_PLATFORM_NRF51)
+ #define RH_HAVE_SERIAL
+ #define PROGMEM
+  #include <Arduino.h>
 
 #elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
  // Simulate the sketch on Linux

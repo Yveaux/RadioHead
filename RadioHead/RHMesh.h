@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.h,v 1.13 2015/03/09 06:04:26 mikem Exp $
+// $Id: RHMesh.h,v 1.14 2015/07/01 00:46:05 mikem Exp mikem $
 
 #ifndef RHMesh_h
 #define RHMesh_h
@@ -228,7 +228,7 @@ protected:
 
     /// Tests if the given address of length addresslen is indentical to the
     /// physical address of this node.
-    /// RHMesh always ikmplements p[hysical addresses as the 1 octet address of the node
+    /// RHMesh always implements physical addresses as the 1 octet address of the node
     /// given by _thisAddress
     /// Called by recvfromAck() to test whether a RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_REQUEST
     /// is for this node.

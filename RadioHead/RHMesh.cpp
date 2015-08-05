@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.cpp,v 1.7 2014/08/10 20:55:17 mikem Exp $
+// $Id: RHMesh.cpp,v 1.8 2015/07/01 00:46:05 mikem Exp mikem $
 
 #include <RHMesh.h>
 
@@ -201,7 +201,7 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 	    {
 		// This route discovery is for us. Unicast the whole route back to the originator
 		// as a RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_RESPONSE
-		// We are certain to have a route there, becuase we just got it
+		// We are certain to have a route there, because we just got it
 		d->header.msgType = RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_RESPONSE;
 		RHRouter::sendtoWait((uint8_t*)d, tmpMessageLen, _source);
 	    }

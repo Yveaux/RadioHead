@@ -21,6 +21,8 @@ RadioHead/RHReliableDatagram.cpp
 RadioHead/RHReliableDatagram.h
 RadioHead/RH_NRF24.cpp
 RadioHead/RH_NRF24.h
+RadioHead/RH_NRF51.cpp
+RadioHead/RH_NRF51.h
 RadioHead/RH_NRF905.cpp
 RadioHead/RH_NRF905.h
 RadioHead/RH_RF22.cpp
@@ -83,6 +85,10 @@ RadioHead/examples/nrf24/nrf24_client/nrf24_client.pde
 RadioHead/examples/nrf24/nrf24_reliable_datagram_client/nrf24_reliable_datagram_client.pde
 RadioHead/examples/nrf24/nrf24_reliable_datagram_server/nrf24_reliable_datagram_server.pde
 RadioHead/examples/nrf24/nrf24_server/nrf24_server.pde
+RadioHead/examples/nrf51/nrf51_client/nrf51_client.pde
+RadioHead/examples/nrf51/nrf51_reliable_datagram_client/nrf51_reliable_datagram_client.pde
+RadioHead/examples/nrf51/nrf51_reliable_datagram_server/nrf51_reliable_datagram_server.pde
+RadioHead/examples/nrf51/nrf51_server/nrf51_server.pde
 RadioHead/examples/nrf905/nrf905_client/nrf905_client.pde
 RadioHead/examples/nrf905/nrf905_reliable_datagram_client/nrf905_reliable_datagram_client.pde
 RadioHead/examples/nrf905/nrf905_reliable_datagram_server/nrf905_reliable_datagram_server.pde

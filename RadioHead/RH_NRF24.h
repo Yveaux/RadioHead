@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.14 2015/03/09 06:04:26 mikem Exp $
+// $Id: RH_NRF24.h,v 1.15 2015/07/01 00:46:05 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -198,7 +198,7 @@
 /// the nRF24L01 product specification:
 ///
 /// - 1 octets PREAMBLE
-/// - 4 octets NETWORK ADDRESS
+/// - 3 to 5 octets NETWORK ADDRESS
 /// - 9 bits packet control field
 /// - 0 to 32 octets PAYLOAD, consisting of:
 ///   - 1 octet TO header
@@ -519,17 +519,14 @@ public:
     /// Sets the radio in power down mode, with the configuration set to the
     /// last value from setOpMode().
     /// Sets chip enable to LOW.
-    /// \return true on success
     void setModeIdle();
 
     /// Sets the radio in RX mode.
     /// Sets chip enable to HIGH to enable the chip in RX mode.
-    /// \return true on success
     void setModeRx();
 
     /// Sets the radio in TX mode.
     /// Pulses the chip enable LOW then HIGH to enable the chip in TX mode.
-    /// \return true on success
     void setModeTx();
 
     /// Sends data to the address set by setTransmitAddress()
@@ -593,7 +590,7 @@ protected:
     /// \return the value of the device status register
     uint8_t flushRx();
 
-    /// Examine the revceive buffer to determine whether the message is for this node
+    /// Examine the receive buffer to determine whether the message is for this node
     void validateRxBuf();
 
     /// Clear our local receive buffer
