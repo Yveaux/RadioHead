@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.cpp,v 1.8 2015/07/01 00:46:05 mikem Exp mikem $
+// $Id: RHMesh.cpp,v 1.8 2015/07/01 00:46:05 mikem Exp $
 
 #include <RHMesh.h>
 
@@ -65,17 +65,21 @@ bool RHMesh::doArp(uint8_t address)
     uint8_t messageLen = sizeof(_tmpMessage);
     // FIXME: timeout should be configurable
     unsigned long starttime = millis();
-    while ((millis() - starttime) < 4000)
+    int32_t timeLeft;
+    while ((timeLeft = RH_MESH_ARP_TIMEOUT - (millis() - starttime)) > 0)
     {
-	if (RHRouter::recvfromAck(_tmpMessage, &messageLen))
+	if (waitAvailableTimeout(timeLeft))
 	{
-	    if (   messageLen > 1
-		&& p->header.msgType == RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_RESPONSE)
+	    if (RHRouter::recvfromAck(_tmpMessage, &messageLen))
 	    {
-		// Got a reply, now add the next hop to the dest to the routing table
-		// The first hop taken is the first octet
-		addRouteTo(address, headerFrom());
-		return true;
+		if (   messageLen > 1
+		       && p->header.msgType == RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_RESPONSE)
+		{
+		    // Got a reply, now add the next hop to the dest to the routing table
+		    // The first hop taken is the first octet
+		    addRouteTo(address, headerFrom());
+		    return true;
+		}
 	    }
 	}
 	YIELD;
@@ -223,11 +227,15 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 bool RHMesh::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* from, uint8_t* to, uint8_t* id, uint8_t* flags)
 {  
     unsigned long starttime = millis();
-    while ((millis() - starttime) < timeout)
+    int32_t timeLeft;
+    while ((timeLeft = timeout - (millis() - starttime)) > 0)
     {
-	if (recvfromAck(buf, len, from, to, id, flags))
-	    return true;
-	YIELD;
+	if (waitAvailableTimeout(timeLeft))
+	{
+	    if (recvfromAck(buf, len, from, to, id, flags))
+		return true;
+	    YIELD;
+	}
     }
     return false;
 }

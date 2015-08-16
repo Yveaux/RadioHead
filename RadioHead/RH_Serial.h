@@ -1,7 +1,7 @@
 // RH_Serial.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_Serial.h,v 1.7 2014/06/24 02:40:12 mikem Exp $
+// $Id: RH_Serial.h,v 1.8 2015/08/12 23:18:51 mikem Exp mikem $
 
 // Works with any serial port. Tested with Arduino Mega connected to Serial1
 // Also works with 3DR Radio V1.3 Telemetry kit (serial at 57600baud)
@@ -104,6 +104,10 @@ public:
     /// \param[in] serial Reference to the HardwareSerial port which will be used by this instance
     RH_Serial(HardwareSerial& serial);
 
+    /// Return the HardwareSerial port in use by this instance
+    /// \return The current HardwareSerial as a reference
+    HardwareSerial& serial();
+
     /// Initialise the Driver transport hardware and software.
     /// Make sure the Driver is properly configured before calling init().
     /// \return true if initialisation succeeded.
@@ -116,6 +120,17 @@ public:
     /// This can be called multiple times in a timeout loop
     /// \return true if a new, complete, error-free uncollected message is available to be retreived by recv()
     virtual bool available();
+
+    /// Wait until a new message is available from the driver.
+    /// Blocks until a complete message is received as reported by available()
+    virtual void waitAvailable();
+
+    /// Wait until a new message is available from the driver
+    /// or the timeout expires
+    /// Blocks until a complete message is received as reported by available()
+    /// \param[in] timeout The maximum time to wait in milliseconds
+    /// \return true if a message is available as reported by available()
+    virtual bool waitAvailableTimeout(uint16_t timeout);
 
     /// Turns the receiver on if it not already on.
     /// If there is a valid message available, copy it to buf and return true

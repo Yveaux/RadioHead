@@ -773,6 +773,13 @@ public:
 	CRC_Castagnoli,
     } CRCPolynomial;
 
+    /// \brief Defines the commands we can interrogate in printRegisters
+    typedef struct
+    {
+	uint8_t      cmd;       ///< The command number
+	uint8_t      replyLen;  ///< Number of bytes in the reply stream (after the CTS)
+    }   CommandInfo;
+
     /// Constructor. You can have multiple instances, but each instance must have its own
     /// interrupt and slave select pin. After constructing, you must call init() to initialise the interface
     /// and the radio module. A maximum of 3 instances can co-exist on one processor, provided there are sufficient

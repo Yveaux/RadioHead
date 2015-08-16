@@ -50,6 +50,8 @@ RadioHead/RHNRFSPIDriver.h
 RadioHead/RHutil
 RadioHead/RHutil/atomic.h
 RadioHead/RHutil/simulator.h
+RadioHead/RHutil/HardwareSerial.h
+RadioHead/RHutil/HardwareSerial.cpp
 RadioHead/RHutil/RasPi.cpp
 RadioHead/RHutil/RasPi.h
 RadioHead/examples/ask/ask_reliable_datagram_client/ask_reliable_datagram_client.pde

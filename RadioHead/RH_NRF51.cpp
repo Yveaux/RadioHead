@@ -2,7 +2,7 @@
 //
 // Per: nRF51_Series_Reference_manual v3.0.pdf
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF51.cpp,v 1.1 2015/07/01 00:46:05 mikem Exp mikem $
+// $Id: RH_NRF51.cpp,v 1.1 2015/07/01 00:46:05 mikem Exp $
 
 // Set by Arduino IDE when compiling for nRF51 chips:
 #ifdef NRF51

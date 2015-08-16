@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.15 2015/07/01 00:46:05 mikem Exp mikem $
+// $Id: RH_NRF24.h,v 1.15 2015/07/01 00:46:05 mikem Exp $
 //
 
 #ifndef RH_NRF24_h
@@ -307,6 +307,7 @@
 ///
 ///
 /// For Raspberry Pi with Sparkfun WRL-00691 
+/// \code
 ///     Raspberry Pi P1 pin          Sparkfun WRL-00691
 ///             5V      2-----------VCC   (3.3V to 7V in)
 ///         GPIO25      22-----------CE   (chip enable in)

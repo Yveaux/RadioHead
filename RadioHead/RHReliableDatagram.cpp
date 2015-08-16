@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.cpp,v 1.12 2015/01/02 21:38:24 mikem Exp $
+// $Id: RHReliableDatagram.cpp,v 1.13 2015/08/12 23:18:51 mikem Exp mikem $
 
 #include <RHReliableDatagram.h>
 
@@ -68,9 +68,10 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	// This is to prevent collisions on every retransmit
 	// if 2 nodes try to transmit at the same time
 	uint16_t timeout = _timeout + (_timeout * random(0, 256) / 256);
-        while ((millis() - thisSendTime) < timeout)
+	int32_t timeLeft;
+        while ((timeLeft = timeout - (millis() - thisSendTime)) > 0)
 	{
-	    if (available())
+	    if (waitAvailableTimeout(timeLeft))
 	    {
 		uint8_t from, to, id, flags;
 		if (recvfrom(0, 0, &from, &to, &id, &flags)) // Discards the message
@@ -110,7 +111,7 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
     uint8_t _to;
     uint8_t _id;
     uint8_t _flags;
-    // Get the message before its clobbered by the ACK (shared rx and tx buffer in RH
+    // Get the message before its clobbered by the ACK (shared rx and tx buffer in some drivers
     if (available() && recvfrom(buf, len, &_from, &_to, &_id, &_flags))
     {
 	// Never ACK an ACK
@@ -143,10 +144,14 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
 bool RHReliableDatagram::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* from, uint8_t* to, uint8_t* id, uint8_t* flags)
 {
     unsigned long starttime = millis();
-    while ((millis() - starttime) < timeout)
+    int32_t timeLeft;
+    while ((timeLeft = timeout - (millis() - starttime)) > 0)
     {
-	if (recvfromAck(buf, len, from, to, id, flags))
-	    return true;
+	if (waitAvailableTimeout(timeLeft))
+	{
+	    if (recvfromAck(buf, len, from, to, id, flags))
+		return true;
+	}
 	YIELD;
     }
     return false;

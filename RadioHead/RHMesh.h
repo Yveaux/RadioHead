@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHMesh.h,v 1.14 2015/07/01 00:46:05 mikem Exp mikem $
+// $Id: RHMesh.h,v 1.14 2015/07/01 00:46:05 mikem Exp $
 
 #ifndef RHMesh_h
 #define RHMesh_h
@@ -15,6 +15,9 @@
 #define RH_MESH_MESSAGE_TYPE_ROUTE_DISCOVERY_RESPONSE       2
 #define RH_MESH_MESSAGE_TYPE_ROUTE_FAILURE                  3
 
+// Timeout for address resolution in milliecs
+#define RH_MESH_ARP_TIMEOUT 4000
+
 /////////////////////////////////////////////////////////////////////
 /// \class RHMesh RHMesh.h <RHMesh.h>
 /// \brief RHRouter subclass for sending addressed, optionally acknowledged datagrams
@@ -25,7 +28,7 @@
 ///
 /// Unlike RHRouter, RHMesh can be used in networks where the network topology is fluid, or unknown, 
 /// or if nodes can mode around or go in or out of service. When a node wants to send a 
-/// message to another node, it will automcatically discover a route to the destaintion node and use it. 
+/// message to another node, it will automatically discover a route to the destination node and use it. 
 /// If the route becomes unavailable, a new route will be discovered.
 ///
 /// \par Route Discovery
@@ -103,6 +106,12 @@
 /// SRAM for your program, it may result in failure to run, or wierd crashes and other hard to trace behaviour.
 /// In this event you should consider a processor with more SRAM, such as the MotienoMEGA with 16k
 /// (https://lowpowerlab.com/shop/moteinomega) or others.
+///
+/// \par Performance
+/// This class (in the interests of simple implemtenation and low memory use) does not have
+/// message queueing. This means that only one message at a time can be handled. Message transmission 
+/// failures can have a severe impact on network performance.
+/// If you need high performance mesh networking under all conditions consider XBee or similar.
 class RHMesh : public RHRouter
 {
 public:

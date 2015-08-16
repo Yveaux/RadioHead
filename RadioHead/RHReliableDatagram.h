@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.15 2015/01/02 21:38:24 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.16 2015/08/12 23:18:51 mikem Exp mikem $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
@@ -68,6 +68,13 @@
 /// Central server-type sketches should be very cautious about their
 /// retransmit strategy and configuration lest they hang for a long time
 /// trying to reply to clients that are unreachable.
+///
+/// Caution: if you have a radio network with a mixture of slow and fast
+/// processors and ReliableDatagrams, you may be affected by race conditions
+/// where the fast processor acknowledges a message before the sender is ready
+/// to process the acknowledgement. Best practice is to use the same processors (and
+/// radios) throughout your network.
+///
 class RHReliableDatagram : public RHDatagram
 {
 public:

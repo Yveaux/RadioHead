@@ -93,7 +93,7 @@
 /// \par Theory of operation
 ///
 /// See ASH Transceiver Software Designer's Guide of 2002.08.07
-///   http://www.rfm.com/products/apnotes/tr_swg05.pdf
+///   http://wireless.murata.com/media/products/apnotes/tr_swg05.pdf?ref=rfm.com
 ///
 /// http://web.engr.oregonstate.edu/~moon/research/files/cas2_mar_07_dpll.pdf while not directly relevant 
 /// is also interesting.

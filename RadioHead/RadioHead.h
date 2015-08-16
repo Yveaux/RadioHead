@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.47 2015/07/01 00:46:05 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.48 2015/08/12 23:18:51 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.44.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.45.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -507,6 +507,12 @@
 ///  \version 1.44 2015-08-08
 ///              Fixed errors with compiling on some platforms without serial, such as ATTiny. 
 ///              Reported by Friedrich Müller.<br>
+///  \version 1.45 2015-08-13
+///              Added support for using RH_Serial on Linux and OSX (new class RHutilHardwareSerial
+///              encapsulates serial ports on those platforms. Example examples/serial upgraded
+///              to build and run on Linux and OSX using the tools/simBuild builder.
+///              RHMesh, RHRouter and RHReliableDatagram updated so they can use RH_Serial without
+///              polling loops on Linux and OSX.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -515,7 +521,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 44
+#define RH_VERSION_MINOR 45
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -523,7 +529,7 @@
 #define RH_PLATFORM_STM32            3
 #define RH_PLATFORM_GENERIC_AVR8     4
 #define RH_PLATFORM_UNO32            5
-#define RH_PLATFORM_SIMULATOR        6
+#define RH_PLATFORM_UNIX             6
 #define RH_PLATFORM_STM32STD         7
 #define RH_PLATFORM_STM32F4_HAL      8 
 #define RH_PLATFORM_RASPI            9
@@ -546,8 +552,10 @@
   #define RH_PLATFORM RH_PLATFORM_STM32STD
  #elif defined(RASPBERRY_PI)
   #define RH_PLATFORM RH_PLATFORM_RASPI
- #elif defined(__unix__)
-  #define RH_PLATFORM RH_PLATFORM_SIMULATOR
+#elif defined(__unix__) // Linux
+  #define RH_PLATFORM RH_PLATFORM_UNIX
+#elif defined(__APPLE__) // OSX
+  #define RH_PLATFORM RH_PLATFORM_UNIX
  #else
   #error Platform not defined! 	
  #endif
@@ -645,8 +653,8 @@
  #define PROGMEM
   #include <Arduino.h>
 
-#elif (RH_PLATFORM == RH_PLATFORM_SIMULATOR) 
- // Simulate the sketch on Linux
+#elif (RH_PLATFORM == RH_PLATFORM_UNIX) 
+ // Simulate the sketch on Linux and OSX
  #include <RHutil/simulator.h>
  #define RH_HAVE_SERIAL
 
@@ -737,6 +745,5 @@
 
 // This is the address that indicates a broadcast
 #define RH_BROADCAST_ADDRESS 0xff
-
 
 #endif
