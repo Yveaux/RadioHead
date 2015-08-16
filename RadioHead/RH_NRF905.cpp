@@ -179,6 +179,8 @@ bool RH_NRF905::printRegister(uint8_t reg)
     Serial.print(": ");
     Serial.println(spiReadRegister(reg), HEX);
 #endif
+
+    return true;
 }
 
 bool RH_NRF905::printRegisters()

@@ -1158,5 +1158,5 @@ bool RH_RF24::printRegisters()
         Serial.println("");
     }
 #endif
-
+    return true;
 }

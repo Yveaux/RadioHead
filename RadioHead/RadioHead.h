@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.43.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.44.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -504,6 +504,9 @@
 ///              Added RH_NRF51 driver to support Nordic nRF51 family processor with 2.4GHz radio such 
 ///              as nRF51822, to be built on Arduino 1.6.4 and later. Tested with RedBearLabs nRF51822 board
 ///              and BLE Nano kit<br>
+///  \version 1.44 2015-08-08
+///              Fixed errors with compiling on some platforms without serial, such as ATTiny. 
+///              Reported by Friedrich Müller.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -512,7 +515,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 43
+#define RH_VERSION_MINOR 44
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
