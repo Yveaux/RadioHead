@@ -1,7 +1,7 @@
 // RH_Serial.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_Serial.cpp,v 1.11 2015/08/12 23:18:51 mikem Exp mikem $
+// $Id: RH_Serial.cpp,v 1.11 2015/08/12 23:18:51 mikem Exp $
 
 #include <RH_Serial.h>
 #include <HardwareSerial.h>

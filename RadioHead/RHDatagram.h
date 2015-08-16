@@ -1,7 +1,7 @@
 // RHDatagram.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHDatagram.h,v 1.14 2015/08/12 23:18:51 mikem Exp mikem $
+// $Id: RHDatagram.h,v 1.14 2015/08/12 23:18:51 mikem Exp $
 
 #ifndef RHDatagram_h
 #define RHDatagram_h

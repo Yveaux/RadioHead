@@ -22,6 +22,7 @@
 #if (RH_PLATFORM == RH_PLATFORM_UNIX)
  #include <RHutil/HardwareSerial.h>
  // On Unix we connect to a physical serial port
+ // You can override this with RH_HARDWARESERIAL_DEVICE_NAME environment variable
  HardwareSerial hardwareserial("/dev/ttyUSB0");
  RH_Serial driver(hardwareserial);
 

@@ -1,7 +1,7 @@
 // HardwareSerial.cpp
 //
 // Copyright (C) 2015 Mike McCauley
-// $Id: HardwareSerial.cpp,v 1.2 2015/08/12 02:22:20 mikem Exp mikem $
+// $Id: HardwareSerial.cpp,v 1.3 2015/08/13 02:45:47 mikem Exp mikem $
 
 #include <RadioHead.h>
 #include <HardwareSerial.h>
@@ -145,12 +145,27 @@ bool HardwareSerial::setBaud(int baud)
 	speed = B38400;
     else if (baud == 57600)
 	speed = B57600;
-//    else if (baud == 76800)  // Not available on Linux
-//	speed = B76800;
+#ifdef B76800
+    else if (baud == 76800)  // Not available on Linux
+	speed = B76800;
+#endif
     else if (baud == 115200)
 	speed = B115200;
+    else if (baud == 230400)
+	speed = B230400;
+#ifdef B460800
+    else if (baud == 460800) // Not available on OSX
+	speed = B460800;
+#endif
+#ifdef B921600
+    else if (baud == 921600) // Not available on OSX
+	speed = B921600;
+#endif
     else 
+    {
+	fprintf(stderr, "HardwareSerial::setBaud: unsupported baud rate %d\n", baud);
 	return false;
+    }
 
     struct termios options;
     // Get current options
@@ -168,20 +183,18 @@ bool HardwareSerial::setBaud(int baud)
 
     // Force mode to 8,N,1
     // to be compatible with Arduino HardwareSerial
-    // Should this be configurable?
-    options.c_cflag &= ~PARENB;
-    options.c_cflag &= ~CSTOPB;
-    options.c_cflag &= ~CSIZE;
+    // Should this be configurable? Prob not, must have 8 bits, dont need parity.
+    options.c_cflag &= ~(PARENB | CSTOPB | CSIZE);
     options.c_cflag |= CS8;
    
-    // Disable flow control and input characterr conversions
+    // Disable flow control and input character conversions
     options.c_iflag &= ~(IXON | IXOFF | IXANY | ICRNL | INLCR);
 
     // Raw input:
     options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
 
     // Raw output
-    options.c_oflag &= ~OPOST;
+    options.c_oflag &= ~(OPOST | OCRNL | ONLCR);
 
     // Set the options in the port
     if (tcsetattr(_device, TCSANOW, &options) != 0)

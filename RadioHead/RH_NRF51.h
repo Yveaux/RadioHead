@@ -1,7 +1,7 @@
 // RH_NRF51.h
 // Author: Mike McCauley
 // Copyright (C) 2015 Mike McCauley
-// $Id: RH_NRF51.h,v 1.2 2015/08/12 23:18:51 mikem Exp mikem $
+// $Id: RH_NRF51.h,v 1.2 2015/08/12 23:18:51 mikem Exp $
 //
 
 #ifndef RH_NRF51_h
@@ -237,5 +237,6 @@ private:
 /// @example nrf51_server.pde
 /// @example nrf51_reliable_datagram_client.pde
 /// @example nrf51_reliable_datagram_server.pde
-
+/// @example nrf51_audio_tx.pde
+/// @example nrf51_audio_rx.pde
 #endif 

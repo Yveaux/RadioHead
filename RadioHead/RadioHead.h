@@ -1,7 +1,7 @@
 // RadioHead.h
-// Author: Mike McCauley (mikem@airspayce.com)
+// Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.48 2015/08/12 23:18:51 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.49 2015/08/13 02:45:47 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.45.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.46.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -103,7 +103,7 @@
 /// or with TTL serial UARTs such as those on Arduino and many other processors,
 /// or with data radios with a 
 /// serial port interface. RH_Serial provides packetization and error detection over any hardware or 
-/// virtual serial connection. 
+/// virtual serial connection. Also builds and runs on Linux and OSX.
 ///
 /// - RH_TCP
 /// For use with simulated sketches compiled and running on Linux.
@@ -161,13 +161,19 @@
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
 ///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
 ///
-/// - nRF51 compatible Arm chips with Arduino 1.6.4 and later using the procedures
+/// - nRF51 compatible Arm chips such as nRF51822 with Arduino 1.6.4 and later using the procedures
 ///   in http://redbearlab.com/getting-started-nrf51822/
 ///
 /// - Raspberry Pi
-///   Uses BCM2835 library for GPIO
+///   Uses BCM2835 library for GPIO http://www.airspayce.com/mikem/bcm2835/
 ///   Currently works only with RH_NRF24 driver or other drivers that do not require interrupt support.
-///   Contributed by Mike Poublon
+///   Contributed by Mike Poublon.
+///
+/// - Linux and OSX
+///   Using the RHutil/HardwareSerial class, the RH_Serial driver and any manager will
+///   build and run on Linux and OSX. These can be used to build programs that talk securely and reliably to
+///   Arduino and other processors or to other Linux or OSX hosts on a reliable, error detected datagram
+///   protocol over a serial line.
 ///
 /// Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 /// We welcome contributions that will expand the range of supported platforms. 
@@ -508,11 +514,18 @@
 ///              Fixed errors with compiling on some platforms without serial, such as ATTiny. 
 ///              Reported by Friedrich Müller.<br>
 ///  \version 1.45 2015-08-13
-///              Added support for using RH_Serial on Linux and OSX (new class RHutilHardwareSerial
-///              encapsulates serial ports on those platforms. Example examples/serial upgraded
+///              Added support for using RH_Serial on Linux and OSX (new class RHutil/HardwareSerial
+///              encapsulates serial ports on those platforms). Example examples/serial*/* upgraded
 ///              to build and run on Linux and OSX using the tools/simBuild builder.
 ///              RHMesh, RHRouter and RHReliableDatagram updated so they can use RH_Serial without
-///              polling loops on Linux and OSX.
+///              polling loops on Linux and OSX for CPU efficiency.<br>
+///  \version 1.46 2015-08-14
+///              Amplified some doc concerning Linux and OSX RH_Serial. Added support for 230400
+///              baud rate in HardwareSerial.<br>
+///              Added sample sketches nrf51_audio_tx and nrf51_audio_rx which show how to
+///              build an audio TX/RX pair with RedBear nRF51822 boards and a SparkFun MCP4725 DAC board.
+///              Uses the built-in ADC of the nRF51822 to sample audio at 5kHz and transmit packets
+///              to the receiver which plays them via the DAC.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -521,7 +534,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 45
+#define RH_VERSION_MINOR 46
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

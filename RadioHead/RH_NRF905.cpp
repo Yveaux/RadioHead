@@ -1,7 +1,7 @@
 // RH_NRF905.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF905.cpp,v 1.5 2015/08/12 23:18:51 mikem Exp mikem $
+// $Id: RH_NRF905.cpp,v 1.5 2015/08/12 23:18:51 mikem Exp $
 
 #include <RH_NRF905.h>
 
