@@ -76,11 +76,16 @@ void RHHardwareSPI::begin()
     // Temporary work-around due to problem where avr_emulation.h does not work properly for the setDataMode() cal
     SPCR &= ~SPI_MODE_MASK;
 #else
+ #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && defined(ARDUINO_ARCH_SAMD)
+    // Zero requires begin() before anything else :-)
+    SPI.begin();
+ #endif
     SPI.setDataMode(dataMode);
 #endif
 
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && !defined(CORE_TEENSY)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))
     // Arduino Due in 1.5.5 has its own BitOrder :-(
+    // So too does Arduino Zero
     ::BitOrder bitOrder;
 #else
     uint8_t bitOrder;

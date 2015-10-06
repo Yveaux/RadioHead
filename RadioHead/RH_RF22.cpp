@@ -80,6 +80,9 @@ bool RH_RF22::init()
     int interruptNumber = digitalPinToInterrupt(_interruptPin);
     if (interruptNumber == NOT_AN_INTERRUPT)
 	return false;
+#ifdef RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
+    interruptNumber = _interruptPin;
+#endif
 
     // Software reset the device
     reset();

@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.48.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.49.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -533,6 +533,10 @@
 ///              problems: random(min, max) sometimes exceeds its max limit.
 /// \version 1.48 2015-09-30
 ///              Added support for Arduino Zero. Tested on Arduino Zero Pro.
+/// \version 1.49 2015-10-01
+///              Fixed problems that prevented interrupts working correctly on Arduino Zero and Due.
+///              Builds and runs with 1.6.5 (with 'Arduino SAMD Boards' for Zero version 1.6.1) from arduino.cc.
+///              Arduino version 1.7.7 from arduino.org is not currently supported.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -541,7 +545,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 48
+#define RH_VERSION_MINOR 49
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -751,6 +755,11 @@
   // Everything else (including Due and Teensy) interrupt number the same as the interrupt pin number
   #define digitalPinToInterrupt(p) (p)
  #endif
+#endif
+
+// On some platforms, attachInterrupt() takes a pin number, not an interrupt number
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAM_DUE))
+ #define RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
 #endif
 
 // Slave select pin, some platforms such as ATTiny do not define it.

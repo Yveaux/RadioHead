@@ -106,6 +106,9 @@ bool RH_RF69::init()
     int interruptNumber = digitalPinToInterrupt(_interruptPin);
     if (interruptNumber == NOT_AN_INTERRUPT)
 	return false;
+#ifdef RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
+    interruptNumber = _interruptPin;
+#endif
 
     // Get the device type and check it
     // This also tests whether we are really connected to a device

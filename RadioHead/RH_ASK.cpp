@@ -205,14 +205,15 @@ void RH_ASK::timerSetup()
     void TIMER1_COMPA_vect(void);
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
- #elif defined (__arm__) && defined(ARDUINO_SAMD_ZERO)
+ #elif defined (__arm__) && defined(ARDUINO_ARCH_SAMD)
     // Arduino Zero
     #define RH_ASK_ZERO_TIMER TC3
     // Clock speed is 48MHz, prescaler of 64 gives a good range of available speeds vs precision
     #define RH_ASK_ZERO_PRESCALER 64
+    #define RH_ASK_ZERO_TIMER_IRQ TC3_IRQn
 
     // Enable clock for TC
-    REG_GCLK_CLKCTRL = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID_TCC2_TC3) ;
+    REG_GCLK_CLKCTRL = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TCC2_TC3)) ;
     while ( GCLK->STATUS.bit.SYNCBUSY == 1 ); // wait for sync
     
     // The type cast must fit with the selected timer mode
@@ -240,7 +241,8 @@ void RH_ASK::timerSetup()
     TC->INTENSET.bit.MC0 = 1;          // enable compare match to CC0
     
     // Enable InterruptVector
-    NVIC_EnableIRQ(TC3_IRQn);
+    NVIC_ClearPendingIRQ(RH_ASK_ZERO_TIMER_IRQ);
+    NVIC_EnableIRQ(RH_ASK_ZERO_TIMER_IRQ);
     
     // Enable TC
     TC->CTRLA.reg |= TC_CTRLA_ENABLE;
@@ -539,7 +541,7 @@ void TIMER1_COMPA_vect(void)
     thisASKDriver->handleTimerInterrupt();
 }
 
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && defined(ARDUINO_SAMD_ZERO)
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && defined(ARDUINO_ARCH_SAMD)
 // Arduino Zero
 void TC3_Handler()
 {
