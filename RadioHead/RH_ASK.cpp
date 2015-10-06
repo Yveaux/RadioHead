@@ -205,8 +205,50 @@ void RH_ASK::timerSetup()
     void TIMER1_COMPA_vect(void);
     t->begin(TIMER1_COMPA_vect, 125000 / _speed);
 
- #elif defined(__arm__)
+ #elif defined (__arm__) && defined(ARDUINO_SAMD_ZERO)
+    // Arduino Zero
+    #define RH_ASK_ZERO_TIMER TC3
+    // Clock speed is 48MHz, prescaler of 64 gives a good range of available speeds vs precision
+    #define RH_ASK_ZERO_PRESCALER 64
+
+    // Enable clock for TC
+    REG_GCLK_CLKCTRL = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID_TCC2_TC3) ;
+    while ( GCLK->STATUS.bit.SYNCBUSY == 1 ); // wait for sync
+    
+    // The type cast must fit with the selected timer mode
+    TcCount16* TC = (TcCount16*)RH_ASK_ZERO_TIMER; // get timer struct
+    
+    TC->CTRLA.reg &= ~TC_CTRLA_ENABLE;   // Disable TC
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+    
+    TC->CTRLA.reg |= TC_CTRLA_MODE_COUNT16;  // Set Timer counter Mode to 16 bits
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+    TC->CTRLA.reg |= TC_CTRLA_WAVEGEN_MFRQ; // Set TC as Match Frequency
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+
+    // Compute the count required to achieve the requested baud (with 8 interrupts per bit)
+    uint32_t rc = (VARIANT_MCK / _speed) / RH_ASK_ZERO_PRESCALER / 8;
+    
+    TC->CTRLA.reg |= TC_CTRLA_PRESCALER_DIV64;   // Set prescaler to agree with RH_ASK_ZERO_PRESCALER
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+    
+    TC->CC[0].reg = rc; // FIXME
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+    
+    // Interrupts
+    TC->INTENSET.reg = 0;              // disable all interrupts
+    TC->INTENSET.bit.MC0 = 1;          // enable compare match to CC0
+    
+    // Enable InterruptVector
+    NVIC_EnableIRQ(TC3_IRQn);
+    
+    // Enable TC
+    TC->CTRLA.reg |= TC_CTRLA_ENABLE;
+    while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
+    
+ #elif defined(__arm__) && defined(ARDUINO_SAM_DUE)
     // Arduino Due
+    // Clock speed is 84MHz
     // Due has 9 timers in 3 blocks of 3.
     // We use timer 1 TC1_IRQn on TC0 channel 1, since timers 0, 2, 3, 4, 5 are used by the Servo library
     #define RH_ASK_DUE_TIMER TC0
@@ -497,11 +539,21 @@ void TIMER1_COMPA_vect(void)
     thisASKDriver->handleTimerInterrupt();
 }
 
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__)
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && defined(ARDUINO_SAMD_ZERO)
+// Arduino Zero
+void TC3_Handler()
+{
+    // The type cast must fit with the selected timer mode
+    TcCount16* TC = (TcCount16*)RH_ASK_ZERO_TIMER; // get timer struct
+    TC->INTFLAG.bit.MC0 = 1;
+    thisASKDriver->handleTimerInterrupt();
+}
+
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(ARDUINO_SAM_DUE)
 // Arduino Due
 void TC1_Handler()
 {
-    TC_GetStatus(TC0, 1);
+    TC_GetStatus(RH_ASK_DUE_TIMER, 1);
     thisASKDriver->handleTimerInterrupt();
 }
 

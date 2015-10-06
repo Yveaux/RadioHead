@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.47.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.48.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -138,8 +138,8 @@
 /// 
 /// A range of platforms is supported:
 ///
-/// - Arduino and the Arduino IDE (version 1.0 to 1.6.4 and later)
-/// Including Diecimila, Uno, Mega, Leonardo, Yun etc. http://arduino.cc/, Also similar boards such as 
+/// - Arduino and the Arduino IDE (version 1.0 to 1.6.5 and later)
+/// Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/, Also similar boards such as 
 ///  - Moteino http://lowpowerlab.com/moteino/ 
 ///  - Anarduino Mini http://www.anarduino.com/mini/ 
 ///  - RedBearLab Blend V1.0 http://redbearlab.com/blend/ (with Arduino 1.0.5 and RedBearLab Blend Add-On version 20140701) 
@@ -531,6 +531,8 @@
 ///              its presence confuses some people.<br>
 ///              Fixed a problem with RHReliableDatagram with some versions of Raspberry Pi random() that causes 
 ///              problems: random(min, max) sometimes exceeds its max limit.
+/// \version 1.48 2015-09-30
+///              Added support for Arduino Zero. Tested on Arduino Zero Pro.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -539,7 +541,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 47
+#define RH_VERSION_MINOR 48
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

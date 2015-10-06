@@ -122,8 +122,6 @@
 /// The code consists of an ISR interrupt handler. Most of the work is done in the interrupt
 /// handler for both transmit and receive, but some is done from the user level. Expensive
 /// functions like CRC computations are always done in the user level.
-/// Caution: VirtualWire takes over Arduino Timer1, and this will affect the PWM capabilities of the 
-/// digital pins 9 and 10.
 ///
 /// \par Supported Hardware
 ///
@@ -217,6 +215,8 @@
 /// The RH_ASK driver uses a timer-driven interrupt to generate 8 interrupts per bit period. RH_ASK
 /// takes over a timer on Arduino-like platforms. By default it takes over Timer 1. You can force it
 /// to use Timer 2 instead by enabling the define RH_ASK_ARDUINO_USE_TIMER2 near the top of RH_ASK.cpp
+/// On Arduino Zero it takes over timer TC3. On Arduino Due it takes over timer
+/// TC0.
 ///
 /// Caution: ATTiny85 has only 2 timers, one (timer 0) usually used for
 /// millis() and one (timer 1) for PWM analog outputs. The RH_ASK Driver
