@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.49 2015/08/13 02:45:47 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.50 2015/08/14 21:20:12 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.46.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.47.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -526,6 +526,11 @@
 ///              build an audio TX/RX pair with RedBear nRF51822 boards and a SparkFun MCP4725 DAC board.
 ///              Uses the built-in ADC of the nRF51822 to sample audio at 5kHz and transmit packets
 ///              to the receiver which plays them via the DAC.<br>
+/// \version 1.47 2015-09-18
+///              Removed top level Makefile from distribution: its only used by the developer and 
+///              its presence confuses some people.<br>
+///              Fixed a problem with RHReliableDatagram with some versions of Raspberry Pi random() that causes 
+///              problems: random(min, max) sometimes exceeds its max limit.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -534,7 +539,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 46
+#define RH_VERSION_MINOR 47
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
