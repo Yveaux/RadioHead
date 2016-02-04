@@ -544,10 +544,10 @@
 ///
 /// \code
 ///                 Teensy 3.1   CC110L pin name         Anaren BoosterPack pin
-///                 3.3V---------VDD   (3.3V to 7V in)        J1-1
+///                 3.3V---------VDD   (3.3V in)              J1-1
 ///          SS pin D10----------CSn   (chip select in)       J2-8
 ///         SCK pin D13----------SCLK  (SPI clock in)         J1-7
-///        MOSI pin D11----------MOSI  (SPI Data in)          J2-5
+///        MOSI pin D11----------MOSI  (SPI data in)          J2-5
 ///        MISO pin D12----------MISO  (SPI data out)         J2-4
 ///                 D2-----------GDO0  (Interrupt output)     J2-9
 ///                 GND----------GND   (ground in)            J2-10

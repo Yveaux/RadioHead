@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.53.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.54.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -154,6 +154,11 @@
 ///  -  MoteinoMEGA https://lowpowerlab.com/shop/moteinomega 
 ///     (with Arduino 1.0.5 and the MoteinoMEGA Arduino Core 
 ///     https://github.com/LowPowerLab/Moteino/tree/master/MEGA/Core)
+///  - ESP8266 on Arduino IDE and Boards Manager per https://github.com/esp8266/Arduino 
+///    Tested using Arduino 1.6.5 with esp8266 by ESP8266 Community version 2.0.0
+///    Examples serial_reliable_datagram_* are shown to work. 
+///    CAUTION: SPI not supported yet. Timers used by RH_ASK are not tested. The GHz radio included in the ESP8266 is
+///    not yet supported. 
 ///  - etc.
 ///
 /// - ChipKit Uno32 board and the MPIDE development environment
@@ -565,6 +570,10 @@
 ///              and modules.<br>
 /// \version 1.53 2016-01-02
 ///              Added RH_CC110 module to support Texas Instruments CC110L and compatible transceivers and modules.<br>
+/// \version 1.54 2016-01-29
+///              Added support for ESP8266 processor on Arduino IDE. Examples serial_reliable_datagram_* are shown to work. 
+///              CAUTION: SPI not supported yet. Timers used by RH_ASK are not tested. The GHz radio included in the ESP8266 is
+///              not yet supported. 
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -573,7 +582,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 53
+#define RH_VERSION_MINOR 54
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -586,6 +595,7 @@
 #define RH_PLATFORM_STM32F4_HAL      8 
 #define RH_PLATFORM_RASPI            9
 #define RH_PLATFORM_NRF51            10
+#define RH_PLATFORM_ESP8266          11
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -594,6 +604,8 @@
   #define RH_PLATFORM RH_PLATFORM_UNO32
  #elif defined(NRF51)
   #define RH_PLATFORM RH_PLATFORM_NRF51
+ #elif defined(ESP8266)
+  #define RH_PLATFORM RH_PLATFORM_ESP8266
  #elif defined(ARDUINO)
   #define RH_PLATFORM RH_PLATFORM_ARDUINO
  #elif defined(__MSP430G2452__) || defined(__MSP430G2553__)
@@ -633,6 +645,11 @@
   #define RH_HAVE_SERIAL
  #endif
 
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266) // ESP8266 processor on Arduino IDE
+ #include <Arduino.h>
+ #include <SPI.h>
+ #define RH_HAVE_HARDWARE_SPI
+ #define RH_HAVE_SERIAL
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"
  #include "Energia.h"
