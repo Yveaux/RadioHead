@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.50 2015/08/14 21:20:12 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.51 2015/12/11 01:10:24 mikem Exp $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.50.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.51.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -89,7 +89,8 @@
 /// Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
 ///
 /// - RH_RF95
-/// Works with Semtech SX1276/77/78 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
+/// Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
+/// and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
 /// Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
 /// FSK/GFSK/OOK modes are not (yet) supported.
 ///
@@ -159,6 +160,7 @@
 ///   http://www.pjrc.com/teensy
 ///
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
+///   and Digispark built with Arduino 1.6.5.
 ///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
 ///
 /// - nRF51 compatible Arm chips such as nRF51822 with Arduino 1.6.4 and later using the procedures
@@ -545,6 +547,12 @@
 ///              work with Arduino 1.6.5 from arduino.cc. Sigh.
 ///              Fixed a problem with RH_NRF905 that prevented the power and frequency ranges being set
 ///              properly. Reported by Alan Webber.
+/// \version 1.51 2015-12-11
+///              Changes to RH_RF6::setTxPower() to be compatible with SX1276/77/78/79 modules that
+///              use RFO transmitter pins instead of PA_BOOST, such as the excellent
+///              Modtronix inAir4 http://modtronix.com/inair4.html 
+///              and inAir9 modules http://modtronix.com/inair9.html. With the kind assistance of 
+///              David from Modtronix.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -553,7 +561,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 50
+#define RH_VERSION_MINOR 51
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

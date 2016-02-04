@@ -1,7 +1,7 @@
 // RH_RF24.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF24.h,v 1.13 2015/08/13 02:45:47 mikem Exp $
+// $Id: RH_RF24.h,v 1.14 2015/12/11 01:10:24 mikem Exp $
 //
 // Supports RF24/RF26 and RFM24/RFM26 modules in FIFO mode
 // also Si4464/63/62/61/60-A1
