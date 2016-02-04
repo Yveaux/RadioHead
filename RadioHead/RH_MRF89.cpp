@@ -1,7 +1,7 @@
 // RH_MRF89.cpp
 //
 // Copyright (C) 2015 Mike McCauley
-// $Id: RH_MRF89.cpp,v 1.6 2015/12/17 10:58:13 mikem Exp mikem $
+// $Id: RH_MRF89.cpp,v 1.7 2015/12/31 04:23:12 mikem Exp $
 
 #include <RH_MRF89.h>
 #define BAND_915
@@ -373,9 +373,9 @@ bool RH_MRF89::recv(uint8_t* buf, uint8_t* len)
     {
 	ATOMIC_BLOCK_START;
 	// Skip the 4 headers that are at the beginning of the rxBuf
-	if (*len > _bufLen-RH_MRF89_HEADER_LEN)
-	    *len = _bufLen-RH_MRF89_HEADER_LEN;
-	memcpy(buf, _buf+RH_MRF89_HEADER_LEN, *len);
+	if (*len > _bufLen - RH_MRF89_HEADER_LEN)
+	    *len = _bufLen - RH_MRF89_HEADER_LEN;
+	memcpy(buf, _buf + RH_MRF89_HEADER_LEN, *len);
 	ATOMIC_BLOCK_END;
     }
     clearRxBuf(); // This message accepted and cleared

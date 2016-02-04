@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.13 2015/12/11 01:10:24 mikem Exp $
+// $Id: RH_ASK.h,v 1.14 2016/01/02 01:46:34 mikem Exp mikem $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -97,6 +97,7 @@
 ///
 /// http://web.engr.oregonstate.edu/~moon/research/files/cas2_mar_07_dpll.pdf while not directly relevant 
 /// is also interesting.
+///
 /// \par Implementation Details
 ///
 /// Messages of up to RH_ASK_MAX_PAYLOAD_LEN (67) bytes can be sent
