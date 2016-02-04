@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.49.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.50.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -537,6 +537,14 @@
 ///              Fixed problems that prevented interrupts working correctly on Arduino Zero and Due.
 ///              Builds and runs with 1.6.5 (with 'Arduino SAMD Boards' for Zero version 1.6.1) from arduino.cc.
 ///              Arduino version 1.7.7 from arduino.org is not currently supported.
+/// \version 1.50 2015-10-25
+///              Verified correct building and operation with Arduino 1.7.7 from arduino.org.
+///              Caution: You must burn the bootloader from 1.7.7 to the Arduino Zero before it will 
+///              work with Arduino 1.7.7 from arduino.org. Conversely, you must burn the bootloader from 1.6.5 
+///              to the Arduino Zero before it will 
+///              work with Arduino 1.6.5 from arduino.cc. Sigh.
+///              Fixed a problem with RH_NRF905 that prevented the power and frequency ranges being set
+///              properly. Reported by Alan Webber.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -545,7 +553,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 49
+#define RH_VERSION_MINOR 50
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

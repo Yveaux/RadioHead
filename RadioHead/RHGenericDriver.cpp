@@ -40,7 +40,9 @@ bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout)
     while ((millis() - starttime) < timeout)
     {
         if (available())
+	{
            return true;
+	}
 	YIELD;
     }
     return false;
