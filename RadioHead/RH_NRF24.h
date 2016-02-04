@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.16 2015/08/13 02:45:47 mikem Exp $
+// $Id: RH_NRF24.h,v 1.17 2015/12/17 10:58:13 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h
@@ -455,25 +455,25 @@ public:
     bool        init();
 
     /// Reads a single register from the NRF24
-    /// \param[in] reg Register number, one of NRF24_REG_*
+    /// \param[in] reg Register number, one of RH_NRF24_REG_*
     /// \return The value of the register
     uint8_t        spiReadRegister(uint8_t reg);
 
-    /// Writes a single byte to the NRF24, and at the ame time reads the current STATUS register
-    /// \param[in] reg Register number, one of NRF24_REG_*
+    /// Writes a single byte to the NRF24, and at the same time reads the current STATUS register
+    /// \param[in] reg Register number, one of RH_NRF24_REG_*
     /// \param[in] val The value to write
     /// \return the current STATUS (read while the command is sent)
     uint8_t        spiWriteRegister(uint8_t reg, uint8_t val);
 
     /// Reads a number of consecutive registers from the NRF24 using burst read mode
-    /// \param[in] reg Register number of the first register, one of NRF24_REG_*
+    /// \param[in] reg Register number of the first register, one of RH_NRF24_REG_*
     /// \param[in] dest Array to write the register values to. Must be at least len bytes
     /// \param[in] len Number of bytes to read
     /// \return the current STATUS (read while the command is sent)
     uint8_t           spiBurstReadRegister(uint8_t reg, uint8_t* dest, uint8_t len);
 
     /// Write a number of consecutive registers using burst write mode
-    /// \param[in] reg Register number of the first register, one of NRF24_REG_*
+    /// \param[in] reg Register number of the first register, one of RH_NRF24_REG_*
     /// \param[in] src Array of new register values to write. Must be at least len bytes
     /// \param[in] len Number of bytes to write
     /// \return the current STATUS (read while the command is sent)

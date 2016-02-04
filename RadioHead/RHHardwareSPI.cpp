@@ -2,7 +2,7 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
 // Contributed by Joanna Rutkowska
-// $Id: RHHardwareSPI.cpp,v 1.13 2015/12/11 01:10:24 mikem Exp mikem $
+// $Id: RHHardwareSPI.cpp,v 1.14 2015/12/16 04:55:33 mikem Exp $
 
 #include <RHHardwareSPI.h>
 
@@ -80,6 +80,7 @@ void RHHardwareSPI::begin()
     // Zero requires begin() before anything else :-)
     SPI.begin();
  #endif
+
     SPI.setDataMode(dataMode);
 #endif
 
@@ -95,7 +96,6 @@ void RHHardwareSPI::begin()
     else
 	bitOrder = MSBFIRST;
     SPI.setBitOrder(bitOrder);
-
     uint8_t divider;
     switch (_frequency)
     {
@@ -133,8 +133,11 @@ void RHHardwareSPI::begin()
 	    break;
 
     }
+
     SPI.setClockDivider(divider);
     SPI.begin();
+    // Teensy requires it to be set _after_ begin()
+    SPI.setClockDivider(divider);
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
     spi_mode dataMode;

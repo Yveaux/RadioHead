@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.51 2015/12/11 01:10:24 mikem Exp $
+// $Id: RadioHead.h,v 1.53 2015/12/17 10:58:13 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.51.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.52.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -93,6 +93,10 @@
 /// and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
 /// Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
 /// FSK/GFSK/OOK modes are not (yet) supported.
+///
+/// - RH_MRF89
+/// Works with Microchip MRF89XA and compatible transceivers.
+/// and modules such as MRF89XAM9A.
 ///
 /// - RH_ASK
 /// Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers such as RX-B1 
@@ -553,6 +557,9 @@
 ///              Modtronix inAir4 http://modtronix.com/inair4.html 
 ///              and inAir9 modules http://modtronix.com/inair9.html. With the kind assistance of 
 ///              David from Modtronix.
+/// \version 1.5 2015-12-17
+///              Added RH_MRF89 module to suport Microchip MRF89XA and compatible transceivers.
+///              and modules.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -561,7 +568,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 51
+#define RH_VERSION_MINOR 52
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

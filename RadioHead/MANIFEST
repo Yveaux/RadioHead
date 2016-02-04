@@ -31,6 +31,8 @@ RadioHead/RH_RF24.h
 RadioHead/radio_config_Si4460.h
 RadioHead/RH_RF69.cpp
 RadioHead/RH_RF69.h
+RadioHead/RH_MRF89.cpp
+RadioHead/RH_MRF89.h
 RadioHead/RH_RF95.cpp
 RadioHead/RH_RF95.h
 RadioHead/RH_TCP.cpp
@@ -82,6 +84,8 @@ RadioHead/examples/rf69/rf69_client/rf69_client.pde
 RadioHead/examples/rf69/rf69_reliable_datagram_client/rf69_reliable_datagram_client.pde
 RadioHead/examples/rf69/rf69_reliable_datagram_server/rf69_reliable_datagram_server.pde
 RadioHead/examples/rf69/rf69_server/rf69_server.pde
+RadioHead/examples/mrf89/mrf89_client/mrf89_client.pde
+RadioHead/examples/mrf89/mrf89_server/mrf89_server.pde
 RadioHead/examples/nrf24/nrf24_client/nrf24_client.pde
 RadioHead/examples/nrf24/nrf24_reliable_datagram_client/nrf24_reliable_datagram_client.pde
 RadioHead/examples/nrf24/nrf24_reliable_datagram_server/nrf24_reliable_datagram_server.pde
