@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.56.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.57.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -638,6 +638,8 @@
 ///              Added notes on how to build RadioHead sketches for Photon.
 /// \version 1.56 2016-02-18 
 ///              Implemented timers for RH_ASK on ESP8266, added some doc on IO pin selection.
+/// \version 1.57 2016-02-23
+///              Fixed an issue reported by S3B, where RH_RF22 would sometimes not clear the rxbufvalid flag.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -646,7 +648,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 56
+#define RH_VERSION_MINOR 57
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

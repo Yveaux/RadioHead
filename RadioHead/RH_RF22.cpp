@@ -661,6 +661,7 @@ void RH_RF22::resetRxFifo()
 {
     spiWrite(RH_RF22_REG_08_OPERATING_MODE2, RH_RF22_FFCLRRX);
     spiWrite(RH_RF22_REG_08_OPERATING_MODE2, 0);
+    _rxBufValid = false;
 }
 
 // CLear the TX FIFO
