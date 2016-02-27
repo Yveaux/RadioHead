@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.54.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.55.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -171,6 +171,11 @@
 ///   teensyduino addon 1.18 to 1.23 and later.
 ///   http://www.pjrc.com/teensy
 ///
+/// - Particle Photon https://store.particle.io/collections/photon and ARM3 based CPU with built-in 
+///   Wi-Fi transceiver and extensive IoT software suport. RadioHead does not support the built-in transceiver
+///   bt can be used to control other SPI based radios, Serial ports etc.
+///   See below for details on how to build RadioHead for Photon
+///
 /// - ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
 ///   and Digispark built with Arduino 1.6.5.
 ///   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
@@ -222,6 +227,55 @@
 /// The example sketches will be visible in in your Arduino, mpide, maple-ide or whatever.
 /// http://arduino.cc/en/Guide/Libraries
 ///
+/// \par Building for Particle Photon
+///
+/// The Photon is not supported by the Arduino IDE, so it takes a little effort to set up a build environment.
+/// Heres what we did to enable building of RadioHead example sketches on Linux, 
+/// but there are other ways to skin this cat.
+/// Basic reference for getting stated is: http://particle-firmware.readthedocs.org/en/develop/build/
+/// - Download the ARM gcc cross compiler binaries and unpack it in a suitable place:
+/// \code
+/// cd /tmp
+/// wget https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2
+/// tar xvf gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2
+/// \endcode
+/// - If dfu-util and friends not installed on your platform, download dfu-util and friends to somewhere in your path
+/// \code
+/// cd ~/bin
+/// wget http://dfu-util.sourceforge.net/releases/dfu-util-0.8-binaries/linux-i386/dfu-util
+/// wget http://dfu-util.sourceforge.net/releases/dfu-util-0.8-binaries/linux-i386/dfu-suffix
+/// wget http://dfu-util.sourceforge.net/releases/dfu-util-0.8-binaries/linux-i386/dfu-prefix
+/// \endcode
+/// - Download the Particle firmware (contains headers and libraries require to compile Photon sketches) 
+///   to a suitable place:
+/// \code
+/// cd /tmp
+/// wget https://github.com/spark/firmware/archive/develop.zip
+/// unzip develop.zip
+/// \endcode
+/// - Make a working area containing the RadioHead library source code and your RadioHead sketch. You must
+///   rename the sketch from .pde or .ino to application.cpp
+/// \code
+/// cd /tmp
+/// mkdir RadioHead
+/// cd RadioHead
+/// cp /usr/local/projects/arduino/libraries/RadioHead/*.h .
+/// cp /usr/local/projects/arduino/libraries/RadioHead/*.cpp .
+/// cp /usr/local/projects/arduino/libraries/RadioHead/examples/cc110/cc110_client/cc110_client.pde application.cpp
+/// \endcode
+/// - Edit application.cpp and comment out any #include <SPI.h> so it looks like:
+/// \code
+///   // #include <SPI.h>
+/// \endcode
+/// - Connect your Photon by USB. Put it in DFU mode as descibed in Photon documentation. Light should be flashing yellow
+/// - Compile the RadioHead sketch and install it as the user program (this does not update the rest of the
+///   Photon firmware, just the user part:
+/// \code
+/// cd /tmp/firmware-develop/main
+/// PATH=$PATH:/tmp/gcc-arm-none-eabi-5_2-2015q4/bin make APPDIR=/tmp/RadioHead all PLATFORM=photon program-dfu
+/// \endcode
+/// - You should see RadioHead compile without errors and download the finished sketch into the Photon.
+///
 /// \par Compatible Hardware Suppliers
 ///
 /// We have had good experiences with the following suppliers of RadioHead compatible hardware:
@@ -250,7 +304,7 @@
 ///
 /// \par Copyright
 ///
-/// This software is Copyright (C) 2011-2014 Mike McCauley. Use is subject to license
+/// This software is Copyright (C) 2011-2016 Mike McCauley. Use is subject to license
 /// conditions. The main licensing options available are GPL V2 or Commercial:
 /// 
 /// \par Open Source Licensing GPL V2
@@ -529,7 +583,7 @@
 ///              Reported by Friedrich Müller.<br>
 ///  \version 1.45 2015-08-13
 ///              Added support for using RH_Serial on Linux and OSX (new class RHutil/HardwareSerial
-///              encapsulates serial ports on those platforms). Example examples/serial*/* upgraded
+///              encapsulates serial ports on those platforms). Example examples/serial upgraded
 ///              to build and run on Linux and OSX using the tools/simBuild builder.
 ///              RHMesh, RHRouter and RHReliableDatagram updated so they can use RH_Serial without
 ///              polling loops on Linux and OSX for CPU efficiency.<br>
@@ -572,8 +626,16 @@
 ///              Added RH_CC110 module to support Texas Instruments CC110L and compatible transceivers and modules.<br>
 /// \version 1.54 2016-01-29
 ///              Added support for ESP8266 processor on Arduino IDE. Examples serial_reliable_datagram_* are shown to work. 
-///              CAUTION: SPI not supported yet. Timers used by RH_ASK are not tested. The GHz radio included in the ESP8266 is
-///              not yet supported. 
+///              CAUTION: SPI not supported yet. Timers used by RH_ASK are not tested. 
+///              The GHz radio included in the ESP8266 is not yet supported. 
+/// \version 1.55 2016-02-12
+///              Added macros for htons() and friends to RadioHead.h.
+///              Added example sketch serial_gateway.pde. Acts as a transparent gateway between RH_RF22 and RH_Serial, 
+///              and with minor mods acts as a universal gateway between any 2 RadioHead driver networks.
+///              Initial work on supporting STM32 F2 on Particle Photon: new platform type defined.
+///              Fixed many warnings exposed by test building for Photon.
+///              Particle Photon tested support for RH_Serial, RH_ASK, SPI, RH_CC110 etc.
+///              Added notes on how to build RadioHead sketches for Photon.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -582,7 +644,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 54
+#define RH_VERSION_MINOR 55
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -596,6 +658,7 @@
 #define RH_PLATFORM_RASPI            9
 #define RH_PLATFORM_NRF51            10
 #define RH_PLATFORM_ESP8266          11
+#define RH_PLATFORM_STM32F2          12
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -612,6 +675,8 @@
   #define RH_PLATFORM RH_PLATFORM_MSP430
  #elif defined(MCU_STM32F103RE)
   #define RH_PLATFORM RH_PLATFORM_STM32
+ #elif defined(STM32F2XX)
+  #define RH_PLATFORM RH_PLATFORM_STM32F2
  #elif defined(USE_STDPERIPH_DRIVER)
   #define RH_PLATFORM RH_PLATFORM_STM32STD
  #elif defined(RASPBERRY_PI)
@@ -678,6 +743,13 @@
  #define Serial SerialUSB
  #define RH_HAVE_SERIAL
 
+#elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Particle Photon with firmware-develop
+ #include <stm32f2xx.h>
+ #include <application.h>
+ #include <math.h> // floor
+ #define RH_HAVE_SERIAL
+ #define RH_HAVE_HARDWARE_SPI
+
 #elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32 with STM32F4xx_StdPeriph_Driver 
  #include <stm32f4xx.h>
  #include <wirish.h>	
@@ -726,6 +798,7 @@
  // Simulate the sketch on Linux and OSX
  #include <RHutil/simulator.h>
  #define RH_HAVE_SERIAL
+#include <netinet/in.h> // For htons and friends
 
 #else
  #error Platform unknown!
@@ -745,6 +818,9 @@
  #include <peripheral/int.h>
  #define ATOMIC_BLOCK_START unsigned int __status = INTDisableInterrupts(); {
  #define ATOMIC_BLOCK_END } INTRestoreInterrupts(__status);
+#elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Particle Photon with firmware-develop
+ #define ATOMIC_BLOCK_START { int __prev = HAL_disable_irq();
+ #define ATOMIC_BLOCK_END  HAL_enable_irq(__prev); }
 #else 
  // TO BE DONE:
  #define ATOMIC_BLOCK_START
@@ -816,6 +892,33 @@
 #undef abs
 #undef round
 #undef double
+
+// Sigh: there is no widespread adoption of htons and friends in the base code, only in some WiFi headers etc
+// that have a lot of excess baggage
+#if RH_PLATFORM != RH_PLATFORM_UNIX && !defined(htons)
+// #ifndef htons
+// These predefined macros availble on modern GCC compilers
+ #if   __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+  // Atmel processors
+  #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
+  #define ntohs(x) htons(x)
+  #define htonl(x) ( ((x)<<24 & 0xFF000000UL) | \
+                   ((x)<< 8 & 0x00FF0000UL) | \
+                   ((x)>> 8 & 0x0000FF00UL) | \
+                   ((x)>>24 & 0x000000FFUL) )
+  #define ntohl(x) htonl(x)
+
+ #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  // Others
+  #define htons(x) (x)
+  #define ntohs(x) (x)
+  #define htonl(x) (x)
+  #define ntohl(x) (x)
+
+ #else
+  #error "Dont know how to define htons and friends for this processor" 
+ #endif
+#endif
 
 // This is the address that indicates a broadcast
 #define RH_BROADCAST_ADDRESS 0xff

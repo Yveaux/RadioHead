@@ -33,6 +33,10 @@
 #define RH_SERIAL_MAX_MESSAGE_LEN (RH_SERIAL_MAX_PAYLOAD_LEN - RH_SERIAL_HEADER_LEN)
 #endif
 
+#if (RH_PLATFORM == RH_PLATFORM_STM32F2)
+ #define HardwareSerial USARTSerial
+#endif
+
 class HardwareSerial;
 
 /////////////////////////////////////////////////////////////////////
@@ -249,5 +253,6 @@ protected:
 
 /// @example serial_reliable_datagram_client.pde
 /// @example serial_reliable_datagram_server.pde
+/// @example serial_gateway.pde
 
 #endif

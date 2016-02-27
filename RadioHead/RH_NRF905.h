@@ -150,7 +150,7 @@
 /// The examples below assume the commonly found cheap Chinese nRF905 modules. The RH_RF905 driver assumes the 
 /// the nRF905 has a 16MHz crystal.
 ///
-/// Connect the nRF905 to Teensy like this
+/// Connect the nRF905 to Teensy (or Arduino with suitable level shifters) like this
 /// \code
 ///                 CPU          nRF905 module
 ///                 3V3----------VCC   (3.3V)

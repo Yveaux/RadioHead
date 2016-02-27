@@ -8,6 +8,7 @@
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
+
 #endif
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
@@ -335,6 +336,35 @@ void RH_ASK::timerSetup()
     // Start the timer counting
     timer.resume();
 
+#elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Photon
+    // Inspired by SparkIntervalTimer
+    // We use Timer 6
+    void TimerInterruptHandler(); // Forward declaration for interrupt handler
+    #define SYSCORECLOCK	60000000UL  // Timer clock tree uses core clock / 2
+    TIM_TimeBaseInitTypeDef timerInitStructure;
+    NVIC_InitTypeDef nvicStructure;
+    TIM_TypeDef* TIMx;
+    uint32_t period = (1000000 / 8) / _speed; // In microseconds
+    uint16_t prescaler = (uint16_t)(SYSCORECLOCK / 1000000UL) - 1; //To get TIM counter clock = 1MHz
+
+    attachSystemInterrupt(SysInterrupt_TIM6_Update, TimerInterruptHandler);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
+    nvicStructure.NVIC_IRQChannel = TIM6_DAC_IRQn;
+    TIMx = TIM6;
+    nvicStructure.NVIC_IRQChannelPreemptionPriority = 10;
+    nvicStructure.NVIC_IRQChannelSubPriority = 1;
+    nvicStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&nvicStructure);
+    timerInitStructure.TIM_Prescaler = prescaler;
+    timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    timerInitStructure.TIM_Period = period;
+    timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    timerInitStructure.TIM_RepetitionCounter = 0;
+    
+    TIM_TimeBaseInit(TIMx, &timerInitStructure);
+    TIM_ITConfig(TIMx, TIM_IT_Update, ENABLE);
+    TIM_Cmd(TIMx, ENABLE);
+
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
     // ON Uno32 we use timer1
     OpenTimer1(T1_ON | T1_PS_1_1 | T1_SOURCE_INT, (F_CPU / 8) / _speed);
@@ -572,6 +602,12 @@ ISR(RH_ASK_TIMER_VECTOR)
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) || (RH_PLATFORM == RH_PLATFORM_STM32)
 // LaunchPad, Maple
 void interrupt()
+{
+    thisASKDriver->handleTimerInterrupt();
+}
+
+#elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Photon
+void TimerInterruptHandler()
 {
     thisASKDriver->handleTimerInterrupt();
 }

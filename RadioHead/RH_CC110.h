@@ -555,6 +555,20 @@
 /// and use the default RH_CC110 constructor. You can use other pins by passing the appropriate arguments
 /// to the RH_CC110 constructor, depending on what your MCU supports.
 ///
+/// For the Particle Photon:
+/// \code
+///                 Photon   CC110L pin name         Anaren BoosterPack pin
+///                 3.3V---------VDD   (3.3V in)              J1-1
+///          SS pin A2-----------CSn   (chip select in)       J2-8
+///         SCK pin A3-----------SCLK  (SPI clock in)         J1-7
+///        MOSI pin A5-----------MOSI  (SPI data in)          J2-5
+///        MISO pin A4-----------MISO  (SPI data out)         J2-4
+///                 D2-----------GDO0  (Interrupt output)     J2-9
+///                 GND----------GND   (ground in)            J2-10
+/// \endcode
+/// and use the default RH_CC110 constructor. You can use other pins by passing the appropriate arguments
+/// to the RH_CC110 constructor, depending on what your MCU supports.
+///
 /// \par Example programs
 ///
 /// Several example programs are provided.

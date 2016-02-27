@@ -332,7 +332,7 @@ void RH_RF95::setTxPower(int8_t power, bool useRFO)
 	    power = 14;
 	if (power < -1)
 	    power = -1;
-	spiWrite(RH_RF95_REG_09_PA_CONFIG, RH_RF95_MAX_POWER | power + 1);
+	spiWrite(RH_RF95_REG_09_PA_CONFIG, RH_RF95_MAX_POWER | (power + 1));
     }
     else
     {
