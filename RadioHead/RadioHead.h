@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.55.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.56.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -156,8 +156,8 @@
 ///     https://github.com/LowPowerLab/Moteino/tree/master/MEGA/Core)
 ///  - ESP8266 on Arduino IDE and Boards Manager per https://github.com/esp8266/Arduino 
 ///    Tested using Arduino 1.6.5 with esp8266 by ESP8266 Community version 2.0.0
-///    Examples serial_reliable_datagram_* are shown to work. 
-///    CAUTION: SPI not supported yet. Timers used by RH_ASK are not tested. The GHz radio included in the ESP8266 is
+///    Examples serial_reliable_datagram_* and ask_* are shown to work. 
+///    CAUTION: SPI not supported yet. The GHz radio included in the ESP8266 is
 ///    not yet supported. 
 ///  - etc.
 ///
@@ -636,6 +636,8 @@
 ///              Fixed many warnings exposed by test building for Photon.
 ///              Particle Photon tested support for RH_Serial, RH_ASK, SPI, RH_CC110 etc.
 ///              Added notes on how to build RadioHead sketches for Photon.
+/// \version 1.56 2016-02-18 
+///              Implemented timers for RH_ASK on ESP8266, added some doc on IO pin selection.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -644,7 +646,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 55
+#define RH_VERSION_MINOR 56
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -821,6 +823,10 @@
 #elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Particle Photon with firmware-develop
  #define ATOMIC_BLOCK_START { int __prev = HAL_disable_irq();
  #define ATOMIC_BLOCK_END  HAL_enable_irq(__prev); }
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+// See hardware/esp8266/2.0.0/cores/esp8266/Arduino.h
+ #define ATOMIC_BLOCK_START { uint32_t __savedPS = xt_rsil(15);
+ #define ATOMIC_BLOCK_END xt_wsr_ps(__savedPS);}
 #else 
  // TO BE DONE:
  #define ATOMIC_BLOCK_START
@@ -832,6 +838,9 @@
 // instead of spin-loops
 // Recent Arduino IDE or Teensy 3 has yield()
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155 && !defined(RH_PLATFORM_ATTINY)) || (TEENSYDUINO && defined(__MK20DX128__))
+ #define YIELD yield();
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+// ESP8266 also hash it
  #define YIELD yield();
 #else
  #define YIELD

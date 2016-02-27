@@ -279,6 +279,8 @@ void RHHardwareSPI::begin()
 //      SPI.setClockSpeed(1, MHZ);
       SPI.begin();
 
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+#warn "ESP8266 SPI support not yet available. Please feel free to submit a patch"
 
 #elif (RH_PLATFORM == RH_PLATFORM_RASPI) // Raspberry PI
   uint8_t dataMode;

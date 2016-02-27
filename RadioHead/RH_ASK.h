@@ -212,12 +212,25 @@
 ///
 /// Measured power output from RFM85 at 5V was 18dBm.
 ///
+/// \par ESP8266
+/// This module has been tested with the ESP8266 using an ESP-12 on a breakout board 
+/// ESP-12E SMD Adaptor Board with Power Regulator from tronixlabs 
+/// http://tronixlabs.com.au/wireless/esp8266/esp8266-esp-12e-smd-adaptor-board-with-power-regulator-australia/
+/// compiled on Arduino 1.6.5 and the ESP8266 support 2.0 installed with Board Manager.
+/// CAUTION: do not use pin 11 for IO with this chip: it will cause the sketch to hang. Instead
+/// use constructor arguments to configure different pins, eg:
+/// \code
+/// RH_ASK driver(2000, 2, 4, 5);
+/// \endcode
+/// Which will initialise the driver at 2000 bps, recieve on GPIO2, transmit on GPIO4, PTT on GPIO5.
+/// Caution: on the tronixlabs breakout board, pins 4 and 5 may be labelled vice-versa.
+///
 /// \par Timers
 /// The RH_ASK driver uses a timer-driven interrupt to generate 8 interrupts per bit period. RH_ASK
 /// takes over a timer on Arduino-like platforms. By default it takes over Timer 1. You can force it
 /// to use Timer 2 instead by enabling the define RH_ASK_ARDUINO_USE_TIMER2 near the top of RH_ASK.cpp
 /// On Arduino Zero it takes over timer TC3. On Arduino Due it takes over timer
-/// TC0.
+/// TC0. On ESP8266, takes over timer0 (which conflicts with ServoTimer0).
 ///
 /// Caution: ATTiny85 has only 2 timers, one (timer 0) usually used for
 /// millis() and one (timer 1) for PWM analog outputs. The RH_ASK Driver
@@ -287,6 +300,11 @@ public:
 
     /// dont call this it used by the interrupt handler
     void            handleTimerInterrupt();
+
+#if (RH_PLATFORM == RH_PLATFORM_ESP8266)
+    /// ESP8266 timer0 increment value
+    uint32_t _timerIncrement;
+#endif
 
 protected:
     /// Helper function for calculating timer ticks

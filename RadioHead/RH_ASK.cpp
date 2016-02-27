@@ -72,7 +72,6 @@ bool RH_ASK::init()
 
     // Ready to go
     setModeIdle();
-
     timerSetup();
 
     return true;
@@ -191,13 +190,13 @@ void RH_ASK::timerSetup()
     OCR0A = uint8_t(nticks);
 
     // Set mask to fire interrupt when OCF0A bit is set in TIFR0
-#ifdef TIMSK0
+   #ifdef TIMSK0
     // ATtiny84
     TIMSK0 |= _BV(OCIE0A);
-#else
+   #else
     // ATtiny85
     TIMSK |= _BV(OCIE0A);
-#endif
+   #endif
 
 
  #elif defined(__arm__) && defined(CORE_TEENSY)
@@ -369,6 +368,15 @@ void RH_ASK::timerSetup()
     // ON Uno32 we use timer1
     OpenTimer1(T1_ON | T1_PS_1_1 | T1_SOURCE_INT, (F_CPU / 8) / _speed);
     ConfigIntTimer1(T1_INT_ON | T1_INT_PRIOR_1);
+
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+    void esp8266_timer_interrupt_handler(); // Forward declaration
+    // The - 120 is a heuristic to correct for interrupt handling overheads
+    _timerIncrement = (clockCyclesPerMicrosecond() * 1000000 / 8 / _speed) - 120;
+    timer0_isr_init();
+    timer0_attachInterrupt(esp8266_timer_interrupt_handler);
+    timer0_write(ESP.getCycleCount() + _timerIncrement);
+//    timer0_write(ESP.getCycleCount() + 41660000);
 #endif
 
 }
@@ -502,9 +510,6 @@ bool RH_ASK::send(const uint8_t* data, uint8_t len)
     // Start the low level interrupt handler sending symbols
     setModeTx();
 
-// FIXME
-    thisASKDriver = this;
-
     return true;
 }
 
@@ -627,6 +632,19 @@ void __ISR(_TIMER_1_VECTOR, ipl1) timerInterrupt(void)
     mT1ClearIntFlag(); // Clear timer 1 interrupt flag
 }
 }
+
+#elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+void esp8266_timer_interrupt_handler()
+{  
+//    timer0_write(ESP.getCycleCount() + 41660000);
+//    timer0_write(ESP.getCycleCount() + (clockCyclesPerMicrosecond() * 100) - 120 );
+    timer0_write(ESP.getCycleCount() + thisASKDriver->_timerIncrement);
+//    static int toggle = 0;
+//  toggle = (toggle == 1) ? 0 : 1;
+//  digitalWrite(4, toggle);
+    thisASKDriver->handleTimerInterrupt();
+}
+
 #endif
 
 // Convert a 6 bit encoded symbol into its 4 bit decoded equivalent
