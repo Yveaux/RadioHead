@@ -226,6 +226,8 @@
 /// - the excellent MiniWirelessLoRa from Anarduino http://www.anarduino.com/miniwireless
 /// - The excellent Modtronix inAir4 http://modtronix.com/inair4.html 
 /// and inAir9 modules http://modtronix.com/inair9.html.
+/// - the excellent Rocket Scream Mini Ultra Pro with the RFM95W 
+///   http://www.rocketscream.com/blog/product/mini-ultra-pro-with-radio/
 ///
 /// \par Overview
 ///
@@ -324,11 +326,57 @@
 /// that you must configure the power transmitter power for -1 to 14 dBm and with useRFO true. 
 /// Failure to do that will result in extremely low transmit powers.
 ///
-/// If you have an Arduino Zero, you should note that you cannot use Pin 2 for the interrupt line 
-/// (Pin 2 is for the NMI only), instead you can use any other pin (we use Pin 3) and initialise RH_RF69 like this:
+/// If you have an Arduino M0 Pro from arduino.org, 
+/// you should note that you cannot use Pin 2 for the interrupt line 
+/// (Pin 2 is for the NMI only). The same comments apply to Pin 4 on Arduino Zero from arduino.cc.
+/// Instead you can use any other pin (we use Pin 3) and initialise RH_RF69 like this:
 /// \code
 /// // Slave Select is pin 10, interrupt is Pin 3
-/// RH_RF69 driver(10, 3);
+/// RH_RF95 driver(10, 3);
+/// \endcode
+///
+/// If you have a Rocket Scream Mini Ultra Pro with the RFM95W:
+/// - Ensure you have Arduino SAMD board support 1.6.5 or later in Arduino IDE 1.6.8 or later.
+/// - The radio SS is hardwired to pin D5 and the DIO0 interrupt to pin D2, 
+/// so you need to initialise the radio like this:
+/// \code
+/// RH_RF95 driver(5, 2);
+/// \endcode
+/// - The name of the serial port on that board is 'SerialUSB', not 'Serial', so this may be helpful at the top of our
+///   sample sketches:
+/// \code
+/// #define Serial SerialUSB
+/// \endcode
+/// - You also need this in setup before radio initialisation  
+/// \code
+/// // Ensure serial flash is not interfering with radio communication on SPI bus
+///  pinMode(4, OUTPUT);
+///  digitalWrite(4, HIGH);
+/// \endcode
+/// - and if you have a 915MHz part, you need this after driver/manager intitalisation:
+/// \code
+/// rf95.setFrequency(915.0);
+/// \endcode
+/// which adds up to modifying sample sketches something like:
+/// \code
+/// #include <SPI.h>
+/// #include <RH_RF95.h>
+/// RH_RF95 rf95(5, 2); // Rocket Scream Mini Ultra Pro with the RFM95W
+/// #define Serial SerialUSB
+/// 
+/// void setup() 
+/// {
+///   // Ensure serial flash is not interfering with radio communication on SPI bus
+///   pinMode(4, OUTPUT);
+///   digitalWrite(4, HIGH);
+/// 
+///   Serial.begin(9600);
+///   while (!Serial) ; // Wait for serial port to be available
+///   if (!rf95.init())
+///     Serial.println("init failed");
+///   rf95.setFrequency(915.0);
+/// }
+/// ...
 /// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided
@@ -499,6 +547,8 @@ public:
     /// Caution: You must specify an interrupt capable pin.
     /// On many Arduino boards, there are limitations as to which pins may be used as interrupts.
     /// On Leonardo pins 0, 1, 2 or 3. On Mega2560 pins 2, 3, 18, 19, 20, 21. On Due and Teensy, any digital pin.
+    /// On Arduino Zero from arduino.cc, any digital pin other than 4.
+    /// On Arduino M0 Pro from arduino.org, any digital pin other than 2.
     /// On other Arduinos pins 2 or 3. 
     /// See http://arduino.cc/en/Reference/attachInterrupt for more details.
     /// On Chipkit Uno32, pins 38, 2, 7, 8, 35.

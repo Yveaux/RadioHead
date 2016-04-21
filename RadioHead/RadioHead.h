@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.58.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.59.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -647,6 +647,13 @@
 ///              Tested on ChipKIT Uno32.<br>
 ///              Digilent Uno32 under the old MPIDE is no longer formally 
 ///              supported but may continue to work for some time.<br>
+/// \version 1.59 2016-04-12
+///              Testing with the excellent Rocket Scream Mini Ultra Pro with the RFM95W and RFM69HCW modules from
+///              http://www.rocketscream.com/blog/product/mini-ultra-pro-with-radio/  (915MHz versions). Updated
+///              documentation with hints to suit. Caution: requires Arduino 1.6.8 and Arduino SAMD Boards 1.6.5.
+///              See also http://www.rocketscream.com/blog/2016/03/10/radio-range-test-with-rfm69hcw/
+///              for the vendors tests and range with the RFM69HCW version.
+///              These boards are highly recommended. They also include battery charging support.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -655,7 +662,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 58
+#define RH_VERSION_MINOR 59
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
