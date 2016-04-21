@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.54 2016/01/02 01:46:34 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.55 2016/04/04 01:40:12 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.57.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.58.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -161,8 +161,8 @@
 ///    not yet supported. 
 ///  - etc.
 ///
-/// - ChipKit Uno32 board and the MPIDE development environment
-/// http://www.digilentinc.com/Products/Detail.cfm?Prod=CHIPKIT-UNO32
+/// - ChipKIT Core with Arduino IDE on any ChipKIT Core supported Digilent processor (tested on Uno32)
+/// http://chipkit.net/wiki/index.php?title=ChipKIT_core
 ///
 /// - Maple and Flymaple boards with libmaple and the Maple-IDE development environment
 /// http://leaflabs.com/devices/maple/ and http://www.open-drone.org/flymaple
@@ -640,6 +640,13 @@
 ///              Implemented timers for RH_ASK on ESP8266, added some doc on IO pin selection.
 /// \version 1.57 2016-02-23
 ///              Fixed an issue reported by S3B, where RH_RF22 would sometimes not clear the rxbufvalid flag.
+/// \version 1.58 2-16-04-04
+///              Tested RH_RF69 with Arduino Due. OK. Updated doc.<br>
+///              Added support for all ChipKIT Core supported boards 
+///              http://chipkit.net/wiki/index.php?title=ChipKIT_core
+///              Tested on ChipKIT Uno32.<br>
+///              Digilent Uno32 under the old MPIDE is no longer formally 
+///              supported but may continue to work for some time.<br>
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -648,7 +655,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 57
+#define RH_VERSION_MINOR 58
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -663,11 +670,16 @@
 #define RH_PLATFORM_NRF51            10
 #define RH_PLATFORM_ESP8266          11
 #define RH_PLATFORM_STM32F2          12
+#define RH_PLATFORM_CHIPKIT_CORE     13
 
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
 #ifndef RH_PLATFORM
- #if defined(MPIDE)
+ #if (MPIDE>=150 && defined(ARDUINO))
+  // Using ChipKIT Core on Arduino IDE
+  #define RH_PLATFORM RH_PLATFORM_CHIPKIT_CORE
+ #elif defined(MPIDE)
+  // Uno32 under old MPIDE, which has been discontinued:
   #define RH_PLATFORM RH_PLATFORM_UNO32
  #elif defined(NRF51)
   #define RH_PLATFORM RH_PLATFORM_NRF51
@@ -726,7 +738,7 @@
  #define RH_HAVE_HARDWARE_SPI
  #define RH_HAVE_SERIAL
 
-#elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+#elif (RH_PLATFORM == RH_PLATFORM_UNO32 || RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
  #include <WProgram.h>
  #include <string.h>
  #include <SPI.h>
@@ -818,7 +830,12 @@
  #endif
  #define ATOMIC_BLOCK_START     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
  #define ATOMIC_BLOCK_END }
+#elif (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
+ // UsingChipKIT Core on Arduino IDE
+ #define ATOMIC_BLOCK_START unsigned int __status = disableInterrupts(); {
+ #define ATOMIC_BLOCK_END } restoreInterrupts(__status);
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+ // Under old MPIDE, which has been discontinued:
  #include <peripheral/int.h>
  #define ATOMIC_BLOCK_START unsigned int __status = INTDisableInterrupts(); {
  #define ATOMIC_BLOCK_END } INTRestoreInterrupts(__status);
@@ -879,8 +896,9 @@
    #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p) == 3 ? 1 : NOT_AN_INTERRUPT))
 
   #endif
- 
- #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+  
+ #elif (RH_PLATFORM == RH_PLATFORM_UNO32) || (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
+  // Hmmm, this is correct for Uno32, but what about other boards on ChipKIT Core?
   #define digitalPinToInterrupt(p) ((p) == 38 ? 0 : ((p) == 2 ? 1 : ((p) == 7 ? 2 : ((p) == 8 ? 3 : ((p) == 735 ? 4 : NOT_AN_INTERRUPT)))))
 
  #else

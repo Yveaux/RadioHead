@@ -1,7 +1,7 @@
 // RH_NRF24.h
 // Author: Mike McCauley
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.h,v 1.17 2015/12/17 10:58:13 mikem Exp $
+// $Id: RH_NRF24.h,v 1.18 2016/04/04 01:40:12 mikem Exp mikem $
 //
 
 #ifndef RH_NRF24_h

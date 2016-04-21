@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.30 2015/12/11 01:10:24 mikem Exp $
+// $Id: RH_RF69.h,v 1.31 2016/04/04 01:40:12 mikem Exp mikem $
 //
 ///
 
@@ -367,7 +367,7 @@
 /// programming connection and an antenna to make it work.
 ///
 /// If you have a bare RFM69W that you want to connect to an Arduino, you
-/// might use these connections (untested): CAUTION: you must use a 3.3V type
+/// might use these connections: CAUTION: you must use a 3.3V type
 /// Arduino, otherwise you will also need voltage level shifters between the
 /// Arduino and the RFM69.  CAUTION, you must also ensure you connect an
 /// antenna
@@ -381,6 +381,18 @@
 ///         SCK pin D13----------SCK   (SPI clock in)
 ///        MOSI pin D11----------MOSI  (SPI Data in)
 ///        MISO pin D12----------MISO  (SPI Data out)
+/// \endcode
+///
+/// For Arduino Due, use these connections:
+/// \code
+///                 Arduino      RFM69W
+///                 GND----------GND   (ground in)
+///                 3V3----------3.3V  (3.3V in)
+/// interrupt 0 pin D2-----------DIO0  (interrupt request out)
+///          SS pin D10----------NSS   (chip select in)
+///       SCK SPI pin 3----------SCK   (SPI clock in)
+///      MOSI SPI pin 4----------MOSI  (SPI Data in)
+///      MISO SPI pin 1----------MISO  (SPI Data out)
 /// \endcode
 ///
 /// With these connections, you can then use the default constructor RH_RF69().

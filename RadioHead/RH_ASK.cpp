@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.16 2015/12/11 01:10:24 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.17 2016/04/04 01:40:12 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -364,7 +364,13 @@ void RH_ASK::timerSetup()
     TIM_ITConfig(TIMx, TIM_IT_Update, ENABLE);
     TIM_Cmd(TIMx, ENABLE);
 
+#elif (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
+    // UsingChipKIT Core on Arduino IDE
+    uint32_t chipkit_timer_interrupt_handler(uint32_t currentTime); // Forward declaration
+    attachCoreTimerService(chipkit_timer_interrupt_handler);
+
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+    // Under old MPIDE, which has been discontinued:
     // ON Uno32 we use timer1
     OpenTimer1(T1_ON | T1_PS_1_1 | T1_SOURCE_INT, (F_CPU / 8) / _speed);
     ConfigIntTimer1(T1_INT_ON | T1_INT_PRIOR_1);
@@ -623,11 +629,20 @@ interrupt(TIMER0_A0_VECTOR) Timer_A_int(void)
     thisASKDriver->handleTimerInterrupt();
 };
 
+#elif (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
+// Using ChipKIT Core on Arduino IDE
+uint32_t chipkit_timer_interrupt_handler(uint32_t currentTime) 
+{
+    thisASKDriver->handleTimerInterrupt();
+    return (currentTime + ((CORE_TICK_RATE * 1000)/8)/thisASKDriver->speed());
+}
+
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32)
+// Under old MPIDE, which has been discontinued:
 extern "C"
 {
-void __ISR(_TIMER_1_VECTOR, ipl1) timerInterrupt(void)
-{
+ void __ISR(_TIMER_1_VECTOR, ipl1) timerInterrupt(void)
+ {
     thisASKDriver->handleTimerInterrupt();
     mT1ClearIntFlag(); // Clear timer 1 interrupt flag
 }

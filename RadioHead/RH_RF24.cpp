@@ -1,7 +1,7 @@
 // RH_RF24.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF24.cpp,v 1.15 2015/12/11 01:10:24 mikem Exp $
+// $Id: RH_RF24.cpp,v 1.16 2016/04/04 01:40:12 mikem Exp mikem $
 
 #include <RH_RF24.h>
 // Generated with Silicon Labs WDS software:

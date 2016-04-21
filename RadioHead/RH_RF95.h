@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.9 2015/12/16 04:55:33 mikem Exp $
+// $Id: RH_RF95.h,v 1.10 2016/04/04 01:40:12 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h
@@ -478,6 +478,8 @@ public:
     /// These are indexes into MODEM_CONFIG_TABLE. We strongly recommend you use these symbolic
     /// definitions and not their integer equivalents: its possible that new values will be
     /// introduced in later versions (though we will try to avoid it).
+    /// Caution: if you are using slow packet rates and long packets with RHReliableDatagram or subclasses
+    /// you may need to change the RHReliableDatagram timeout for reliable operations.
     typedef enum
     {
 	Bw125Cr45Sf128 = 0,	   ///< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range

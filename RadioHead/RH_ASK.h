@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.14 2016/01/02 01:46:34 mikem Exp mikem $
+// $Id: RH_ASK.h,v 1.15 2016/04/04 01:40:12 mikem Exp mikem $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -132,7 +132,7 @@
 /// other modules may also work with this software. 
 ///
 /// Runs on a wide range of Arduino processors using Arduino IDE 1.0 or later.
-/// Also runs on on Energia
+/// Also runs on on Energia, 
 /// with MSP430G2553 / G2452 and Arduino with ATMega328 (courtesy Yannick DEVOS - XV4Y), 
 /// but untested by us. It also runs on Teensy 3.0 (courtesy of Paul
 /// Stoffregen), but untested by us. Also compiles and runs on ATtiny85 in
@@ -142,6 +142,7 @@
 /// without relying on the Arduino framework, by properly configuring the
 /// library editing the RH_ASK.h header file for describing the access
 /// to IO pins and for setting up the timer.
+/// Runs on ChipKIT Core supported processors such as Uno32 etc.
 ///
 /// - Receivers
 ///  - RX-B1 (433.92MHz) (also known as ST-RX04-ASK)
@@ -300,6 +301,10 @@ public:
 
     /// dont call this it used by the interrupt handler
     void            handleTimerInterrupt();
+
+    /// Returns the current speed in bits per second
+    /// \return The current speed in bits per second
+    uint16_t        speed() { return _speed;}
 
 #if (RH_PLATFORM == RH_PLATFORM_ESP8266)
     /// ESP8266 timer0 increment value
