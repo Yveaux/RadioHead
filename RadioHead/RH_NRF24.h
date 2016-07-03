@@ -247,7 +247,7 @@
 /// NRF24 nrf24(8, 10);
 ///
 /// For an Arduino Due (the SPI pins do not come out on the Digital pins as for normal Arduino, but only
-/// appear on the SPI header)
+/// appear on the SPI header). Use the same connections for Yun with 5V or 3.3V.
 /// \code
 ///                Due      Sparkfun WRL-00691
 ///               3.3V-----------VCC   (3.3V to 7V in)

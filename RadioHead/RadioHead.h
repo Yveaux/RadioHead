@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.59.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.60.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -155,9 +155,9 @@
 ///     (with Arduino 1.0.5 and the MoteinoMEGA Arduino Core 
 ///     https://github.com/LowPowerLab/Moteino/tree/master/MEGA/Core)
 ///  - ESP8266 on Arduino IDE and Boards Manager per https://github.com/esp8266/Arduino 
-///    Tested using Arduino 1.6.5 with esp8266 by ESP8266 Community version 2.0.0
+///    Tested using Arduino 1.6.8 with esp8266 by ESP8266 Community version 2.1.0
 ///    Examples serial_reliable_datagram_* and ask_* are shown to work. 
-///    CAUTION: SPI not supported yet. The GHz radio included in the ESP8266 is
+///    CAUTION: The GHz radio included in the ESP8266 is
 ///    not yet supported. 
 ///  - etc.
 ///
@@ -654,6 +654,12 @@
 ///              See also http://www.rocketscream.com/blog/2016/03/10/radio-range-test-with-rfm69hcw/
 ///              for the vendors tests and range with the RFM69HCW version.
 ///              These boards are highly recommended. They also include battery charging support.
+/// \version 1.60 ???
+///              Tested with the excellent talk2 Whisper Node boards 
+///             (https://talk2.wisen.com.au/ and https://bitbucket.org/talk2/), 
+///              an Arduino Nano compatible board, which include an on-board RF69 radio, external antenna, 
+///              run on 2xAA batteries and support low power operations. RF69 examples work without modification.
+///              Added support for ESP8266 SPI, provided by David Skinner.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -662,7 +668,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 59
+#define RH_VERSION_MINOR 60
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

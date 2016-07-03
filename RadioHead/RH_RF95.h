@@ -228,6 +228,8 @@
 /// and inAir9 modules http://modtronix.com/inair9.html.
 /// - the excellent Rocket Scream Mini Ultra Pro with the RFM95W 
 ///   http://www.rocketscream.com/blog/product/mini-ultra-pro-with-radio/
+/// - Lora1276 module from NiceRF http://www.nicerf.com/product_view.aspx?id=99
+/// - Adafruit Feather M0 with RFM95 
 ///
 /// \par Overview
 ///
@@ -377,6 +379,11 @@
 ///   rf95.setFrequency(915.0);
 /// }
 /// ...
+/// \endcode
+///
+/// For Adafruit Feather M0 with RFM95, construct the driver like this:
+/// \code
+/// RH_RF95 rf95(8, 3);
 /// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided

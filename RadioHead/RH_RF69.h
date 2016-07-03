@@ -301,6 +301,10 @@
 ///  the marvellous high powered MinWireless-HW (with 20dBm output for excellent range)
 /// - the excellent Rocket Scream Mini Ultra Pro with the RFM69HCW 
 ///   http://www.rocketscream.com/blog/product/mini-ultra-pro-with-radio/
+/// - The excellent talk2 Whisper Node boards 
+///   (https://talk2.wisen.com.au/ and https://bitbucket.org/talk2/), 
+///   an Arduino Nano compatible board, which include an on-board RF69 radio, external antenna, 
+///   run on 2xAA batteries and support low power operations. RF69 examples work without modification.
 ///
 /// \par Overview
 ///
@@ -474,6 +478,13 @@
 ///   rf69.setTxPower(20);
 /// }
 /// ...
+/// \endcode
+///
+/// If you have a talk2 Whisper Node board with on-board RF69 radio, 
+/// the example rf69_* sketches work without modifications. Initialise the radio like
+/// with the default constructor:
+/// \code
+///  RH_RF69 driver;
 /// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided

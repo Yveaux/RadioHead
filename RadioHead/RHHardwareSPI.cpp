@@ -280,7 +280,53 @@ void RHHardwareSPI::begin()
       SPI.begin();
 
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
-#warn "ESP8266 SPI support not yet available. Please feel free to submit a patch"
+     // Requires SPI driver for ESP8266 from https://github.com/esp8266/Arduino/tree/master/libraries/SPI
+     // Which ppears to be in Arduino Board Manager ESP8266 Community version 2.1.0
+     // Contributed by David Skinner
+     // begin comes first 
+     SPI.begin();
+
+     // datamode
+     switch ( _dataMode )
+     { 
+	 case DataMode1:
+	     SPI.setDataMode ( SPI_MODE1 );
+	     break;
+	 case DataMode2:
+	     SPI.setDataMode ( SPI_MODE2 );
+	     break;
+	 case DataMode3:
+	     SPI.setDataMode ( SPI_MODE3 );
+	     break;
+	 case DataMode0:
+	 default:
+	     SPI.setDataMode ( SPI_MODE0 );
+	     break;
+     }
+
+     // bitorder
+     SPI.setBitOrder(_bitOrder == BitOrderLSBFirst ? LSBFIRST : MSBFIRST);
+
+     // frequency (this sets the divider)
+     switch (_frequency)
+     {
+	 case Frequency1MHz:
+	 default:
+	     SPI.setFrequency(1000000);
+	     break;
+	 case Frequency2MHz:
+	     SPI.setFrequency(2000000);
+	     break;
+	 case Frequency4MHz:
+	     SPI.setFrequency(4000000);
+	     break;
+	 case Frequency8MHz:
+	     SPI.setFrequency(8000000);
+	     break;
+	 case Frequency16MHz:
+	     SPI.setFrequency(16000000);
+	     break;
+     }
 
 #elif (RH_PLATFORM == RH_PLATFORM_RASPI) // Raspberry PI
   uint8_t dataMode;
