@@ -26,8 +26,14 @@ void setup()
   if (!nrf51.setChannel(1))
     Serial.println("setChannel failed");
   if (!nrf51.setRF(RH_NRF51::DataRate2Mbps, RH_NRF51::TransmitPower0dBm))
-    Serial.println("setRF failed");    
-  nrf51.printRegisters();
+    Serial.println("setRF failed"); 
+  
+  // AES encryption can be enabled by setting the same key in the sender and receiver
+//  uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+//                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+//  nrf51.setEncryptionKey(key);
+
+//  nrf51.printRegisters();
 }
 
 
