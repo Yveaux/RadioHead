@@ -301,10 +301,16 @@
 ///  the marvellous high powered MinWireless-HW (with 20dBm output for excellent range)
 /// - the excellent Rocket Scream Mini Ultra Pro with the RFM69HCW 
 ///   http://www.rocketscream.com/blog/product/mini-ultra-pro-with-radio/
-/// - The excellent talk2 Whisper Node boards 
-///   (https://talk2.wisen.com.au/ and https://bitbucket.org/talk2/), 
-///   an Arduino Nano compatible board, which include an on-board RF69 radio, external antenna, 
-///   run on 2xAA batteries and support low power operations. RF69 examples work without modification.
+/// - The excellent Talk2 Whisper Node boards 
+///   (https://talk2.wisen.com.au/ and https://bitbucket.org/talk2/whisper-node-avr), 
+///   an Arduino compatible board, which include an on-board RF69 radio, external antenna, 
+///   run on 2xAAA batteries and support low power operations. RF69 examples work without modification.
+///   Use Arduino Board Manager to install the Talk2 code support as described in 
+///   https://bitbucket.org/talk2/whisper-node-avr
+/// - The excellent Adafruit Feather. These are excellent boards that are available with a variety of radios. 
+///   We tested with the 
+///   Feather 32u4 with RFM69HCW radio, with Arduino IDE 1.6.8 and the Adafruit AVR Boards board manager version 1.6.10.
+///   https://www.adafruit.com/products/3076
 ///
 /// \par Overview
 ///
@@ -485,6 +491,16 @@
 /// with the default constructor:
 /// \code
 ///  RH_RF69 driver;
+/// \endcode
+///
+/// If you have a Feather 32u4 with RFM69HCW you need to initialise the driver like:
+/// \code
+///  RH_RF69 driver(8, 7);
+/// \endcode
+/// and since the radio is the high power HCW model, you must set the Tx power in the
+/// range 14 to 20 like this:
+/// \code
+///  driver.setTxPower(14);
 /// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided
