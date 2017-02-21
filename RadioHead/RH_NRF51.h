@@ -15,11 +15,33 @@
 
 // The length of the headers we add.
 // The headers are inside the nRF51 payload
-#define RH_NRF51_HEADER_LEN 4
+// We add:
+// S0 (not used)
+// LEN
+// S1 (not used)
+// to
+// from
+// id
+// flags
+#define RH_NRF51_HEADER_LEN 7
 
 // This is the maximum RadioHead user message length that can be supported by this library. Limited by
 // the supported message lengths in the nRF51
 #define RH_NRF51_MAX_MESSAGE_LEN (RH_NRF51_MAX_PAYLOAD_LEN-RH_NRF51_HEADER_LEN)
+
+// Define to be 1 if you want to support AES CCA encryption using the built-in
+// encryption engine.
+#define RH_NRF51_HAVE_ENCRYPTION 1
+
+// When encryption is enabled, have a much shorter max message length
+#define RH_NRF51_MAX_ENCRYPTED_MESSAGE_LEN (27-4)
+
+// The required length of the AES encryption key
+#define RH_NRF51_ENCRYPTION_KEY_LENGTH 16
+
+// This is the size of the CCM data structure for AES encryption
+// REVISIT: use a struct?
+#define RH_NRF51_AES_CCM_CNF_SIZE 33
 
 /////////////////////////////////////////////////////////////////////
 /// \class RH_NRF51 RH_NRF51.h <RH_NRF51.h>
@@ -55,18 +77,20 @@
 /// \par Packet Format
 ///
 /// All messages sent and received by this class conform to this packet format. It is NOT compatible
-/// with the one used by RH_NRF24 and the nRF24L01 product specification, mainly because the nRF24 only suports
+/// with the one used by RH_NRF24 and the nRF24L01 product specification, mainly because the nRF24 only supports
 /// 6 bits of message length.
 ///
 /// - 1 octets PREAMBLE
 /// - 3 to 5 octets NETWORK ADDRESS
+/// - 1 octet S0 (not used, required if encryption used)
 /// - 8 bits PAYLOAD LENGTH
-/// - 0 to 254 octets PAYLOAD, consisting of:
+/// - 1 octet S1 (not used, required if encryption used)
+/// - 0 to 251 octets PAYLOAD (possibly encrypted), consisting of:
 ///   - 1 octet TO header
 ///   - 1 octet FROM header
 ///   - 1 octet ID header
 ///   - 1 octet FLAGS header
-///   - 0 to 250 octets of user message
+///   - 0 to 247 octets of user message
 /// - 2 octets CRC (Algorithm x^16+x^12^x^5+1 with initial value 0xFFFF).
 ///
 /// \par Example programs
@@ -172,10 +196,11 @@ public:
 
     /// Sends data to the address set by setTransmitAddress()
     /// Sets the radio to TX mode.
+    /// Caution: when encryption is enabled, the maximum message length is reduced to 23 octets.
     /// \param [in] data Data bytes to send.
     /// \param [in] len Number of data bytes to send
     /// \return true on success (which does not necessarily mean the receiver got the message, only that the message was
-    /// successfully transmitted).
+    /// successfully transmitted). False if the message is too long or was otherwise not transmitted.
     bool send(const uint8_t* data, uint8_t len);
 
     /// Blocks until the current message (if any) 
@@ -213,9 +238,25 @@ public:
     /// \return true if a valid message was copied to buf
     bool        recv(uint8_t* buf, uint8_t* len);
 
+    /// Enables AES encryption and sets the AES encryption key, used
+    /// to encrypt and decrypt all messages using the on-chip AES CCM mode encryption engine. 
+    /// The default is disabled.
+    /// In the AES configuration, the message counter and IV is always set to 0, which
+    /// means the same keystream is used for every message with a given key.
+    /// Caution: when encryption is enabled, the maximum message length is reduced to 23 octets.
+    /// \param[in] key The key to use. Must be 16 bytes long. The same key must be installed
+    /// in other instances of RH_RF51, otherwise communications will not work correctly. If key is NULL,
+    /// encryption is disabled, which is the default.
+    void           setEncryptionKey(uint8_t* key = NULL);
+
     /// The maximum message length supported by this driver
     /// \return The maximum message length supported by this driver
     uint8_t maxMessageLength();
+
+    /// Reeads the current die temperature using the built in TEMP peripheral.
+    /// Blocks while the temperature is measured, which takes about 30 microseconds.
+    // \return the current die temperature in degrees C.
+    float get_temperature();
 
 protected:
     /// Examine the receive buffer to determine whether the message is for this node
@@ -231,6 +272,18 @@ private:
 
     /// True when there is a valid message in the buffer
     bool                _rxBufValid;
+
+#if RH_NRF51_HAVE_ENCRYPTION
+    /// True if an AES key has been specified and that we are therfore encrypting
+    /// and decrypting messages on the fly
+    bool                _encrypting;
+
+    /// Scratch area for AES encryption
+    uint8_t             _scratch[RH_NRF51_MAX_PAYLOAD_LEN+1+16];
+
+    /// Where the AES encryption key and IV are stored
+    uint8_t             _encryption_cnf[RH_NRF51_AES_CCM_CNF_SIZE];
+#endif
 };
 
 /// @example nrf51_client.pde

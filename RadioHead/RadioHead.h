@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.63.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.64.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -674,6 +674,11 @@
 ///              Implmentations of isChannelActive() plus documentation for other radio modules wil be welcomed.
 /// \version 1.63 2016-10-20
 ///              Testing with Adafruit Feather 32u4 with RFM69HCW. Updated documentation to reflect.
+/// \version 1.64 2016-12-10
+///              RHReliableDatagram now initialises _seenids. Fix from Ben Lim.
+///              In RH_NRF51, added get_temperature().
+///              In RH_NRF51, added support for AES packet encryption, which required a slight change 
+///              to the on-air message format.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -682,7 +687,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 63
+#define RH_VERSION_MINOR 64
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

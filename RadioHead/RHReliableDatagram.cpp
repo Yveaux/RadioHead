@@ -22,6 +22,7 @@ RHReliableDatagram::RHReliableDatagram(RHGenericDriver& driver, uint8_t thisAddr
     _lastSequenceNumber = 0;
     _timeout = RH_DEFAULT_TIMEOUT;
     _retries = RH_DEFAULT_RETRIES;
+    memset(_seenIds, 0, sizeof(_seenIds));
 }
 
 ////////////////////////////////////////////////////////////////////

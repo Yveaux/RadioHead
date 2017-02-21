@@ -834,6 +834,8 @@ public:
     /// value on all nodes in your network. Nodes with different SyncWords set will never receive
     /// each others messages, so different SyncWords can be used to isolate different
     /// networks from each other. Default is { 0x2d, 0xd4 }.
+    /// Caution: tests here show that with a single sync word (ie where len == 1), 
+    /// RFM69 reception can be unreliable.
     /// \param[in] syncWords Array of sync words, 1 to 4 octets long. NULL if no sync words to be used.
     /// \param[in] len Number of sync words to set, 1 to 4. 0 if no sync words to be used.
     void           setSyncWords(const uint8_t* syncWords = NULL, uint8_t len = 0);
@@ -842,7 +844,7 @@ public:
     /// to encrypt and decrypt all messages. The default is disabled.
     /// \param[in] key The key to use. Must be 16 bytes long. The same key must be installed
     /// in other instances of RF69, otherwise communications will not work correctly. If key is NULL,
-    /// encryption is disabled.
+    /// encryption is disabled, which is the default.
     void           setEncryptionKey(uint8_t* key = NULL);
 
     /// Returns the time in millis since the most recent preamble was received, and when the most recent
