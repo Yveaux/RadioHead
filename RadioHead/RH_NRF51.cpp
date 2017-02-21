@@ -2,7 +2,7 @@
 //
 // Per: nRF51_Series_Reference_manual v3.0.pdf
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF51.cpp,v 1.3 2017/01/13 01:29:36 mikem Exp mikem $
+// $Id: RH_NRF51.cpp,v 1.4 2017/02/01 21:46:02 mikem Exp mikem $
 
 // Set by Arduino IDE and RadioHead.h when compiling for nRF51 or nRF52 chips:
 

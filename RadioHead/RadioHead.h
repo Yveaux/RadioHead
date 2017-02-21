@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.59 2017/01/13 01:29:36 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.60 2017/02/01 21:46:02 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,8 +10,9 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.68.zip
-/// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.69.zip
+/// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
+/// and the latest version of the distribution at http://www.airspayce.com/mikem/arduino/RadioHead_latest.zip
 ///
 /// You can also find online help and discussion at 
 /// http://groups.google.com/group/radiohead-arduino
@@ -705,6 +706,8 @@
 ///              of the last received message
 /// \version 1.68 2017-01-25
 ///              Fixed arithmetic error in RH_RF95::frequencyError() for some platforms.
+/// \version 1.69 2017-02-02
+///              Added RH_RF95::lastSNR() and improved lastRssi() calculations per the manual.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -713,7 +716,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 68
+#define RH_VERSION_MINOR 69
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

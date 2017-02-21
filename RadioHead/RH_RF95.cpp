@@ -1,7 +1,7 @@
 // RH_RF95.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.12 2017/01/12 23:58:00 mikem Exp $
+// $Id: RH_RF95.cpp,v 1.13 2017/02/01 21:46:02 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -137,11 +137,24 @@ void RH_RF95::handleInterrupt()
 	_bufLen = len;
 	spiWrite(RH_RF95_REG_12_IRQ_FLAGS, 0xff); // Clear all IRQ flags
 
-	// Remember the RSSI of this packet
+	// Remember the last signal to noise ratio, LORA mode
+	// Per page 111, SX1276/77/78/79 datasheet
+	_lastSNR = (int8_t)spiRead(RH_RF95_REG_19_PKT_SNR_VALUE) / 4;
+
+	// Remember the RSSI of this packet, LORA mode
 	// this is according to the doc, but is it really correct?
 	// weakest receiveable signals are reported RSSI at about -66
-	_lastRssi = spiRead(RH_RF95_REG_1A_PKT_RSSI_VALUE) - 137;
-
+	_lastRssi = spiRead(RH_RF95_REG_1A_PKT_RSSI_VALUE);
+	// Adjust the RSSI, datasheet page 87
+	if (_lastSNR < 0)
+	    _lastRssi = _lastRssi + _lastSNR;
+	else
+	    _lastRssi = (int)_lastRssi * 16 / 15;
+	if (_usingHFport)
+	    _lastRssi -= 157;
+	else
+	    _lastRssi -= 164;
+	    
 	// We have received a message.
 	validateRxBuf(); 
 	if (_rxBufValid)
@@ -287,6 +300,7 @@ bool RH_RF95::setFrequency(float centre)
     spiWrite(RH_RF95_REG_06_FRF_MSB, (frf >> 16) & 0xff);
     spiWrite(RH_RF95_REG_07_FRF_MID, (frf >> 8) & 0xff);
     spiWrite(RH_RF95_REG_08_FRF_LSB, frf & 0xff);
+    _usingHFport = (centre >= 779.0);
 
     return true;
 }
@@ -447,4 +461,9 @@ int RH_RF95::frequencyError()
     // else not defined
 
     return error;
+}
+
+int RH_RF95::lastSNR()
+{
+    return _lastSNR;
 }

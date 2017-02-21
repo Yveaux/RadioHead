@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.14 2017/01/13 01:29:36 mikem Exp mikem $
+// $Id: RH_RF95.h,v 1.15 2017/02/01 21:46:02 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h
@@ -746,6 +746,11 @@ public:
     /// register RH_RF95_REG_1D_MODEM_CONFIG1 is invalid, returns 0.
     int frequencyError();
 
+    /// Returns the Signal-to-noise ratio (SNR) of the last received message, as measured
+    /// by the receiver.
+    /// \return SNR of the last received message in dB
+    int lastSNR();
+
 protected:
     /// This is a low level function to handle the interrupts for one instance of RH_RF95.
     /// Called automatically by isr*()
@@ -789,6 +794,12 @@ private:
 
     /// True when there is a valid message in the buffer
     volatile bool       _rxBufValid;
+
+    // True if we are using the HF port (779.0 MHz and above)
+    bool                _usingHFport;
+
+    // Last measured SNR, dB
+    int8_t              _lastSNR;
 };
 
 /// @example rf95_client.pde
