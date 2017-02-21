@@ -10,9 +10,8 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.69.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.70.zip
 /// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
-/// and the latest version of the distribution at http://www.airspayce.com/mikem/arduino/RadioHead_latest.zip
 ///
 /// You can also find online help and discussion at 
 /// http://groups.google.com/group/radiohead-arduino
@@ -321,14 +320,13 @@
 /// the right to share who uses it. If you wish to use this software under Open
 /// Source Licensing, you must contribute all your source code to the open source
 /// community in accordance with the GPL Version 2 when your application is
-/// distributed. See http://www.gnu.org/copyleft/gpl.html
+/// distributed. See https://www.gnu.org/licenses/gpl-2.0.html
 /// 
 /// \par Commercial Licensing
 ///
 /// This is the appropriate option if you are creating proprietary applications
 /// and you are not prepared to distribute and share the source code of your
-/// application. Contact info@airspayce.com for details (do not use this address for anything other than 
-/// commercial license enquiries. For all other queries, using the RadioHead mailing list).
+/// application. Purchase commercial licenses at http://airspayce.binpress.com/product/radiohead/4325
 ///
 /// \par Revision History
 /// \version 1.1 2014-04-14<br>
@@ -708,6 +706,8 @@
 ///              Fixed arithmetic error in RH_RF95::frequencyError() for some platforms.
 /// \version 1.69 2017-02-02
 ///              Added RH_RF95::lastSNR() and improved lastRssi() calculations per the manual.
+/// \version 1.70 2017-02-03
+///                Added link to Binpress commercial license purchasing.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -716,7 +716,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 69
+#define RH_VERSION_MINOR 70
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
