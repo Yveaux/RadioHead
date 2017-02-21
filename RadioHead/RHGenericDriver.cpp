@@ -84,7 +84,11 @@ bool RHGenericDriver::waitCAD()
     {
          if (millis() - t > _cad_timeout) 
 	     return false;
+#if (RH_PLATFORM == RH_PLATFORM_STM32) // stdlib on STMF103 gets confused if random is redefined
+	 delay(_random(1, 10) * 100);
+#else
          delay(random(1, 10) * 100); // Should these values be configurable? Macros?
+#endif
     }
 
     return true;

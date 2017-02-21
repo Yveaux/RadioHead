@@ -581,7 +581,6 @@
 /// \endcode
 /// and use the default constructor:
 /// RH_RF22 driver;
-
 /// For connecting an Arduino to an RFM23BP module. Note that the antenna control pins are reversed 
 /// compared to the RF22.
 /// \code

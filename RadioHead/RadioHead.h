@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.70.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.71.zip
 /// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -326,7 +326,7 @@
 ///
 /// This is the appropriate option if you are creating proprietary applications
 /// and you are not prepared to distribute and share the source code of your
-/// application. Purchase commercial licenses at http://airspayce.binpress.com/product/radiohead/4325
+/// application. Purchase commercial licenses at http://airspayce.binpress.com
 ///
 /// \par Revision History
 /// \version 1.1 2014-04-14<br>
@@ -707,7 +707,9 @@
 /// \version 1.69 2017-02-02
 ///              Added RH_RF95::lastSNR() and improved lastRssi() calculations per the manual.
 /// \version 1.70 2017-02-03
-///                Added link to Binpress commercial license purchasing.
+///              Added link to Binpress commercial license purchasing.
+/// \version 1.71 2017-02-07
+///              Improved support for STM32. Patch from Bent Guldbjerg Christensen.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -716,7 +718,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 70
+#define RH_VERSION_MINOR 71
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -809,10 +811,10 @@
  #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple, Flymaple etc
- #include <wirish.h>	
+ #include <STM32ArduinoCompat/wirish.h>	
  #include <stdint.h>
  #include <string.h>
- #include <HardwareSPI.h>
+ #include <STM32ArduinoCompat/HardwareSPI.h>
  #define RH_HAVE_HARDWARE_SPI
  // Defines which timer to use on Maple
  #define MAPLE_TIMER 1
