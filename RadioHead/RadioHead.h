@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.67.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.68.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -703,6 +703,8 @@
 /// \version 1.67 2017-01-24
 ///              Added RH_RF95::frequencyError() to return the estimated centre frequency offset in Hz 
 ///              of the last received message
+/// \version 1.68 2017-01-25
+///              Fixed arithmetic error in RH_RF95::frequencyError() for some platforms.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -711,7 +713,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 67
+#define RH_VERSION_MINOR 68
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

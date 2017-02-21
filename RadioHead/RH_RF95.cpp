@@ -426,24 +426,24 @@ void RH_RF95::enableTCXO()
 }
 
 // From section 4.1.5 of SX1276/77/78/79
-// Ferror = FreqError * 2 **24 * BW / Fxtal / 500
+// Ferror = FreqError * 2**24 * BW / Fxtal / 500
 int RH_RF95::frequencyError()
 {
     int32_t freqerror = 0;
 
-    // Convert 2.5 bytes (20 bits) to 32 bit signed int
+    // Convert 2.5 bytes (5 nibbles, 20 bits) to 32 bit signed int
     freqerror = spiRead(RH_RF95_REG_28_FEI_MSB) << 16;
     freqerror |= spiRead(RH_RF95_REG_29_FEI_MID) << 8;
     freqerror |= spiRead(RH_RF95_REG_2A_FEI_LSB);
-    // Sign extension
+    // Sign extension into top 3 nibbles
     if (freqerror & 0x80000)
 	freqerror |= 0xfff00000;
 
     int error = 0; // In hertz
-    float bw_tab[10] = {7.8, 10.4, 15.6, 20.8, 31.25, 41.7, 62.5, 125, 250, 500};
+    float bw_tab[] = {7.8, 10.4, 15.6, 20.8, 31.25, 41.7, 62.5, 125, 250, 500};
     uint8_t bwindex = spiRead(RH_RF95_REG_1D_MODEM_CONFIG1) >> 4;
-    if (bwindex <= 9)
-	error = (float)freqerror / RH_RF95_FXOSC * (1 << 24) * bw_tab[bwindex] / 500;
+    if (bwindex < (sizeof(bw_tab) / sizeof(float)))
+	error = (float)freqerror * bw_tab[bwindex] * ((float)(1L << 24) / (float)RH_RF95_FXOSC / 500.0);
     // else not defined
 
     return error;
