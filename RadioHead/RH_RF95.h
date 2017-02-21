@@ -84,6 +84,16 @@
 #define RH_RF95_REG_25_FIFO_RX_BYTE_ADDR                   0x25
 #define RH_RF95_REG_26_MODEM_CONFIG3                       0x26
 
+#define RH_RF95_REG_27_PPM_CORRECTION                      0x27
+#define RH_RF95_REG_28_FEI_MSB                             0x28
+#define RH_RF95_REG_29_FEI_MID                             0x29
+#define RH_RF95_REG_2A_FEI_LSB                             0x2a
+#define RH_RF95_REG_2C_RSSI_WIDEBAND                       0x2c
+#define RH_RF95_REG_31_DETECT_OPTIMIZ                      0x31
+#define RH_RF95_REG_33_INVERT_IQ                           0x33
+#define RH_RF95_REG_37_DETECTION_THRESHOLD                 0x37
+#define RH_RF95_REG_39_SYNC_WORD                           0x39
+
 #define RH_RF95_REG_40_DIO_MAPPING1                        0x40
 #define RH_RF95_REG_41_DIO_MAPPING2                        0x41
 #define RH_RF95_REG_42_VERSION                             0x42
@@ -219,6 +229,9 @@
 
 #define RH_RF95_PAYLOAD_CRC_ON                        0x04
 #define RH_RF95_SYM_TIMEOUT_MSB                       0x03
+
+// RH_RF95_REG_4B_TCXO                                0x4b
+#define RH_RF95_TCXO_TCXO_INPUT_ON                    0x10
 
 // RH_RF95_REG_4D_PA_DAC                              0x4d
 #define RH_RF95_PA_DAC_DISABLE                        0x04
@@ -462,6 +475,14 @@
 /// At 20dBm (100mW) with Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. 
 /// (Default medium range) in the conditions described above.
 /// - Range over flat ground through heavy trees and vegetation approx 2km.
+///
+/// Caution: the performance of this radio, especially with narrow bandwidths is strongly dependent on the
+/// accuracy and stability of the chip clock. HopeRF and Semtech do not appear to 
+/// recommend bandwidths of less than 62.5 kHz 
+/// unless you have the optional Temperature Compensated Crystal Oscillator (TCXO) installed and 
+/// enabled on your radio module. See the refernece manual for more data.
+/// Also https://lowpowerlab.com/forum/rf-range-antennas-rfm69-library/lora-library-experiences-range/15/
+/// and http://www.semtech.com/images/datasheet/an120014-xo-guidance-lora-modulation.pdf
 /// 
 /// \par Transmitter Power
 ///
@@ -704,6 +725,26 @@ public:
     /// This is called automatically by waitCAD().
     /// \return true if channel is in use.  
     virtual bool    isChannelActive();
+
+    /// Enable TCXO mode
+    /// Call this immediately after init(), to force your radio to use an external 
+    /// frequency source, such as a Temperature Compensated Crystal Oscillator (TCXO).
+    /// See the comments in the main documentation about the sensitivity of this radio to
+    /// clock frequency especially when using narrow bandwidths.
+    /// Leaves the module in sleep mode.
+    /// Caution, this function has not been tested by us.
+    void enableTCXO();
+
+    /// Returns the last measured frequency error.
+    /// The LoRa receiver estimates the frequency offset between the receiver centre frequency
+    /// and that of the received LoRa signal. This function returns the estimates offset (in Hz) 
+    /// of the last received message. Caution: this measurement is not absolute, but is measured 
+    /// relative to the local receiver's oscillator. 
+    /// Apparent errors may be due to the transmitter, the receiver or both.
+    /// \return The estimated centre frequency offset in Hz of the last received message. 
+    /// If the modem bandwidth selector in 
+    /// register RH_RF95_REG_1D_MODEM_CONFIG1 is invalid, returns 0.
+    int frequencyError();
 
 protected:
     /// This is a low level function to handle the interrupts for one instance of RH_RF95.

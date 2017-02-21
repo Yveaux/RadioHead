@@ -416,3 +416,35 @@ bool RH_RF95::isChannelActive()
     return _cad;
 }
 
+void RH_RF95::enableTCXO()
+{
+    while ((spiRead(RH_RF95_REG_4B_TCXO) & RH_RF95_TCXO_TCXO_INPUT_ON) != RH_RF95_TCXO_TCXO_INPUT_ON)
+    {
+	sleep();
+	spiWrite(RH_RF95_REG_4B_TCXO, (spiRead(RH_RF95_REG_4B_TCXO) | RH_RF95_TCXO_TCXO_INPUT_ON));
+    } 
+}
+
+// From section 4.1.5 of SX1276/77/78/79
+// Ferror = FreqError * 2 **24 * BW / Fxtal / 500
+int RH_RF95::frequencyError()
+{
+    int32_t freqerror = 0;
+
+    // Convert 2.5 bytes (20 bits) to 32 bit signed int
+    freqerror = spiRead(RH_RF95_REG_28_FEI_MSB) << 16;
+    freqerror |= spiRead(RH_RF95_REG_29_FEI_MID) << 8;
+    freqerror |= spiRead(RH_RF95_REG_2A_FEI_LSB);
+    // Sign extension
+    if (freqerror & 0x80000)
+	freqerror |= 0xfff00000;
+
+    int error = 0; // In hertz
+    float bw_tab[10] = {7.8, 10.4, 15.6, 20.8, 31.25, 41.7, 62.5, 125, 250, 500};
+    uint8_t bwindex = spiRead(RH_RF95_REG_1D_MODEM_CONFIG1) >> 4;
+    if (bwindex <= 9)
+	error = (float)freqerror / RH_RF95_FXOSC * (1 << 24) * bw_tab[bwindex] / 500;
+    // else not defined
+
+    return error;
+}
