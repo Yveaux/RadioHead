@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.57 2016/08/17 01:53:21 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.59 2017/01/13 01:29:36 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.65.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.66.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -691,11 +691,15 @@
 ///              Sparkfun nRF52 boards manager 0.2.3 using the procedures outlined in
 ///              https://learn.sparkfun.com/tutorials/nrf52832-breakout-board-hookup-guide<br>
 ///              Caution, the Sparkfun development system for Arduino is still immature. We had to 
-///              rebuild the nrfutil program since the supplied one was not siotable for 
+///              rebuild the nrfutil program since the supplied one was not suitable for 
 ///              the Linux host we were developing on. See https://forum.sparkfun.com/viewtopic.php?f=32&t=45071
 ///              Also, after downloading a sketch in the nRF52832, the program does not start executing cleanly: 
 ///              you have to reset the processor again by pressing the reset button. 
 ///              This appears to be a problem with nrfutil, rather than a bug in RadioHead.
+/// \version 1.66 2017-01-15
+///              Fixed some errors in (unused) register definitions in RH_RF95.h.<br>
+///              Fixed a problem that caused compilation errors in RH_NRF51 if the appropriate board 
+///              support was not installed.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -704,7 +708,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 65
+#define RH_VERSION_MINOR 66
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

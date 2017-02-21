@@ -2,12 +2,14 @@
 //
 // Per: nRF51_Series_Reference_manual v3.0.pdf
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF51.cpp,v 1.1 2015/07/01 00:46:05 mikem Exp $
+// $Id: RH_NRF51.cpp,v 1.3 2017/01/13 01:29:36 mikem Exp mikem $
 
 // Set by Arduino IDE and RadioHead.h when compiling for nRF51 or nRF52 chips:
-#if RH_PLATFORM==RH_PLATFORM_NRF51
 
 #include <RH_NRF51.h>
+
+#if RH_PLATFORM==RH_PLATFORM_NRF51
+
 
 RH_NRF51::RH_NRF51()
     : _rxBufValid(false)
@@ -335,7 +337,7 @@ bool RH_NRF51::available()
 	    return false; // No message yet
 	setModeIdle();
 #if RH_NRF51_HAVE_ENCRYPTION
-	// If encryption is enabled, the decrypted message is not avaialble yet, and there seems
+	// If encryption is enabled, the decrypted message is not available yet, and there seems
 	// to be no way to be sure when its ready, but a delay of 2ms is enough
 	if (_encrypting)
 	    delay(2);
