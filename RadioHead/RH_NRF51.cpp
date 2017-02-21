@@ -4,8 +4,8 @@
 // Copyright (C) 2012 Mike McCauley
 // $Id: RH_NRF51.cpp,v 1.1 2015/07/01 00:46:05 mikem Exp $
 
-// Set by Arduino IDE when compiling for nRF51 chips:
-#ifdef NRF51
+// Set by Arduino IDE and RadioHead.h when compiling for nRF51 or nRF52 chips:
+#if RH_PLATFORM==RH_PLATFORM_NRF51
 
 #include <RH_NRF51.h>
 
@@ -23,11 +23,9 @@ bool RH_NRF51::init()
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_HFCLKSTART = 1;
     /* Wait for the external oscillator to start up */
-    while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0) { }
+    while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0)
+	;
     
-    // Enables the DC/DC converter when the radio is enabled. Need this!
-    NRF_POWER->DCDCEN = 0x00000001; 
-
     // Disable and reset the radio
     NRF_RADIO->POWER = RADIO_POWER_POWER_Disabled;
     NRF_RADIO->POWER = RADIO_POWER_POWER_Enabled;
@@ -63,7 +61,7 @@ bool RH_NRF51::init()
 
     setChannel(2); // The default, in case it was set by another app without powering down
     setRF(RH_NRF51::DataRate2Mbps, RH_NRF51::TransmitPower0dBm);
-
+    setEncryptionKey(NULL);
     return true;
 }
 
@@ -136,7 +134,10 @@ void RH_NRF51::setModeIdle()
 {
     if (_mode != RHModeIdle)
     {
+	NRF_RADIO->EVENTS_DISABLED = 0U;
 	NRF_RADIO->TASKS_DISABLE = 1;
+	while (NRF_RADIO->EVENTS_DISABLED == 0U)
+	    ; // wait for the radio to be disabled
 	NRF_RADIO->EVENTS_END = 0U;
 	_mode = RHModeIdle;
     }
@@ -155,10 +156,11 @@ void RH_NRF51::setModeRx()
 	NRF_CCM->MICSTATUS = 0;	
 #endif
 
-	// Radio will transition automatically to Disable state when a messageis received
+	// Radio will transition automatically to Disable state when a message is received
 	NRF_RADIO->PACKETPTR = (uint32_t)_buf;
-	NRF_RADIO->EVENTS_END = 0U; // So we can detect end of transmission
+	NRF_RADIO->EVENTS_READY = 0U;
 	NRF_RADIO->TASKS_RXEN = 1;
+	NRF_RADIO->EVENTS_END = 0U; // So we can detect end of reception
 	_mode = RHModeRx;
     }
 }
@@ -169,6 +171,12 @@ void RH_NRF51::setModeTx()
     {
 	setModeIdle(); // Can only start RX from DISABLE state
 
+	// Sigh: it seems that it takes longer to start the receiver than the transmitter for this type
+	// of radio, so if a message is received and an ACK or reply is sent to soon, the original transmitter
+	// may not see the reply. So we delay here to make sure the receiver is ready.
+	// Yes, I know this is very ugly
+	delay(1);
+
 #if RH_NRF51_HAVE_ENCRYPTION
 	// Maybe set the AES CCA module for the correct encryption mode
 	if (_encrypting)
@@ -176,8 +184,9 @@ void RH_NRF51::setModeTx()
 #endif	    
 	// Radio will transition automatically to Disable state at the end of transmission
 	NRF_RADIO->PACKETPTR = (uint32_t)_buf;
-	NRF_RADIO->EVENTS_END = 0U; // So we can detect end of transmission
+	NRF_RADIO->EVENTS_READY = 0U;
 	NRF_RADIO->TASKS_TXEN = 1;
+	NRF_RADIO->EVENTS_END = 0U; // So we can detect end of transmission
 	_mode = RHModeTx;
     }
 }
@@ -261,6 +270,7 @@ void RH_NRF51::validateRxBuf()
     _rxHeaderFrom  = _buf[4];
     _rxHeaderId    = _buf[5];
     _rxHeaderFlags = _buf[6];
+
     if (_promiscuous ||
 	_rxHeaderTo == _thisAddress ||
 	_rxHeaderTo == RH_BROADCAST_ADDRESS)
@@ -323,16 +333,13 @@ bool RH_NRF51::available()
 	setModeRx();
 	if (!NRF_RADIO->EVENTS_END)
 	    return false; // No message yet
-#if RH_NRF51_HAVE_ENCRYPTION
-	// Sigh: when encryption is enabled, it seems that the decryption is not actually
-	// complete yet, in spite of what the manual says. 
-	// I was not able to find any cue to when it was actually complete, but delaying by 
-	// a millisecond is enough for it to complete
-	if (_encrypting)
-	    delay(1);
-#endif
-	NRF_RADIO->EVENTS_END = 0U;
 	setModeIdle();
+#if RH_NRF51_HAVE_ENCRYPTION
+	// If encryption is enabled, the decrypted message is not avaialble yet, and there seems
+	// to be no way to be sure when its ready, but a delay of 2ms is enough
+	if (_encrypting)
+	    delay(2);
+#endif
         if (!NRF_RADIO->CRCSTATUS)
 	{
 	    // Bad CRC, restart the radio	    

@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.64.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.65.zip
 /// You can find the latest version at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -87,6 +87,8 @@
 ///
 /// - RH_NRF51
 /// Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
+/// Also works with Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
+/// Sparkfun nRF52 boards manager 0.2.3
 ///
 /// - RH_RF95
 /// Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
@@ -673,12 +675,27 @@
 ///              Channel Activity Detection (CAD). Based on code contributed by Bent Guldbjerg Christensen.
 ///              Implmentations of isChannelActive() plus documentation for other radio modules wil be welcomed.
 /// \version 1.63 2016-10-20
-///              Testing with Adafruit Feather 32u4 with RFM69HCW. Updated documentation to reflect.
+///              Testing with Adafruit Feather 32u4 with RFM69HCW. Updated documentation to reflect.<br>
 /// \version 1.64 2016-12-10
-///              RHReliableDatagram now initialises _seenids. Fix from Ben Lim.
-///              In RH_NRF51, added get_temperature().
+///              RHReliableDatagram now initialises _seenids. Fix from Ben Lim.<br>
+///              In RH_NRF51, added get_temperature().<br>
 ///              In RH_NRF51, added support for AES packet encryption, which required a slight change 
-///              to the on-air message format.
+///              to the on-air message format.<br>
+/// \version 1.65 2017-01-11
+///              Fixed a race condition with RH_NRF51 that prevented ACKs being reliably received.<br>
+///              Removed code in RH_NRF51 that enabled the DC-DC converter. This seems not to be a necessary condition
+///              for the radio to work and is now left to the application if that is required.<br>
+///              Proven interoperation between nRF51822 and nRF52832.<br>
+///              Modification and testing of RH_NRF51 so it works with nRF52 family processors,
+///              such Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
+///              Sparkfun nRF52 boards manager 0.2.3 using the procedures outlined in
+///              https://learn.sparkfun.com/tutorials/nrf52832-breakout-board-hookup-guide<br>
+///              Caution, the Sparkfun development system for Arduino is still immature. We had to 
+///              rebuild the nrfutil program since the supplied one was not siotable for 
+///              the Linux host we were developing on. See https://forum.sparkfun.com/viewtopic.php?f=32&t=45071
+///              Also, after downloading a sketch in the nRF52832, the program does not start executing cleanly: 
+///              you have to reset the processor again by pressing the reset button. 
+///              This appears to be a problem with nrfutil, rather than a bug in RadioHead.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -687,7 +704,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 64
+#define RH_VERSION_MINOR 65
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -699,6 +716,7 @@
 #define RH_PLATFORM_STM32STD         7
 #define RH_PLATFORM_STM32F4_HAL      8 
 #define RH_PLATFORM_RASPI            9
+// Also nRF52 family:
 #define RH_PLATFORM_NRF51            10
 #define RH_PLATFORM_ESP8266          11
 #define RH_PLATFORM_STM32F2          12
@@ -713,7 +731,7 @@
  #elif defined(MPIDE)
   // Uno32 under old MPIDE, which has been discontinued:
   #define RH_PLATFORM RH_PLATFORM_UNO32
- #elif defined(NRF51)
+#elif defined(NRF51) || defined(NRF52)
   #define RH_PLATFORM RH_PLATFORM_NRF51
  #elif defined(ESP8266)
   #define RH_PLATFORM RH_PLATFORM_ESP8266

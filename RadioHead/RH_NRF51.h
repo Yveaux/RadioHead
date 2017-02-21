@@ -45,24 +45,28 @@
 
 /////////////////////////////////////////////////////////////////////
 /// \class RH_NRF51 RH_NRF51.h <RH_NRF51.h>
-/// \brief Send and receive addressed datagrams by nRF51 compatible transceivers.
+/// \brief Send and receive addressed datagrams by nRF51 and nRF52 compatible transceivers.
 ///
 /// Supported transceivers include:
 /// - Nordic nRF51 based 2.4GHz radio modules, such as nRF51822 
 /// and other compatible chips, such as used in RedBearLabs devices like:
 /// http://store.redbearlab.com/products/redbearlab-nrf51822
 /// http://store.redbearlab.com/products/blenano
+/// and
+/// Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
+/// Sparkfun nRF52 boards manager 0.2.3
 ///
 /// This base class provides basic functions for sending and receiving unaddressed, unreliable datagrams
 /// of arbitrary length to 254 octets per packet. Use one of the Manager classes to get addressing and 
 /// acknowledgement reliability, routing, meshes etc.
 ///
 /// The nRF51822 (https://www.nordicsemi.com/eng/Products/Bluetooth-Smart-Bluetooth-low-energy/nRF51822)
+/// and nRF52832 (https://learn.sparkfun.com/tutorials/nrf52832-breakout-board-hookup-guide)
 /// is a complete SoC (system on a chip) with ARM microprocessor and 2.4 GHz radio, which supports a range of channels 
 /// and transmission bit rates. Chip antenna is on-board.
 ///
 /// This library provides functions for sending and receiving messages of up to 254 octets on any 
-/// frequency supported by the nRF51822, at a selected data rate.
+/// frequency supported by the nRF51822/nRF52832, at a selected data rate.
 ///
 /// The nRF51 transceiver is configured to use Enhanced Shockburst with no acknowledgement and no retransmits.
 /// TXADDRESS and RXADDRESSES:RXADDR0 (ie pipe 0) are the logical address used. The on-air network address
@@ -99,6 +103,9 @@
 ///
 /// The sample programs are designed to be built using Arduino 1.6.4 or later using the procedures outlined
 /// in http://redbearlab.com/getting-started-nrf51822/
+/// or with Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
+/// Sparkfun nRF52 boards manager 0.2.3 using the procedures outlined in
+/// https://learn.sparkfun.com/tutorials/nrf52832-breakout-board-hookup-guide
 ///
 /// \par Radio Performance
 ///
