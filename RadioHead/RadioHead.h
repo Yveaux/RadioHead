@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.71.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.72.zip
 /// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -710,6 +710,11 @@
 ///              Added link to Binpress commercial license purchasing.
 /// \version 1.71 2017-02-07
 ///              Improved support for STM32. Patch from Bent Guldbjerg Christensen.
+/// \version 1.72 2017-03-02
+///              In RH_RF24, fixed a problem where some important properties were not set by the ModemConfig.
+///              Added properties 2007, 2008, 2009. Also properties 200a was not being set in the chip.
+///              Reported by Shannon Bailey and Alan Adamson.
+///              Fixed corresponding convert.pl and added it to the distribution.
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -718,7 +723,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 71
+#define RH_VERSION_MINOR 72
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

@@ -123,3 +123,4 @@ RadioHead/STM32ArduinoCompat/HardwareSPI.h
 RadioHead/STM32ArduinoCompat/wirish.cpp
 RadioHead/STM32ArduinoCompat/wirish.h
 RadioHead/STM32ArduinoCompat/README
+RadioHead/RH_RF24_property_data/convert.pl

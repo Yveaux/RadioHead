@@ -661,6 +661,9 @@ public:
 	uint8_t   prop_2004;   ///< Value for property RH_RF24_PROPERTY_MODEM_DATA_RATE_1
 	uint8_t   prop_2005;   ///< Value for property RH_RF24_PROPERTY_MODEM_DATA_RATE_0
 	uint8_t   prop_2006;   ///< Value for property RH_RF24_PROPERTY_MODEM_TX_NCO_MODE_3
+	uint8_t   prop_2007;   ///< Value for property RH_RF24_PROPERTY_MODEM_TX_NCO_MODE_2
+	uint8_t   prop_2008;   ///< Value for property RH_RF24_PROPERTY_MODEM_TX_NCO_MODE_1
+	uint8_t   prop_2009;   ///< Value for property RH_RF24_PROPERTY_MODEM_TX_NCO_MODE_0
 	uint8_t   prop_200a;   ///< Value for property RH_RF24_PROPERTY_MODEM_FREQ_DEV_2
 	uint8_t   prop_200b;   ///< Value for property RH_RF24_PROPERTY_MODEM_FREQ_DEV_1
 	uint8_t   prop_200c;   ///< Value for property RH_RF24_PROPERTY_MODEM_FREQ_DEV_0
