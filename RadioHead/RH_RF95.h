@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.15 2017/02/01 21:46:02 mikem Exp mikem $
+// $Id: RH_RF95.h,v 1.16 2017/03/04 00:59:41 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h

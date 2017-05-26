@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.60 2017/02/01 21:46:02 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.61 2017/03/04 00:59:41 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.72.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.73.zip
 /// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -148,7 +148,7 @@
 /// 
 /// A range of platforms is supported:
 ///
-/// - Arduino and the Arduino IDE (version 1.0 to 1.6.5 and later)
+/// - Arduino and the Arduino IDE (version 1.0 to 1.8.1 and later)
 /// Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/, Also similar boards such as 
 ///  - Moteino http://lowpowerlab.com/moteino/ 
 ///  - Anarduino Mini http://www.anarduino.com/mini/ 
@@ -715,6 +715,13 @@
 ///              Added properties 2007, 2008, 2009. Also properties 200a was not being set in the chip.
 ///              Reported by Shannon Bailey and Alan Adamson.
 ///              Fixed corresponding convert.pl and added it to the distribution.
+/// \version 1.73 2017-03-04
+///              Significant changes to RH_RF24 and its API. It is no longer possible to change the modulation scheme
+///              programatically: it proved impossible to cater for all the possible crystal frequencies,
+///              base frequency and modulation schemes. Instead you can use one of a small set of supplied radio
+///              configuration header files, or generate your own with Silicon Labs WDS application. Changing
+///              modulation scheme required editing RH_RF24.cpp to specify the appropriate header and recompiling.
+///              convert.pl is now redundant and removed from the distribution
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -723,7 +730,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 72
+#define RH_VERSION_MINOR 73
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

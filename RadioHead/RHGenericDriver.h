@@ -296,6 +296,8 @@ protected:
     
     /// Channel activity detected
     volatile bool       _cad;
+
+    /// Channel activity timeout in ms
     unsigned int        _cad_timeout;
 
 private:
