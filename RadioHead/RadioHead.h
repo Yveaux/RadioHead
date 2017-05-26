@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.61 2017/03/04 00:59:41 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.62 2017/03/08 09:30:47 mikem Exp mikem $
 
 /// \mainpage RadioHead Packet Radio library for embedded microprocessors
 ///
@@ -10,7 +10,7 @@
 /// via a variety of common data radios and other transports on a range of embedded microprocessors.
 ///
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.73.zip
+/// from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.74.zip
 /// You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 ///
 /// You can also find online help and discussion at 
@@ -721,7 +721,19 @@
 ///              base frequency and modulation schemes. Instead you can use one of a small set of supplied radio
 ///              configuration header files, or generate your own with Silicon Labs WDS application. Changing
 ///              modulation scheme required editing RH_RF24.cpp to specify the appropriate header and recompiling.
-///              convert.pl is now redundant and removed from the distribution
+///              convert.pl is now redundant and removed from the distribution.
+/// \version 1.74 2017-03-08
+///              Changed RHReliableDatagram so it would not ACK messages heard addressed to other nodes
+///              in promiscuous mode.<br>
+///              Added RH_RF24::deviceType() to return the integer value of the connected device.<br>
+///              Added documentation about how to connect RFM69 to an ESP8266. Tested OK.<br>
+///              RH_RF24 was not correctly changing state in sleep() and setModeIdle().<br>
+///              Added example rf24_lowpower_client.pde showing how to put an arduino and radio into a low power
+///              mode between transmissions to save battery power.<br>
+///              Improvements to RH_RF69::setTxPower so it now takes an optional ishighpowermodule
+///              flag to indicate if the connected module is a high power RFM69HW, and so set the power level
+///              correctly. Based on code contributed by bob.
+///              
 ///
 /// \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE MAILING LIST GIVEN ABOVE
 
@@ -730,7 +742,7 @@
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 73
+#define RH_VERSION_MINOR 74
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

@@ -1,7 +1,7 @@
 // RH_RF24.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF24.h,v 1.16 2017/03/04 00:59:41 mikem Exp mikem $
+// $Id: RH_RF24.h,v 1.17 2017/03/08 09:30:47 mikem Exp mikem $
 //
 // Supports RF24/RF26 and RFM24/RFM26 modules in FIFO mode
 // also Si4464/63/62/61/60-A1
@@ -374,6 +374,19 @@
 #define RH_RF24_INT_STATUS_CHIP_READY                     0x04
 #define RH_RF24_INT_STATUS_LOW_BATT                       0x02
 #define RH_RF24_INT_STATUS_WUT                            0x01
+
+//#define RH_RF24_PROPERTY_GLOBAL_CLK_CFG                   0x0001
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_EN                    0x40
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_30                0x30
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_15                0x28
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_10                0x20
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_7_5               0x18
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_3                 0x10
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_2                 0x08
+#define RH_RF24_CLK_CFG_DIVIDED_CLK_SEL_1                 0x00
+#define RH_RF24_CLK_CFG_CLK_32K_SEL_EXTERNAL              0x02
+#define RH_RF24_CLK_CFG_CLK_32K_SEL_RC                    0x01
+#define RH_RF24_CLK_CFG_CLK_32K_SEL_DISABLED              0x00
 
 //#define RH_RF24_PROPERTY_FRR_CTL_A_MODE                   0x0200
 //#define RH_RF24_PROPERTY_FRR_CTL_B_MODE                   0x0201
@@ -1038,6 +1051,13 @@ public:
     /// \return true if sleep mode was successfully entered.
     virtual bool    sleep();
 
+    /// Return the integer value of the device type
+    /// as read from the device in from RH_RF24_CMD_PART_INFO.
+    /// One of 0x4460, 0x4461, 0x4462 or 0x4463, depending on the type of device actually
+    /// connected.
+    /// \return The integer device type
+    uint16_t deviceType() {return _deviceType;};
+
 protected:
     /// This is a low level function to handle the interrupts for one instance of RF24.
     /// Called automatically by isr*()
@@ -1137,6 +1157,7 @@ private:
 
 /// @example rf24_client.pde
 /// @example rf24_server.pde
+/// @example rf24_lowpower_client.pde
 /// @example rf24_reliable_datagram_client.pde
 /// @example rf24_reliable_datagram_server.pde
 

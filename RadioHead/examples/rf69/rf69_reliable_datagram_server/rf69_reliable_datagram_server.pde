@@ -30,11 +30,11 @@ void setup()
     ;
   if (!manager.init())
     Serial.println("init failed");
-  // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
+  // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM (for low power module)
 
-  // If you are using a high power RF69, you *must* set a Tx power in the
-  // range 14 to 20 like this:
-  // driver.setTxPower(14);
+  // If you are using a high power RF69 eg RFM69HW, you *must* set a Tx power with the
+  // ishighpowermodule flag set like this:
+  //driver.setTxPower(14, true);
 }
 
 uint8_t data[] = "And hello back to you";

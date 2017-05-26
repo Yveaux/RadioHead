@@ -1,7 +1,7 @@
 // RH_RF24.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF24.cpp,v 1.19 2017/03/04 00:59:41 mikem Exp mikem $
+// $Id: RH_RF24.cpp,v 1.20 2017/03/08 09:30:47 mikem Exp mikem $
 
 #include <RH_RF24.h>
 
@@ -525,7 +525,7 @@ void RH_RF24::setModeIdle()
 	command(RH_RF24_CMD_GPIO_PIN_CFG, config, sizeof(config));
 
 	uint8_t state[] = { _idleMode };
-	command(RH_RF24_CMD_REQUEST_DEVICE_STATE, state, sizeof(state));
+	command(RH_RF24_CMD_CHANGE_STATE, state, sizeof(state));
 	_mode = RHModeIdle;
     }
 }
@@ -534,8 +534,10 @@ bool RH_RF24::sleep()
 {
     if (_mode != RHModeSleep)
     {
+        // This will change to SLEEP or STANDBY, depending on the value of GLOBAL_CLK_CFG:CLK_32K_SEL.
+        // which default to 0, eg STANDBY
 	uint8_t state[] = { RH_RF24_DEVICE_STATE_SLEEP };
-	command(RH_RF24_CMD_REQUEST_DEVICE_STATE, state, sizeof(state));
+	command(RH_RF24_CMD_CHANGE_STATE, state, sizeof(state));
 
 	_mode = RHModeSleep;
     }

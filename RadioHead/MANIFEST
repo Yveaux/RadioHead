@@ -80,6 +80,7 @@ RadioHead/examples/rf22/rf22_router_server3/rf22_router_server3.pde
 RadioHead/examples/rf22/rf22_router_test/rf22_router_test.pde
 RadioHead/examples/rf22/rf22_server/rf22_server.pde
 RadioHead/examples/rf24/rf24_client/rf24_client.pde
+RadioHead/examples/rf24/rf24_lowpower_client/rf24_lowpower_client.pde
 RadioHead/examples/rf24/rf24_reliable_datagram_client/rf24_reliable_datagram_client.pde
 RadioHead/examples/rf24/rf24_reliable_datagram_server/rf24_reliable_datagram_server.pde
 RadioHead/examples/rf24/rf24_server/rf24_server.pde
