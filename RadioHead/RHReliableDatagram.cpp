@@ -45,10 +45,17 @@ uint8_t RHReliableDatagram::retries()
 }
 
 ////////////////////////////////////////////////////////////////////
-bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
+bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address, uint8_t* id)
 {
     // Assemble the message
-    uint8_t thisSequenceNumber = ++_lastSequenceNumber;
+    uint8_t thisSequenceNumber;
+	
+	// If any, put ID defined by user (e.g. between turn on/off cycles when sequenceNo should be saved in EEPROM)
+	if (id != NULL)
+		thisSequenceNumber = *id;
+	else
+		thisSequenceNumber = ++_lastSequenceNumber;
+	
     uint8_t retries = 0;
     while (retries++ <= _retries)
     {
