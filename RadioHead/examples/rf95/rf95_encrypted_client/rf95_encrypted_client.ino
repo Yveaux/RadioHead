@@ -13,7 +13,7 @@ RHEncryptedDriver myDriver(rf95, myCipher); // Instantiate the driver with those
 
 float frequency = 868.0; // Change the frequency here. 
 unsigned char encryptkey[16]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16}; // The very secret key
-char HWMessage[] = "Hello World !";
+char HWMessage[] = "Hello World ! I'm happy if you can read me";
 uint8_t HWMessageLen;
 
 void setup() {
