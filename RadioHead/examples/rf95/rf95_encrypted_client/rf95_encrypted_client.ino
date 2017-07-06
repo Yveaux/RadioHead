@@ -33,7 +33,7 @@ void setup() {
 }
 
 void loop() {
-  uint8_t data[myDriver.maxMessageLength()] = {0};
+  uint8_t data[HWMessageLen+1] = {0};
   for(uint8_t i = 0; i<= HWMessageLen; i++) data[i] = (uint8_t)HWMessage[i];
   myDriver.send(data, sizeof(data)); // Send out ID + Sensor data to LoRa gateway
   Serial.print("Sent: "); Serial.println((char *)&data);

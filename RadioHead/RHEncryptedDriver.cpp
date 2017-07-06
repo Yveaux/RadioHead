@@ -65,7 +65,7 @@ bool RHEncryptedDriver::send(const uint8_t* data, uint8_t len) {
 			}
 			_blockcipher.encryptBlock(&buffer[k*blockSize], cipheringBlocks.inputBlock); // Cipher that message into buffer
 		}
-		if(! _driver.send(buffer, k*blockSize)) // We now send that message with it's new length
+		if(! _driver.send(buffer, k*blockSize))  // We now send that message with it's new length
 		 	status = false;
 	}
 	return status;
