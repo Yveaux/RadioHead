@@ -35,7 +35,8 @@ void loop() {
     uint8_t buf[myDriver.maxMessageLength()];
     uint8_t len = sizeof(buf);
     if (myDriver.recv(buf, &len)) {
-      Serial.print((char *)&buf);
+      Serial.print("Received: ");
+      Serial.println((char *)&buf);
     }
     else
     {
