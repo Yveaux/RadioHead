@@ -34,7 +34,7 @@ void loop() {
     // Should be a message for us now   
     uint8_t buf[myDriver.maxMessageLength()];
     uint8_t len = sizeof(buf);
-    if (rf95.recv(buf, &len)) {
+    if (myDriver.recv(buf, &len)) {
       Serial.print((char *)&buf);
     }
     else
