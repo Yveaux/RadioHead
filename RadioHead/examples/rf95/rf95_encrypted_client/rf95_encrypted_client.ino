@@ -5,7 +5,6 @@
 #include <RH_RF95.h>
 #include <RHEncryptedDriver.h>
 #include <XXTEA.h>
-#include <String.h>
 
 RH_RF95 rf95;     // Instanciate a LoRa driver
 XXTEA myCipher;   // Instanciate an XXTEA block ciphering
