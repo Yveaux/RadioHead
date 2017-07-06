@@ -1,6 +1,6 @@
 // RHEncryptedDriver.h 
 // Generic encrypted layer that could use any driver
-// But will encrypt all data
+// But will encrypt all data.
 //
 // Author: Philippe.Rochat'at'gmail.com
  
@@ -9,12 +9,14 @@
 #define RHEncryptedDriver_h
 
 #include <RHGenericDriver.h>
+#include <BlockCipher.h>
 
 class RHEncryptedDriver : public RHGenericDriver {
 public:
 	/// Constructor. 
     /// \param[in] driver The RadioHead driver to use to transport messages.
-	RHEncryptedDriver(RHGenericDriver& driver);
+	/// \param[in] bloccipher The blockcipher (from arduinolibs) that crypth/decrypt data.
+	RHEncryptedDriver(RHGenericDriver& driver, BlockCipher& blockcipher);
 	
 	/// Tests whether a new message is available
     /// from the Driver. 
@@ -53,9 +55,20 @@ public:
     uint8_t maxMessageLength();
 
 
-protected:
+private:
 	/// The Driver we are to use
     RHGenericDriver&        _driver;
+	/// The CipherBlock we are to use for encrypting/decrypting
+	BlockCipher&		_blockcipher;
+	/// Struct for with buffers for ciphering
+	typedef struct {
+		size_t blockSize = 0;
+		uint8_t *inputBlock = NULL;
+		//uint8_t *outputBlock = NULL;		
+	} CipherBlocks;
+	CipherBlocks cipheringBlocks;
+	/// Buffer to store encrypted/decrypted message
+	uint8_t *buffer;
 };
 
 #endif
