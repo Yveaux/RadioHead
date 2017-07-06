@@ -27,14 +27,15 @@ void setup() {
   // Setup Power,dBm
   rf95.setTxPower(13);
   myCipher.setKey(encryptkey, 16);
-  delay(4000);
+  Serial.println("Waiting for radio to setup");
+  delay(1000);
   Serial.println("Setup completed");
 }
 
 void loop() {
-  uint8_t data[myCipher.blockSize()] = {0};
-  for(uint8_t i = 0; i< HWMessageLen; i++) data[i] = (uint8_t)HWMessage[i];
-  Serial.print("Sending: "); Serial.println((char *)&data);
+  uint8_t data[myDriver.maxMessageLength()] = {0};
+  for(uint8_t i = 0; i<= HWMessageLen; i++) data[i] = (uint8_t)HWMessage[i];
   myDriver.send(data, sizeof(data)); // Send out ID + Sensor data to LoRa gateway
+  Serial.print("Sent: "); Serial.println((char *)&data);
   delay(4000);
 }
