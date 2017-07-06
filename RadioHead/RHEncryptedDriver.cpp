@@ -5,7 +5,7 @@
 #include <RHEncryptedDriver.h>
 
 RHEncryptedDriver::RHEncryptedDriver(RHGenericDriver& driver, BlockCipher& blockcipher) : _driver(driver), _blockcipher(blockcipher) {
-	buffer = calloc(_driver.maxMessageLength(), sizeof(uint8_t));
+	buffer = (uint8_t *)calloc(_driver.maxMessageLength(), sizeof(uint8_t));
 }
 
 // Just a passthru method
@@ -41,11 +41,11 @@ bool RHEncryptedDriver::send(const uint8_t* data, uint8_t len) {
 	if(len == 0) // PashThru
 		return _driver.send(data, len);
 	if(cipheringBlocks.blockSize == 0) { // We have to allocate blocks
-		cipheringBlocks.inputBlock = calloc(blockSize, sizeof(uint8_t));
+		cipheringBlocks.inputBlock = (uint8_t *)calloc(blockSize, sizeof(uint8_t));
 		cipheringBlocks.blockSize = blockSize;
 	}
 	if(cipheringBlocks.blockSize != blockSize) { // Cipher has changed it's block size
-		cipheringBlocks.inputBlock = realloc(cipheringBlocks.inputBlock, blockSize);
+		cipheringBlocks.inputBlock = (uint8_t *)realloc(cipheringBlocks.inputBlock, blockSize);
 		cipheringBlocks.blockSize = blockSize;	
 	}
 	uint8_t nbBlocks = (len-1) / blockSize + 1; // How many blocks do we need for that message
