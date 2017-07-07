@@ -4,10 +4,12 @@
  */
 #include <RH_RF95.h>
 #include <RHEncryptedDriver.h>
-#include <XXTEA.h>
+//#include <XXTEA.h>
+#include <Speck.h>
 
 RH_RF95 rf95;     // Instanciate a LoRa driver
-XXTEA myCipher;   // Instanciate an XXTEA block ciphering
+//XXTEA myCipher;   // Instanciate an XXTEA block ciphering
+Speck myCipher;   // Instanciate a Speck block ciphering
 RHEncryptedDriver myDriver(rf95, myCipher); // Instantiate the driver with those two
 
 float frequency = 868.0; // Change the frequency here. 
