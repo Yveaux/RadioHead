@@ -1,7 +1,7 @@
 // NRF24.cpp
 //
 // Copyright (C) 2012 Mike McCauley
-// $Id: RH_NRF24.cpp,v 1.24 2017/06/20 05:21:17 mikem Exp mikem $
+// $Id: RH_NRF24.cpp,v 1.24 2017/06/20 05:21:17 mikem Exp $
 
 #include <RH_NRF24.h>
 
@@ -240,27 +240,27 @@ bool RH_NRF24::printRegisters()
     // Iterate over register range, but don't process registers not in use.
     for (uint8_t r = RH_NRF24_REG_00_CONFIG; r <= RH_NRF24_REG_1D_FEATURE; r++)
     {
-      if ((r <= RH_NRF24_REG_17_FIFO_STATUS) || (r >= RH_NRF24_REG_1C_DYNPD))
-      {
-        Serial.print(r, HEX);
-        Serial.print(": ");
-        uint8_t len = 1;
-        // Address registers are 5 bytes in size
-        if (    (RH_NRF24_REG_0A_RX_ADDR_P0 == r)
-             || (RH_NRF24_REG_0B_RX_ADDR_P1 == r)
-             || (RH_NRF24_REG_10_TX_ADDR    == r) )
-        {
-          len = 5;
-        }
-        uint8_t buf[5];
-        spiBurstReadRegister(r, buf, len);
-        for (uint8_t j = 0; j < len; ++j)
-        {
-          Serial.print(buf[j], HEX);
-          Serial.print(" ");
-        }
-        Serial.println("");
-      }
+	if ((r <= RH_NRF24_REG_17_FIFO_STATUS) || (r >= RH_NRF24_REG_1C_DYNPD))
+	{
+	    Serial.print(r, HEX);
+	    Serial.print(": ");
+	    uint8_t len = 1;
+	    // Address registers are 5 bytes in size
+	    if (    (RH_NRF24_REG_0A_RX_ADDR_P0 == r)
+		    || (RH_NRF24_REG_0B_RX_ADDR_P1 == r)
+		    || (RH_NRF24_REG_10_TX_ADDR    == r) )
+	    {
+		len = 5;
+	    }
+	    uint8_t buf[5];
+	    spiBurstReadRegister(r, buf, len);
+	    for (uint8_t j = 0; j < len; ++j)
+	    {
+		Serial.print(buf[j], HEX);
+		Serial.print(" ");
+	    }
+	    Serial.println("");
+	}
     }
 #endif
 

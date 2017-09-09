@@ -233,7 +233,6 @@ void RHHardwareSPI::begin()
     SPI.begin(frequency, bitOrder, dataMode);
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Photon
-    Serial.println("HERE");
     uint8_t dataMode;
     if (_dataMode == DataMode0)
 	dataMode = SPI_MODE0;
