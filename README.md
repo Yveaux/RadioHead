@@ -22,3 +22,4 @@ This is the appropriate option if you want to share the source code of your appl
 
 **Commercial Licensing**
 This is the appropriate option if you are creating proprietary applications and you are not prepared to distribute and share the source code of your application. Purchase commercial licenses at http://airspayce.binpress.com
+ 
