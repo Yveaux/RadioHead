@@ -124,7 +124,28 @@ public:
     /// \param[in] frequency The data rate to use: one of RHGenericSPI::Frequency
     virtual void setFrequency(Frequency frequency);
 
+    /// Signal the start of an SPI transaction that must not be interrupted by other SPI actions
+    /// In subclasses that support transactions this will ensure that other SPI transactions
+    /// are blocked until this one is completed by endTransaction().
+    /// Base does nothing
+    /// Might be overridden in subclass
+    virtual void beginTransaction(){}
+
+    /// Signal the end of an SPI transaction
+    /// Base does nothing
+    /// Might be overridden in subclass
+    virtual void endTransaction(){}
+
+    /// Specify the interrupt number of the interrupt that will use SPI transactions
+    /// Tells the SPI support software that SPI transactions will occur with the interrupt
+    /// handler assocated with interruptNumber
+    /// Base does nothing
+    /// Might be overridden in subclass
+    /// \param[in] interruptNumber The number of the interrupt
+    virtual void usingInterrupt(uint8_t interruptNumber){}
+    
 protected:
+    
     /// The configure SPI Bus frequency, one of RHGenericSPI::Frequency
     Frequency    _frequency; // Bus frequency, one of RHGenericSPI::Frequency
 

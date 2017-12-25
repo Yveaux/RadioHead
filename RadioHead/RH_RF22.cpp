@@ -84,6 +84,9 @@ bool RH_RF22::init()
     interruptNumber = _interruptPin;
 #endif
 
+    // Tell the low level SPI interface we will use SPI within this interrupt
+    spiUsingInterrupt(interruptNumber);
+
     // Software reset the device
     reset();
 
@@ -93,6 +96,8 @@ bool RH_RF22::init()
     if (   _deviceType != RH_RF22_DEVICE_TYPE_RX_TRX
         && _deviceType != RH_RF22_DEVICE_TYPE_TX)
     {
+	Serial.println("device type");
+	Serial.println(_deviceType);
 	return false;
     }
 
@@ -100,7 +105,7 @@ bool RH_RF22::init()
     // ARM M4 requires the below. else pin interrupt doesn't work properly.
     // On all other platforms, its innocuous, belt and braces
     pinMode(_interruptPin, INPUT); 
-
+    
     // Enable interrupt output on the radio. Interrupt line will now go high until
     // an interrupt occurs
     spiWrite(RH_RF22_REG_05_INTERRUPT_ENABLE1, RH_RF22_ENTXFFAEM | RH_RF22_ENRXFFAFULL | RH_RF22_ENPKSENT | RH_RF22_ENPKVALID | RH_RF22_ENCRCERROR | RH_RF22_ENFFERR);

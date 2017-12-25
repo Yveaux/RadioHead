@@ -2,7 +2,7 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
 // Contributed by Joanna Rutkowska
-// $Id: RHHardwareSPI.cpp,v 1.17 2017/07/25 05:26:50 mikem Exp mikem $
+// $Id: RHHardwareSPI.cpp,v 1.17 2017/07/25 05:26:50 mikem Exp $
 
 #include <RHHardwareSPI.h>
 
@@ -59,6 +59,46 @@ void RHHardwareSPI::detachInterrupt()
     
 void RHHardwareSPI::begin() 
 {
+#if defined(SPI_HAS_TRANSACTION)
+    // Perhaps this is a uniform interface for SPI?
+    // Currently Teensy and ESP32 only
+   uint32_t frequency;
+   if (_frequency == Frequency16MHz)
+       frequency = 16000000;
+   else if (_frequency == Frequency8MHz)
+       frequency = 8000000;
+   else if (_frequency == Frequency4MHz)
+       frequency = 4000000;
+   else if (_frequency == Frequency2MHz)
+       frequency = 2000000;
+   else
+       frequency = 1000000;
+
+   uint8_t bitOrder;
+
+   if (_bitOrder == BitOrderLSBFirst)
+       bitOrder = LSBFIRST;
+   else
+       bitOrder = MSBFIRST;
+   
+    uint8_t dataMode;
+    if (_dataMode == DataMode0)
+	dataMode = SPI_MODE0;
+    else if (_dataMode == DataMode1)
+	dataMode = SPI_MODE1;
+    else if (_dataMode == DataMode2)
+	dataMode = SPI_MODE2;
+    else if (_dataMode == DataMode3)
+	dataMode = SPI_MODE3;
+    else
+	dataMode = SPI_MODE0;
+
+    // Save the settings for use in transactions
+   _settings = SPISettings(frequency, bitOrder, dataMode);
+   SPI.begin();
+    
+#else
+    
     // Sigh: there are no common symbols for some of these SPI options across all platforms
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_UNO32) || (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
     uint8_t dataMode;
@@ -368,11 +408,34 @@ void RHHardwareSPI::begin()
 #else
  #warning RHHardwareSPI does not support this platform yet. Consider adding it and contributing a patch.
 #endif
+
+#endif // SPI_HAS_TRANSACTION
 }
 
 void RHHardwareSPI::end() 
 {
     return SPI.end();
+}
+
+void RHHardwareSPI::beginTransaction()
+{
+#if defined(SPI_HAS_TRANSACTION)
+    SPI.beginTransaction(_settings);
+#endif
+}
+
+void RHHardwareSPI::endTransaction()
+{
+#if defined(SPI_HAS_TRANSACTION)
+    SPI.endTransaction();
+#endif
+}
+
+void RHHardwareSPI::usingInterrupt(uint8_t interrupt)
+{
+#if defined(SPI_HAS_TRANSACTION)
+
+#endif
 }
 
 #endif
