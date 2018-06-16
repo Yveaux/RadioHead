@@ -72,7 +72,7 @@ void RH_RF22::setIdleMode(uint8_t idleMode)
 }
 
 bool RH_RF22::init()
-{
+{ 
     if (!RHSPIDriver::init())
 	return false;
 
@@ -96,8 +96,8 @@ bool RH_RF22::init()
     if (   _deviceType != RH_RF22_DEVICE_TYPE_RX_TRX
         && _deviceType != RH_RF22_DEVICE_TYPE_TX)
     {
-	Serial.println("device type");
-	Serial.println(_deviceType);
+//	Serial.println("unknown device type");
+//	Serial.println(_deviceType);
 	return false;
     }
 
