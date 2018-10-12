@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.71 2018/05/06 22:23:51 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.73 2018/10/05 20:35:29 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.86.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.87.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -858,6 +858,11 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     behind the end of the route array. Reported by Pascal Gillès de Pélichy.<br>
 \version 1.86 2018-08-28
              Update commercial licensing, remove binpress.
+\version 1.87 2018-10-06
+             RH_RF22 now resets all registers to default state before initialisation commences. Suggested by Wothke.<br>
+	     Added RH_ENABLE_EXPLICIT_RETRY_DEDUP which improves the handling of duplicate detection especiually
+	     in the case where a transmitter periodically wakes up and start tranmitting from the first sequence number.
+	     Patch courtesy Justin Newitter. Thanks.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1106,7 +1111,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 86
+#define RH_VERSION_MINOR 87
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

@@ -1,7 +1,7 @@
 // RH_Serial.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_Serial.h,v 1.12 2017/10/03 06:04:59 mikem Exp $
+// $Id: RH_Serial.h,v 1.13 2018/09/23 23:54:01 mikem Exp $
 
 // Works with any serial port. Tested with Arduino Mega connected to Serial1
 // Also works with 3DR Radio V1.3 Telemetry kit (serial at 57600baud)
