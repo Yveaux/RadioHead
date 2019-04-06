@@ -1,7 +1,7 @@
 // RH_E32.cpp
 //
 // Copyright (C) 2017 Mike McCauley
-// $Id: RH_E32.cpp,v 1.3 2018/09/23 23:54:01 mikem Exp $
+// $Id: RH_E32.cpp,v 1.4 2018/11/15 01:10:48 mikem Exp mikem $
 
 #include <RadioHead.h>
 #ifdef RH_HAVE_SERIAL // No serial

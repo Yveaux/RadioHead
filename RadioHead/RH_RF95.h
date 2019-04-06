@@ -230,6 +230,11 @@
 #define RH_RF95_PAYLOAD_CRC_ON                        0x04
 #define RH_RF95_SYM_TIMEOUT_MSB                       0x03
 
+// RH_RF95_REG_26_MODEM_CONFIG3
+#define RH_RF95_MOBILE_NODE                           0x08 // HopeRF term
+#define RH_RF95_LOW_DATA_RATE_OPTIMIZE                0x08 // Semtechs term
+#define RH_RF95_AGC_AUTO_ON                           0x04
+
 // RH_RF95_REG_4B_TCXO                                0x4b
 #define RH_RF95_TCXO_TCXO_INPUT_ON                    0x10
 
@@ -767,6 +772,56 @@ public:
     /// \return SNR of the last received message in dB
     int lastSNR();
 
+    /// brian.n.norman@gmail.com 9th Nov 2018
+    /// Sets the radio spreading factor.
+    /// valid values are 6 through 12.
+    /// Out of range values below 6 are clamped to 6
+    /// Out of range values above 12 are clamped to 12
+    /// See Semtech DS SX1276/77/78/79 page 27 regarding SF6 configuration.
+    ///
+    /// \param[in] uint8_t sf (spreading factor 6..12)
+    /// \return nothing
+    void     setSpreadingFactor(uint8_t sf);
+ 	
+    /// brian.n.norman@gmail.com 9th Nov 2018
+    /// Sets the radio signal bandwidth
+    /// sbw ranges and resultant settings are as follows:-
+    /// sbw range    actual bw (kHz)
+    /// 0-7800       7.8
+    /// 7801-10400   10.4
+    /// 10401-15600  15.6
+    /// 15601-20800  20.8
+    /// 20801-31250  31.25
+    /// 31251-41700	 41.7
+    /// 41701-62500	 62.5
+    /// 62501-12500  12.5
+    /// 12501-250000 250.0
+    /// >250000      500.0
+    /// NOTE caution Earlier - Semtech do not recommend BW below 62.5 although, in testing
+    /// I managed 31.25 with two devices in close proximity.
+    /// \param[in] sbw long, signal bandwidth e.g. 125000
+    void     setSignalBandwidth(long sbw);
+ 	
+    /// brian.n.norman@gmail.com 9th Nov 2018
+    /// Sets the coding rate to 4/5, 4/6, 4/7 or 4/8.
+    /// Valid denominator values are 5, 6, 7 or 8. A value of 5 sets the coding rate to 4/5 etc.
+    /// Values below 5 are clamped at 5
+    /// values above 8 are clamped at 8
+    /// \param[in] denominator uint8_t range 5..8
+    void     setCodingRate4(uint8_t denominator);
+ 	
+    /// brian.n.norman@gmail.com 9th Nov 2018
+    /// sets the low data rate flag if symbol time exceeds 16ms
+    /// ref: https://www.thethingsnetwork.org/forum/t/a-point-to-note-lora-low-data-rate-optimisation-flag/12007
+    /// called by setBandwidth() and setSpreadingfactor() since these affect the symbol time.
+    void 	 setLowDatarate();
+ 	
+    /// brian.n.norman@gmail.com 9th Nov 2018
+    /// allows the payload CRC bit to be turned on/off. Normally this should be left on
+    /// so that packets with a bad CRC are rejected
+    /// \patam[in] on bool, true turns the payload CRC on, false turns it off
+    void setPayloadCRC(bool on);
+ 	
 protected:
     /// This is a low level function to handle the interrupts for one instance of RH_RF95.
     /// Called automatically by isr*()
