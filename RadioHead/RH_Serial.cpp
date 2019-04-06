@@ -12,6 +12,7 @@
 #endif
 #include <RHCRC.h>
 
+#ifdef RH_HAVE_SERIAL
 RH_Serial::RH_Serial(HardwareSerial& serial)
     :
     _serial(serial),
@@ -242,3 +243,5 @@ uint8_t RH_Serial::maxMessageLength()
 {
     return RH_SERIAL_MAX_MESSAGE_LEN;
 }
+
+#endif // RH_PLATFORM_ATTINY

@@ -3,6 +3,9 @@
 // Copyright (C) 2017 Mike McCauley
 // $Id: RH_E32.cpp,v 1.3 2018/09/23 23:54:01 mikem Exp $
 
+#include <RadioHead.h>
+#ifdef RH_HAVE_SERIAL // No serial
+
 #include <RH_E32.h>
 #include <Stream.h>
 
@@ -340,3 +343,5 @@ bool RH_E32::setFrequency(uint16_t frequency)
   return writeParameters(params);
   
 }
+
+#endif // RH_PLATFORM_ATTINY

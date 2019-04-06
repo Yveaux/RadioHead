@@ -6,10 +6,11 @@
 
 #include <RHHardwareSPI.h>
 
+#ifdef RH_HAVE_HARDWARE_SPI
+
 // Declare a single default instance of the hardware SPI interface class
 RHHardwareSPI hardware_spi;
 
-#ifdef RH_HAVE_HARDWARE_SPI
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 // Declare an SPI interface to use

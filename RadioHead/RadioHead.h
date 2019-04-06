@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.73 2018/10/05 20:35:29 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.74 2018/11/08 02:31:43 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.87.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.88.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -205,8 +205,8 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
   but can be used to control other SPI based radios, Serial ports etc.
   See below for details on how to build RadioHead for Photon
 
-- ATtiny built using Arduino IDE 1.0.5 with the arduino-tiny support from https://code.google.com/p/arduino-tiny/
-  and Digispark built with Arduino 1.6.5.
+- ATTiny built using Arduino IDE 1.8 and using the instructions at
+  https://medium.com/jungletronics/attiny85-easy-flashing-through-arduino-b5f896c48189
   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
 
 - nRF51 compatible Arm chips such as nRF51822 with Arduino 1.6.4 and later using the procedures
@@ -863,6 +863,11 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Added RH_ENABLE_EXPLICIT_RETRY_DEDUP which improves the handling of duplicate detection especiually
 	     in the case where a transmitter periodically wakes up and start tranmitting from the first sequence number.
 	     Patch courtesy Justin Newitter. Thanks.
+\version 1.88 2018-11-13
+             Updated to support ATTiny using instructions in
+             https://medium.com/jungletronics/attiny85-easy-flashing-through-arduino-b5f896c48189
+	     Updated examples ask_transmitter and ask_receiver to compile cleanly on ATTiny. 
+	     Tested using ATTiny85 and Arduino 1.8.1. <br>
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1111,7 +1116,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 87
+#define RH_VERSION_MINOR 88
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1168,7 +1173,7 @@ these examples and explanations and extend them to suit your needs.
  #endif
 #endif
 
-#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__)
+#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__) || defined(ARDUINO_attiny)
  #define RH_PLATFORM_ATTINY
 #endif
 

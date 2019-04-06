@@ -415,7 +415,9 @@ uint8_t RH_RF24::maxMessageLength()
 // Sets registers from a canned modem configuration structure
 void RH_RF24::setModemRegisters(const ModemConfig* config)
 {
+#ifdef RH_HAVE_SERIAL
   Serial.println("Programming Error: setModemRegisters is obsolete. Generate custom radio config file with WDS instead");
+#endif
   (void)config; // Prevent warnings
 }
 
@@ -423,8 +425,10 @@ void RH_RF24::setModemRegisters(const ModemConfig* config)
 // Returns true if its a valid choice
 bool RH_RF24::setModemConfig(ModemConfigChoice index)
 {
+#ifdef RH_HAVE_SERIAL
   Serial.println("Programming Error: setModemRegisters is obsolete. Generate custom radio config file with WDS instead");
   (void)index; // Prevent warnings
+#endif
   return false;
 }
 
