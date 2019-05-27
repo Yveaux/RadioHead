@@ -69,7 +69,7 @@ bool RHEncryptedDriver::send(const uint8_t* data, uint8_t len)
     int max_message_length = maxMessageLength();
 #ifdef STRICT_CONTENT_LEN	
     uint8_t nbBlocks = len / blockSize + 1; // How many blocks do we need for that message
-    uint8_t nbBpM = max_message_length + 1 / blockSize; // Max number of blocks per message
+    uint8_t nbBpM = (max_message_length + 1) / blockSize; // Max number of blocks per message
 #else
     uint8_t nbBlocks = (len - 1) / blockSize + 1; // How many blocks do we need for that message
     uint8_t nbBpM = max_message_length / blockSize; // Max number of blocks per message

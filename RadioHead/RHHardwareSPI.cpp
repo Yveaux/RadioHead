@@ -442,7 +442,7 @@ void RHHardwareSPI::endTransaction()
 void RHHardwareSPI::usingInterrupt(uint8_t interrupt)
 {
 #if defined(SPI_HAS_TRANSACTION)
-
+    SPI.usingInterrupt(interrupt);
 #endif
 }
 

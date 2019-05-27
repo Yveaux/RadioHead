@@ -548,6 +548,25 @@
 /// -random termination of communication after 5-30 packets sent/received
 /// -"fake ok" state, where initialization passes fluently, but communication doesn't happen
 /// -shields hang Arduino boards, especially during the flashing
+///
+/// \par Encryption
+///
+/// This driver support the on-chip AES encryption provided by the RF69.
+/// You can enable encryption by calling setEncryptionKey() after init() has been called.
+/// If both transmitter and receiver have been configured with the same AES key,
+/// then the receiver will recover the unencrypted message sent by the receiver.
+/// However, you should note that there is no way for RF69 nor for the RadioHead
+/// drivers to know whether the AES 
+/// key for a message is 'correct' or not. This is because the RF69 CRC covers the 
+/// _encrypted_ payload not the plaintext.
+///
+/// In RadioHead managers that support addressing,
+/// the RF69 AES encryption includes the RadioHead payload and the TO and FROM addresses, so 
+/// occasionally (average one in 256 messages), a message encrypted with the 
+/// 'wrong' key will have the 'correct' destination address, and will therefore be 
+/// accepted by RadioHead as a 'random' message content from a 'random' sender.
+/// Its up to your code to figure out whether the message makes sense or not.
+///
 /// \par Interrupts
 ///
 /// The RH_RF69 driver uses interrupts to react to events in the RF69 module,
@@ -869,6 +888,7 @@ public:
     /// networks from each other. Default is { 0x2d, 0xd4 }.
     /// Caution: tests here show that with a single sync word (ie where len == 1), 
     /// RFM69 reception can be unreliable.
+    /// To disable sync word generation and detection, call with the defaults: setSyncWords();
     /// \param[in] syncWords Array of sync words, 1 to 4 octets long. NULL if no sync words to be used.
     /// \param[in] len Number of sync words to set, 1 to 4. 0 if no sync words to be used.
     void           setSyncWords(const uint8_t* syncWords = NULL, uint8_t len = 0);

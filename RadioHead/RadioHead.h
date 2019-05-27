@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.89.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.90.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -892,6 +892,14 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Added support for RH_RF95::setSpreadingFactor(), RH_RF95::setSignalBandwidth(), RH_RF95::setLowDatarate() and
 	     RH_RF95::setPayloadCRC(). Patch from Brian Norman. Thanks.<br>
 
+\version 1.90 2019-05-21
+             Fixed a block size error in RhEncryptedDriver for the case when
+             using STRICT_CONTENT_LEN and sending messages of exactly _blockcipher.blockSize() bytes in length.
+	     Reported and patched by Philippe Rochat.
+             Patch from Samuel Archibald to prevent compile errors with RH_AAK.cpp fo ATSAMD51.
+	     Fixed a probem in RH_RF69::setSyncWords that prevented setSyncWords(NULL, 0) correctly
+	     disabling sync detection and generation. Reported by Federico Maggi.
+	     RHHardwareSPI::usingInterrupt() was a noop. Fixed to call SPI.usingInterrupt(interrupt);.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1140,7 +1148,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 89
+#define RH_VERSION_MINOR 90
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

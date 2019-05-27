@@ -463,11 +463,12 @@ void RH_RF69::setSyncWords(const uint8_t* syncWords, uint8_t len)
     {
 	spiBurstWrite(RH_RF69_REG_2F_SYNCVALUE1, syncWords, len);
 	syncconfig |= RH_RF69_SYNCCONFIG_SYNCON;
+	syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCSIZE;
+	syncconfig |= (len-1) << 3;
     }
     else
 	syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCON;
-    syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCSIZE;
-    syncconfig |= (len-1) << 3;
+
     spiWrite(RH_RF69_REG_2E_SYNCCONFIG, syncconfig);
 }
 
