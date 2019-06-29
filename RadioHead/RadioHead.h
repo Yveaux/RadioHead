@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.90.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.91.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -901,6 +901,10 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     disabling sync detection and generation. Reported by Federico Maggi.
 	     RHHardwareSPI::usingInterrupt() was a noop. Fixed to call SPI.usingInterrupt(interrupt);.
 
+\version 1.91 2019-06-01
+             Fixed a problem with new RHHardwareSPI::usingInterrupt() that prevented compilation on ESP8266
+	     which does not have that call
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
 
@@ -1148,7 +1152,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 90
+#define RH_VERSION_MINOR 91
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1235,6 +1239,7 @@ these examples and explanations and extend them to suit your needs.
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
  #define RH_HAVE_SERIAL
+ #define RH_MISSING_SPIUSINGINTERRUPT
 
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)   // ESP32 processor on Arduino IDE
  #include <Arduino.h>
