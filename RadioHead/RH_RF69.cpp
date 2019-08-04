@@ -263,17 +263,17 @@ void RH_RF69::readFifo()
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_RF69.
 // 3 interrupts allows us to have 3 different devices
-void RH_RF69::isr0()
+void RH_INTERRUPT_ATTR RH_RF69::isr0()
 {
     if (_deviceForInterrupt[0])
 	_deviceForInterrupt[0]->handleInterrupt();
 }
-void RH_RF69::isr1()
+void RH_INTERRUPT_ATTR RH_RF69::isr1()
 {
     if (_deviceForInterrupt[1])
 	_deviceForInterrupt[1]->handleInterrupt();
 }
-void RH_RF69::isr2()
+void RH_INTERRUPT_ATTR RH_RF69::isr2()
 {
     if (_deviceForInterrupt[2])
 	_deviceForInterrupt[2]->handleInterrupt();
@@ -463,12 +463,11 @@ void RH_RF69::setSyncWords(const uint8_t* syncWords, uint8_t len)
     {
 	spiBurstWrite(RH_RF69_REG_2F_SYNCVALUE1, syncWords, len);
 	syncconfig |= RH_RF69_SYNCCONFIG_SYNCON;
-	syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCSIZE;
-	syncconfig |= (len-1) << 3;
     }
     else
 	syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCON;
-
+    syncconfig &= ~RH_RF69_SYNCCONFIG_SYNCSIZE;
+    syncconfig |= (len-1) << 3;
     spiWrite(RH_RF69_REG_2E_SYNCCONFIG, syncconfig);
 }
 

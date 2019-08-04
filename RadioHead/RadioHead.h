@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.75 2018/11/15 01:10:48 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.76 2019/07/14 00:18:48 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.91.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.92.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -98,7 +98,9 @@ Works with Nordic nRF905 based 433/868/915 MHz radio modules.
 - RH_NRF51
 Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
 Also works with Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
-Sparkfun nRF52 boards manager 0.2.3
+Sparkfun nRF52 boards manager 0.2.3. Caution: although RadioHead compiles with nRF52832 as at 2019-06-06
+there appears to be a problem with the support of interupt handlers in the Sparkfun support libraries,
+and drivers (ie most of the SPI based radio drivers) that require interrupts do not work correctly.
 
 - RH_RF95
 Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
@@ -184,9 +186,13 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
     https://github.com/LowPowerLab/Moteino/tree/master/MEGA/Core)
  - ESP8266 on Arduino IDE and Boards Manager per https://github.com/esp8266/Arduino 
    Tested using Arduino 1.6.8 with esp8266 by ESP8266 Community version 2.1.0
+   Also Arduino 1.8.1 with esp8266 by SparkFun Electronics 2.5.2
    Examples serial_reliable_datagram_* and ask_* are shown to work. 
    CAUTION: The GHz radio included in the ESP8266 is
    not yet supported.
+   CAUTION: tests here show that when powered by an FTDI USB-Serial converter, 
+   the ESP8266 can draw so much power when transmitting on its GHz WiFi that VCC will sag
+   causing random crashes. We strongly recommend a large cap, say 1000uF 10V on VCC if you are also using the WiFi.
  - Various Talk2 Whisper boards eg https://wisen.com.au/store/products/whisper-node-lora.
    Use Arduino Board Manager to install the Talk2 code support. 
  - etc.
@@ -903,7 +909,15 @@ application. To purchase a commercial license, contact info@airspayce.com
 
 \version 1.91 2019-06-01
              Fixed a problem with new RHHardwareSPI::usingInterrupt() that prevented compilation on ESP8266
-	     which does not have that call
+	     which does not have that call.
+
+\version 1.92 2019-07-14
+             Retested serial_reliable_datagram_client.pde and serial_reliable_datagram_server.pde built on Linux
+	     as described in their headers, and with USB-RS485 adapters. No changes, working correctly.
+	     Testing of nRF5232 with Sparkfun nRF52 board support 0.2.3 shows that there appears to be a problem with
+	     interrupt handlers on this board, and none of the interrupt based radio drivers can be expected to work 
+	     with this chip.
+	     Ensured all interrupt routines are flagged with ICACHE_RAM_ATTR when compiled for ESP8266, to prevent crashes.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1152,7 +1166,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 91
+#define RH_VERSION_MINOR 92
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1438,6 +1452,15 @@ these examples and explanations and extend them to suit your needs.
 // Slave select pin, some platforms such as ATTiny do not define it.
 #ifndef SS
  #define SS 10
+#endif
+
+// Some platforms require specail attributes for interrupt routines						   
+#if (RH_PLATFORM == RH_PLATFORM_ESP8266)
+    // interrupt handler and related code must be in RAM on ESP8266,
+    // according to issue #46.
+    #define RH_INTERRUPT_ATTR ICACHE_RAM_ATTR
+#else
+    #define RH_INTERRUPT_ATTR
 #endif
 
 // These defs cause trouble on some versions of Arduino

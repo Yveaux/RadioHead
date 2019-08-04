@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.18 2018/11/08 02:31:43 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.19 2019/07/14 00:18:48 mikem Exp mikem $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h

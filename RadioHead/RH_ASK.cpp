@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.23 2018/09/23 23:54:01 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.24 2019/07/14 00:18:48 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -14,14 +14,6 @@ HardwareTimer timer(MAPLE_TIMER);
 #elif  defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
     // rogerclarkmelbourne/Arduino_STM32
 HardwareTimer timer(1);
-#endif
-
-#if (RH_PLATFORM == RH_PLATFORM_ESP8266)
-    // interrupt handler and related code must be in RAM on ESP8266,
-    // according to issue #46.
-    #define INTERRUPT_ATTR ICACHE_RAM_ATTR
-#else
-    #define INTERRUPT_ATTR
 #endif
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
@@ -392,7 +384,7 @@ void RH_ASK::timerSetup()
     ConfigIntTimer1(T1_INT_ON | T1_INT_PRIOR_1);
 
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
-    void INTERRUPT_ATTR esp8266_timer_interrupt_handler(); // Forward declaration
+    void RH_INTERRUPT_ATTR esp8266_timer_interrupt_handler(); // Forward declaration
     // The - 120 is a heuristic to correct for interrupt handling overheads
     _timerIncrement = (clockCyclesPerMicrosecond() * 1000000 / 8 / _speed) - 120;
     timer0_isr_init();
@@ -409,7 +401,7 @@ void RH_ASK::timerSetup()
 
 }
 
-void INTERRUPT_ATTR RH_ASK::setModeIdle()
+void RH_INTERRUPT_ATTR RH_ASK::setModeIdle()
 {
     if (_mode != RHModeIdle)
     {
@@ -545,7 +537,7 @@ bool RH_ASK::send(const uint8_t* data, uint8_t len)
 }
 
 // Read the RX data input pin, taking into account platform type and inversion.
-bool INTERRUPT_ATTR RH_ASK::readRx()
+bool RH_INTERRUPT_ATTR RH_ASK::readRx()
 {
     bool value;
 #if (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
@@ -557,7 +549,7 @@ bool INTERRUPT_ATTR RH_ASK::readRx()
 }
 
 // Write the TX output pin, taking into account platform type.
-void INTERRUPT_ATTR RH_ASK::writeTx(bool value)
+void RH_INTERRUPT_ATTR RH_ASK::writeTx(bool value)
 {
 #if (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
     ((value) ? (RH_ASK_TX_PORT |= (1<<RH_ASK_TX_PIN)) : (RH_ASK_TX_PORT &= ~(1<<RH_ASK_TX_PIN)));
@@ -567,7 +559,7 @@ void INTERRUPT_ATTR RH_ASK::writeTx(bool value)
 }
 
 // Write the PTT output pin, taking into account platform type and inversion.
-void INTERRUPT_ATTR RH_ASK::writePtt(bool value)
+void RH_INTERRUPT_ATTR RH_ASK::writePtt(bool value)
 {
 #if (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
  #if RH_ASK_PTT_PIN 
@@ -678,7 +670,7 @@ extern "C"
 }
 }
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
-void INTERRUPT_ATTR esp8266_timer_interrupt_handler()
+void RH_INTERRUPT_ATTR esp8266_timer_interrupt_handler()
 {  
 //    timer0_write(ESP.getCycleCount() + 41660000);
 //    timer0_write(ESP.getCycleCount() + (clockCyclesPerMicrosecond() * 100) - 120 );
@@ -696,7 +688,7 @@ void IRAM_ATTR esp32_timer_interrupt_handler()
 #endif
 
 // Convert a 6 bit encoded symbol into its 4 bit decoded equivalent
-uint8_t INTERRUPT_ATTR RH_ASK::symbol_6to4(uint8_t symbol)
+uint8_t RH_INTERRUPT_ATTR RH_ASK::symbol_6to4(uint8_t symbol)
 {
     uint8_t i;
     uint8_t count;
@@ -743,7 +735,7 @@ void RH_ASK::validateRxBuf()
     }
 }
 
-void INTERRUPT_ATTR RH_ASK::receiveTimer()
+void RH_INTERRUPT_ATTR RH_ASK::receiveTimer()
 {
     bool rxSample = readRx();
 
@@ -832,7 +824,7 @@ void INTERRUPT_ATTR RH_ASK::receiveTimer()
     }
 }
 
-void INTERRUPT_ATTR RH_ASK::transmitTimer()
+void RH_INTERRUPT_ATTR RH_ASK::transmitTimer()
 {
     if (_txSample++ == 0)
     {
@@ -860,7 +852,7 @@ void INTERRUPT_ATTR RH_ASK::transmitTimer()
 	_txSample = 0;
 }
 
-void INTERRUPT_ATTR RH_ASK::handleTimerInterrupt()
+void RH_INTERRUPT_ATTR RH_ASK::handleTimerInterrupt()
 {
     if (_mode == RHModeRx)
 	receiveTimer(); // Receiving

@@ -189,17 +189,17 @@ void RH_CC110::handleInterrupt()
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_CC110.
 // 3 interrupts allows us to have 3 different devices
-void RH_CC110::isr0()
+void RH_INTERRUPT_ATTR RH_CC110::isr0()
 {
     if (_deviceForInterrupt[0])
 	_deviceForInterrupt[0]->handleInterrupt();
 }
-void RH_CC110::isr1()
+void RH_INTERRUPT_ATTR RH_CC110::isr1()
 {
     if (_deviceForInterrupt[1])
 	_deviceForInterrupt[1]->handleInterrupt();
 }
-void RH_CC110::isr2()
+void RH_INTERRUPT_ATTR RH_CC110::isr2()
 {
     if (_deviceForInterrupt[2])
 	_deviceForInterrupt[2]->handleInterrupt();

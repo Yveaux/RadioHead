@@ -1,7 +1,7 @@
 // RH_RF24.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF24.cpp,v 1.23 2018/11/15 01:10:48 mikem Exp mikem $
+// $Id: RH_RF24.cpp,v 1.23 2018/11/15 01:10:48 mikem Exp $
 
 #include <RH_RF24.h>
 
@@ -265,17 +265,17 @@ void RH_RF24::clearBuffer()
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_RF24.
 // 3 interrupts allows us to have 3 different devices
-void RH_RF24::isr0()
+void RH_INTERRUPT_ATTR RH_RF24::isr0()
 {
     if (_deviceForInterrupt[0])
 	_deviceForInterrupt[0]->handleInterrupt();
 }
-void RH_RF24::isr1()
+void RH_INTERRUPT_ATTR RH_RF24::isr1()
 {
     if (_deviceForInterrupt[1])
 	_deviceForInterrupt[1]->handleInterrupt();
 }
-void RH_RF24::isr2()
+void RH_INTERRUPT_ATTR RH_RF24::isr2()
 {
     if (_deviceForInterrupt[2])
 	_deviceForInterrupt[2]->handleInterrupt();

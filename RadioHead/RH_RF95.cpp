@@ -1,7 +1,7 @@
 // RH_RF95.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.19 2018/09/23 23:54:01 mikem Exp $
+// $Id: RH_RF95.cpp,v 1.20 2019/07/14 00:18:48 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -189,17 +189,17 @@ void RH_RF95::handleInterrupt()
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_RF95.
 // 3 interrupts allows us to have 3 different devices
-void RH_RF95::isr0()
+void RH_INTERRUPT_ATTR RH_RF95::isr0()
 {
     if (_deviceForInterrupt[0])
 	_deviceForInterrupt[0]->handleInterrupt();
 }
-void RH_RF95::isr1()
+void RH_INTERRUPT_ATTR RH_RF95::isr1()
 {
     if (_deviceForInterrupt[1])
 	_deviceForInterrupt[1]->handleInterrupt();
 }
-void RH_RF95::isr2()
+void RH_INTERRUPT_ATTR RH_RF95::isr2()
 {
     if (_deviceForInterrupt[2])
 	_deviceForInterrupt[2]->handleInterrupt();
