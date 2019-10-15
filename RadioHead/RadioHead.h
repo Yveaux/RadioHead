@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.76 2019/07/14 00:18:48 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.77 2019/09/02 05:21:52 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.92.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.94.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -238,8 +238,8 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
 - Adafruit Feather M0 boards with Arduino 1.8.1 and later, using the Arduino and Adafruit SAMD board support.
   https://learn.adafruit.com/adafruit-feather-m0-basic-proto/using-with-arduino-ide
 
-- ESP32 built using Arduino IDE 1.8.1 or later using the ESP32 toolchain installed per
-  https://diyprojects.io/programming-esp32-board-arduino-ide-macos-windows-linux-arm-raspberrypi-orangepi/
+- ESP32 built using Arduino IDE 1.8.9 or later using the ESP32 toolchain installed per
+  https://github.com/espressif/arduino-esp32
   The internal 2.4GHz radio is not yet supported. Tested with RFM22 using SPI interface
 
 - Raspberry Pi
@@ -323,8 +323,8 @@ unzip develop.zip
 cd /tmp
 mkdir RadioHead
 cd RadioHead
-cp /usr/local/projects/arduino/libraries/RadioHead/*.h .
-cp /usr/local/projects/arduino/libraries/RadioHead/*.cpp .
+cp /usr/local/projects/arduino/libraries/RadioHead/ *.h .
+cp /usr/local/projects/arduino/libraries/RadioHead/ *.cpp .
 cp /usr/local/projects/arduino/libraries/RadioHead/examples/cc110/cc110_client/cc110_client.pde application.cpp
 \endcode
 - Edit application.cpp and comment out any \#include <SPI.h> so it looks like:
@@ -919,6 +919,14 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     with this chip.
 	     Ensured all interrupt routines are flagged with ICACHE_RAM_ATTR when compiled for ESP8266, to prevent crashes.
 
+\version 1.93
+             Fixed a bug in RHSoftwareSPI where RHGenericSPI::setBitOrder() has no effect for
+	     on RHSoftwareSPI. Reported by Peter.<br>
+	     Added support in RHRouter for a node to optionally be leaf node, and not participate as a router in the
+	     network. See RHRouter::setNodeTypePatch from Alex Evans.<br>
+	     Fixed a problem with ESP32 causing compile orrers over missing SPI.usingInterrupt().<br>
+
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
 
@@ -1166,7 +1174,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 92
+#define RH_VERSION_MINOR 94
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1260,6 +1268,7 @@ these examples and explanations and extend them to suit your needs.
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
  #define RH_HAVE_SERIAL
+ #define RH_MISSING_SPIUSINGINTERRUPT
 
 #elif (RH_PLATFORM == RH_PLATFORM_MSP430) // LaunchPad specific
  #include "legacymsp430.h"

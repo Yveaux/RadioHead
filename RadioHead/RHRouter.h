@@ -177,6 +177,14 @@ public:
     /// Sets max_hops to the default of RH_DEFAULT_MAX_HOPS (30)
     bool init();
 
+
+    /// Sets the flag determining if the node will participate in routing.
+    /// if isa_router is true, the node will be a full participant. If false the node
+    /// will only respond to
+    /// packets directed to its address. The default is true.
+    /// \param[in] isa_router true or false
+    void setIsaRouter(bool isa_router);
+
     /// Sets the max_hops to the given value
     /// This controls the maximum number of hops allowed between source and destination nodes
     /// Messages that are not delivered by the time their HOPS field exceeds max_hops on a 
@@ -310,6 +318,9 @@ protected:
     /// The maximum number of hops permitted in routed messages.
     /// If a routed message would exceed this number of hops it is dropped and ignored.
     uint8_t              _max_hops;
+    
+    /// Flag to set if packets are forwarded or not
+    bool _isa_router;
 
 private:
 

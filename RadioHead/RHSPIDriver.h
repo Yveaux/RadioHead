@@ -95,7 +95,6 @@ public:
 
     /// The pin number of the Slave Select pin that is used to select the desired device.
     uint8_t             _slaveSelectPin;
-    uint8_t             _interuptPin; // If interrupts are used else NOT_AN_INTERRUPT
 };
 
 #endif

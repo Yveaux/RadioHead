@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.37 2019/07/14 00:18:48 mikem Exp mikem $
+// $Id: RH_RF69.h,v 1.37 2019/07/14 00:18:48 mikem Exp $
 //
 ///
 
