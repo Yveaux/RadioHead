@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.95.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.96.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -932,6 +932,9 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Added support for RPi Zero and Zero W for the RF95, contributed by Brody Mahoney. 
 	     Not tested by me.<br>
 
+\version 1.96 2019-10-14
+             Added examples for RPi Zero and Zero W to examples/raspi/rf95, contributed by Brody Mahoney
+	     not tested by me. <br>
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1180,7 +1183,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 95
+#define RH_VERSION_MINOR 96
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
