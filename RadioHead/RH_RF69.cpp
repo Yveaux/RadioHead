@@ -1,7 +1,7 @@
 // RH_RF69.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF69.cpp,v 1.31 2019/09/02 05:21:52 mikem Exp mikem $
+// $Id: RH_RF69.cpp,v 1.31 2019/09/02 05:21:52 mikem Exp $
 
 #include <RH_RF69.h>
 

@@ -89,7 +89,7 @@
 #define RH_RF95_REG_29_FEI_MID                             0x29
 #define RH_RF95_REG_2A_FEI_LSB                             0x2a
 #define RH_RF95_REG_2C_RSSI_WIDEBAND                       0x2c
-#define RH_RF95_REG_31_DETECT_OPTIMIZ                      0x31
+#define RH_RF95_REG_31_DETECT_OPTIMIZE                     0x31
 #define RH_RF95_REG_33_INVERT_IQ                           0x33
 #define RH_RF95_REG_37_DETECTION_THRESHOLD                 0x37
 #define RH_RF95_REG_39_SYNC_WORD                           0x39
@@ -132,7 +132,7 @@
 #define RH_RF95_PA_RAMP_2MS                           0x01
 #define RH_RF95_PA_RAMP_1MS                           0x02
 #define RH_RF95_PA_RAMP_500US                         0x03
-#define RH_RF95_PA_RAMP_250US                         0x0
+#define RH_RF95_PA_RAMP_250US                         0x04
 #define RH_RF95_PA_RAMP_125US                         0x05
 #define RH_RF95_PA_RAMP_100US                         0x06
 #define RH_RF95_PA_RAMP_62US                          0x07
@@ -161,7 +161,7 @@
 #define RH_RF95_LNA_BOOST_LF_DEFAULT                  0x00
 #define RH_RF95_LNA_BOOST_HF                          0x03
 #define RH_RF95_LNA_BOOST_HF_DEFAULT                  0x00
-#define RH_RF95_LNA_BOOST_HF_150PC                    0x11
+#define RH_RF95_LNA_BOOST_HF_150PC                    0x03
 
 // RH_RF95_REG_11_IRQ_FLAGS_MASK                      0x11
 #define RH_RF95_RX_TIMEOUT_MASK                       0x80
@@ -225,7 +225,7 @@
 #define RH_RF95_SPREADING_FACTOR_1024CPS              0xa0
 #define RH_RF95_SPREADING_FACTOR_2048CPS              0xb0
 #define RH_RF95_SPREADING_FACTOR_4096CPS              0xc0
-#define RH_RF95_TX_CONTINUOUS_MOE                     0x08
+#define RH_RF95_TX_CONTINUOUS_MODE                    0x08
 
 #define RH_RF95_PAYLOAD_CRC_ON                        0x04
 #define RH_RF95_SYM_TIMEOUT_MSB                       0x03
@@ -794,7 +794,7 @@ public:
     /// 20801-31250  31.25
     /// 31251-41700	 41.7
     /// 41701-62500	 62.5
-    /// 62501-12500  12.5
+    /// 62501-12500  125.0
     /// 12501-250000 250.0
     /// >250000      500.0
     /// NOTE caution Earlier - Semtech do not recommend BW below 62.5 although, in testing

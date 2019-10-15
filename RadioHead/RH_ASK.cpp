@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.25 2019/09/02 05:21:52 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.25 2019/09/02 05:21:52 mikem Exp $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -11,9 +11,15 @@
 #if (RH_PLATFORM == RH_PLATFORM_STM32)
     // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
+
 #elif  defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
     // rogerclarkmelbourne/Arduino_STM32
 HardwareTimer timer(1);
+
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+// Michael Cain
+DRAM_ATTR hw_timer_t * timer;
+
 #endif
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
@@ -392,8 +398,8 @@ void RH_ASK::timerSetup()
     timer0_write(ESP.getCycleCount() + _timerIncrement);
 //    timer0_write(ESP.getCycleCount() + 41660000);
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
-    void IRAM_ATTR esp32_timer_interrupt_handler(); // Forward declaration
-    hw_timer_t * timer = timerBegin(0, 80, true); // Alarm value will be in in us
+    void RH_INTERRUPT_ATTR esp32_timer_interrupt_handler(); // Forward declaration
+    timer = timerBegin(0, 80, true); // Alarm value will be in in us
     timerAttachInterrupt(timer, &esp32_timer_interrupt_handler, true);
     timerAlarmWrite(timer, 1000000 / _speed / 8, true);
     timerAlarmEnable(timer);
@@ -412,7 +418,7 @@ void RH_INTERRUPT_ATTR RH_ASK::setModeIdle()
     }
 }
 
-void RH_ASK::setModeRx()
+void RH_INTERRUPT_ATTR RH_ASK::setModeRx()
 {
     if (_mode != RHModeRx)
     {
@@ -453,7 +459,7 @@ bool RH_ASK::available()
     return _rxBufValid;
 }
 
-bool RH_ASK::recv(uint8_t* buf, uint8_t* len)
+bool RH_INTERRUPT_ATTR RH_ASK::recv(uint8_t* buf, uint8_t* len)
 {
     if (!available())
 	return false;

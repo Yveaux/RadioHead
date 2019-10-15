@@ -282,7 +282,7 @@ public:
     /// \param[in] buf Location to copy the received message
     /// \param[in,out] len Pointer to available space in buf. Set to the actual number of octets copied.
     /// \return true if a valid message was copied to buf
-    virtual bool    recv(uint8_t* buf, uint8_t* len);
+    RH_INTERRUPT_ATTR virtual bool    recv(uint8_t* buf, uint8_t* len);
 
     /// Waits until any previous transmit packet is finished being transmitted with waitPacketSent().
     /// Then loads a message into the transmitter and starts the transmitter. Note that a message length
@@ -299,18 +299,18 @@ public:
 
     /// If current mode is Rx or Tx changes it to Idle. If the transmitter or receiver is running, 
     /// disables them.
-    void           setModeIdle();
+    RH_INTERRUPT_ATTR void           setModeIdle();
 
     /// If current mode is Tx or Idle, changes it to Rx. 
     /// Starts the receiver in the RF69.
-    void           setModeRx();
+    RH_INTERRUPT_ATTR void           setModeRx();
 
     /// If current mode is Rx or Idle, changes it to Rx. F
     /// Starts the transmitter in the RF69.
     void           setModeTx();
 
     /// dont call this it used by the interrupt handler
-    void            handleTimerInterrupt();
+    RH_INTERRUPT_ATTR void            handleTimerInterrupt();
 
     /// Returns the current speed in bits per second
     /// \return The current speed in bits per second
@@ -329,7 +329,7 @@ protected:
     void            timerSetup();
 
     /// Read the rxPin in a platform dependent way, taking into account whether it is inverted or not
-    bool            readRx();
+    RH_INTERRUPT_ATTR bool            readRx();
 
     /// Write the txPin in a platform dependent way
     void            writeTx(bool value);
@@ -338,7 +338,7 @@ protected:
     void            writePtt(bool value);
 
     /// Translates a 6 bit symbol to its 4 bit plaintext equivalent
-    uint8_t         symbol_6to4(uint8_t symbol);
+    RH_INTERRUPT_ATTR uint8_t         symbol_6to4(uint8_t symbol);
 
     /// The receiver handler function, called a 8 times the bit rate
     void            receiveTimer();
