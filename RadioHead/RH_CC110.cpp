@@ -332,12 +332,26 @@ uint8_t RH_CC110::maxMessageLength()
     return RH_CC110_MAX_MESSAGE_LEN;
 }
 
+void RH_CC110::handleOverFlows(uint8_t status)
+{
+    spiCommand(RH_CC110_STROBE_3A_SFRX);
+    //Handle RX and TX overflows so we don't get stuck in either state
+    if( (status&RH_CC110_STATUS_RXFIFO_OVERFLOW) == RH_CC110_STATUS_RXFIFO_OVERFLOW ) {
+        spiCommand(RH_CC110_STROBE_3A_SFRX);
+        clearRxBuf();
+    }
+    else if( (status&RH_CC110_STATUS_TXFIFO_UNDERFLOW) == RH_CC110_STATUS_TXFIFO_UNDERFLOW ) {
+        spiCommand(RH_CC110_STROBE_3B_SFTX);
+    }
+}
+
 void RH_CC110::setModeIdle()
 {
     if (_mode != RHModeIdle)
     {
-	spiCommand(RH_CC110_STROBE_36_SIDLE);
-	_mode = RHModeIdle;
+        uint8_t status = spiCommand(RH_CC110_STROBE_36_SIDLE);
+        _mode = RHModeIdle;
+        handleOverFlows(status);
     }
 }
 
@@ -374,7 +388,9 @@ void RH_CC110::setModeTx()
 
 uint8_t RH_CC110::statusRead()
 {	
-    return spiCommand(RH_CC110_STROBE_3D_SNOP);
+    uint8_t status = spiCommand(RH_CC110_STROBE_3D_SNOP);
+    handleOverFlows(status);
+    return status;
 }
 
 // Sigh, this chip has no TXDONE type interrupt, so we have to poll

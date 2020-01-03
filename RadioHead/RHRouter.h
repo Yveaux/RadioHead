@@ -2,7 +2,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHRouter.h,v 1.11 2019/09/06 04:40:40 mikem Exp mikem $
+// $Id: RHRouter.h,v 1.11 2019/09/06 04:40:40 mikem Exp $
 
 #ifndef RHRouter_h
 #define RHRouter_h

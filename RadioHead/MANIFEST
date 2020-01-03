@@ -168,3 +168,10 @@ RadioHead/RF24configs/radio_config_Si4464_30_434_2GFSK_10_20.h
 RadioHead/RF24configs/radio_config_Si4464_30_915_2GFSK_5_10.h
 RadioHead/RF24configs/radio_config_Si4464_30_434_2GFSK_5_10.h
 RadioHead/RF24configs/README
+RadioHead/MGOSCompat/MGOS.h
+RadioHead/MGOSCompat/HardwareSPI.cpp
+RadioHead/MGOSCompat/MGOS.cpp
+RadioHead/MGOSCompat/HardwareSerial.h
+RadioHead/MGOSCompat/README
+RadioHead/MGOSCompat/HardwareSerial.cpp
+RadioHead/MGOSCompat/HardwareSPI.h

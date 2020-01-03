@@ -551,11 +551,11 @@ void RH_RF95::setSignalBandwidth(long sbw)
  
 void RH_RF95::setCodingRate4(uint8_t denominator)
 {
-    int cr;
+    int cr = RH_RF95_CODING_RATE_4_5;
  
-    if (denominator <= 5)
-	cr=RH_RF95_CODING_RATE_4_5;
-    else if (denominator == 6)
+//    if (denominator <= 5)
+//	cr = RH_RF95_CODING_RATE_4_5;
+    if (denominator == 6)
 	cr = RH_RF95_CODING_RATE_4_6;
     else if (denominator == 7)
 	cr = RH_RF95_CODING_RATE_4_7;

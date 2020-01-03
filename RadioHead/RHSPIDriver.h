@@ -1,7 +1,7 @@
 // RHSPIDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.h,v 1.14 2019/09/06 04:40:40 mikem Exp mikem $
+// $Id: RHSPIDriver.h,v 1.14 2019/09/06 04:40:40 mikem Exp $
 
 #ifndef RHSPIDriver_h
 #define RHSPIDriver_h

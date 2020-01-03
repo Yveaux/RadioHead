@@ -9,7 +9,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHRouter.cpp,v 1.9 2019/09/06 04:40:40 mikem Exp mikem $
+// $Id: RHRouter.cpp,v 1.9 2019/09/06 04:40:40 mikem Exp $
 
 #include <RHRouter.h>
 

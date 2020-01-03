@@ -847,7 +847,12 @@ protected:
     /// \return The value of the status byte per Table 5-2
     uint8_t statusRead();
 
-    
+    /// Handle the TX or RX overflow state of the given status
+    /// \param status The status byte read from the last SPI command
+    /// \return void
+    void handleOverFlows(uint8_t status);
+
+
 private:
     /// Low level interrupt service routine for device connected to interrupt 0
     static void         isr0();

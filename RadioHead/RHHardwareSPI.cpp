@@ -18,6 +18,8 @@ HardwareSPI SPI(1);
 #elif (RH_PLATFORM == RH_PLATFORM_STM32STD) // STM32F4 Discovery
 // Declare an SPI interface to use
 HardwareSPI SPI(1);
+#elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS) // Mongoose OS platform
+HardwareSPI SPI(1);
 #endif
 
 // Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
@@ -43,6 +45,24 @@ uint8_t RHHardwareSPI::transfer(uint8_t data)
 {
     return SPI.transfer(data);
 }
+
+#if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
+uint8_t RHHardwareSPI::transfer2B(uint8_t byte0, uint8_t byte1)
+{
+    return SPI.transfer2B(byte0, byte1);
+}
+
+uint8_t RHHardwareSPI::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
+{
+    return SPI.spiBurstRead(reg, dest, len);
+}
+
+uint8_t RHHardwareSPI::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
+{
+    uint8_t status = SPI.spiBurstWrite(reg, src, len);
+    return status;
+}
+#endif
 
 void RHHardwareSPI::attachInterrupt() 
 {
@@ -413,6 +433,33 @@ void RHHardwareSPI::begin()
       break;
   }
   SPI.begin(divider, bitOrder, dataMode);
+#elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
+    uint8_t dataMode   = SPI_MODE0;
+    uint32_t frequency = 4000000; //!!! ESP32/NRF902 works ok at 4MHz but not at 8MHz SPI clock.
+    uint32_t bitOrder  = MSBFIRST;
+
+    if (_dataMode == DataMode0) {
+        dataMode = SPI_MODE0;
+    } else if (_dataMode == DataMode1) {
+        dataMode = SPI_MODE1;
+    } else if (_dataMode == DataMode2) {
+        dataMode = SPI_MODE2;
+    } else if (_dataMode == DataMode3) {
+        dataMode = SPI_MODE3;
+    }
+
+    if (_bitOrder == BitOrderLSBFirst) {
+        bitOrder = LSBFIRST;
+    }
+
+    if (_frequency == Frequency4MHz)
+        frequency = 4000000;
+    else if (_frequency == Frequency2MHz)
+        frequency = 2000000;
+    else
+        frequency = 1000000;
+
+    SPI.begin(frequency, bitOrder, dataMode);
 #else
  #warning RHHardwareSPI does not support this platform yet. Consider adding it and contributing a patch.
 #endif
@@ -444,6 +491,7 @@ void RHHardwareSPI::usingInterrupt(uint8_t interrupt)
 #if defined(SPI_HAS_TRANSACTION) && !defined(RH_MISSING_SPIUSINGINTERRUPT)
     SPI.usingInterrupt(interrupt);
 #endif
+    (void)interrupt;
 }
 
 #endif

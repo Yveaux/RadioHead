@@ -344,4 +344,4 @@ bool RH_E32::setFrequency(uint16_t frequency)
   
 }
 
-#endif // RH_PLATFORM_ATTINY
+#endif // RH_HAVE_SERIAL

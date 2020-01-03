@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.25 2019/09/02 05:21:52 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.26 2019/11/02 02:34:22 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -593,7 +593,7 @@ uint8_t RH_ASK::maxMessageLength()
    #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
   #endif
  #endif 
-#elif (RH_ASK_PLATFORM == RH_ASK_PLATFORM_GENERIC_AVR8)
+#elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
  #define __COMB(a,b,c) (a##b##c)
  #define _COMB(a,b,c) __COMB(a,b,c)
  #define RH_ASK_TIMER_VECTOR _COMB(TIMER,RH_ASK_TIMER_INDEX,_COMPA_vect)
