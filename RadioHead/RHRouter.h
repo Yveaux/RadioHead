@@ -40,8 +40,9 @@
 /// \brief RHReliableDatagram subclass for sending addressed, optionally acknowledged datagrams
 /// multi-hop routed across a network.
 ///
-/// Manager class that extends RHReliableDatagram to define addressed messages
-/// That are reliably transmitted and routed across a network. Each message is transmitted reliably 
+/// This is a Manager class that extends RHReliableDatagram to handle addressed messages
+/// that are reliably transmitted and routed across a network of multiple RHRouter nodes.
+/// Each message is transmitted reliably 
 /// between each hop in order to get from the source node to the destination node.
 ///
 /// With RHRouter, routes are hard wired. This means that each node must have programmed 
@@ -57,8 +58,8 @@
 /// (reliably) deliver the message to the next hop. By this method, messages can be delivered 
 /// across a network of nodes, even if each node cannot hear all of the others in the network.
 /// Each time a message is received for another node and retransmitted to the next hop, 
-/// the HOPS filed in teh header is incremented. If a message is received for routing to another node 
-/// which has exceed the routers max_hops, the message wioll be dropped and ignored. 
+/// the HOPS field in the header is incremented. If a message is received for routing to another node 
+/// which has exceed the routers max_hops, the message will be dropped and ignored. 
 /// This helps prevent infinite routing loops.
 ///
 /// RHRouter supports messages with a dest of RH_BROADCAST_ADDRESS. Such messages are not routed, 

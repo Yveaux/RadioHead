@@ -2,7 +2,7 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
 // Contributed by Joanna Rutkowska
-// $Id: RHGenericSPI.h,v 1.9 2020/01/05 07:02:23 mikem Exp mikem $
+// $Id: RHGenericSPI.h,v 1.9 2020/01/05 07:02:23 mikem Exp $
 
 #ifndef RHGenericSPI_h
 #define RHGenericSPI_h

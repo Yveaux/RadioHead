@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.35 2018/09/23 23:54:01 mikem Exp $
+// $Id: RH_RF22.h,v 1.36 2020/01/07 23:35:02 mikem Exp mikem $
 //
 
 #ifndef RH_RF22_h

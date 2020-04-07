@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.80 2020/01/05 07:02:23 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.81 2020/01/07 23:35:02 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.98.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.99.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -225,8 +225,9 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
   (Caution: we have not had good success building RH_ASK sketches for ATTiny 85  with SpenceKonde ATTinyCore)
 
-- AtTiny Mega chips supported by Spencer Konde's megaTinyCore (https://github.com/SpenceKonde/megaTinyCore) 
-  (on Arduino 1.8.9 or later) such as AtTiny 3216, AtTiny 1616 etc. These chips can be easily programmed through their
+- ATtiny Mega (tinyAVR 1-series) chips supported by Spencer Konde's megaTinyCore 
+  (https://github.com/SpenceKonde/megaTinyCore) 
+  (on Arduino 1.8.9 or later) such as AtTiny 3216, ATtiny 1616 etc. These chips can be easily programmed through their
   UPDI pin, using an ordinary Arduino board programmed as a jtag2updi programmer as described in 
   https://github.com/SpenceKonde/megaTinyCore/blob/master/MakeUPDIProgrammer.md. 
   Make sure you set the programmer type to jtag2updi in the Arduino Tools->Programmer menu.
@@ -374,7 +375,7 @@ tend only to use the simplest and least demanding (in terms of memory and CPU) C
 facilities. In particular we avoid as much as possible dynamic
 memory allocation, and the use of complex objects like C++
 strings, IO and buffers. We are happy with this, but we are aware
-that some people may think we are leaving useful tools on the
+that some people may think we are legaving useful tools on the
 table. You should not use this code as an example of how to do
 generalised C++ programming on well resourced processors.
 
@@ -398,16 +399,16 @@ It is not to be confused with any other similar marks covering other goods and s
 \par Copyright
 
 This software is Copyright (C) 2011-2018 Mike McCauley. Use is subject to license
-conditions. The main licensing options available are GPL V2 or Commercial:
+conditions. The main licensing options available are GPL V3 or Commercial:
 
-\par Open Source Licensing GPL V2
+\par Open Source Licensing GPL V3
 
 This is the appropriate option if you want to share the source code of your
 application with everyone you distribute it to, and you also want to give them
 the right to share who uses it. If you wish to use this software under Open
 Source Licensing, you must contribute all your source code to the open source
-community in accordance with the GPL Version 2 when your application is
-distributed. See https://www.gnu.org/licenses/gpl-2.0.html
+community in accordance with the GPL Version 3 when your application is
+distributed. See https://www.gnu.org/licenses/gpl-3.0.html
 
 \par Commercial Licensing
 
@@ -540,7 +541,7 @@ application. To purchase a commercial license, contact info@airspayce.com
              Fixed an error in the RH_RF22 doc for connection of Teensy to RF22.<br>
              Improved documentation of start symbol bit patterns in RH_ASK.cpp
 \version 1.20 2014-06-24<br>
-             Fixed a problem with compiling on platforms such as ATTiny where SS is not defined.<br>
+             Fixed a problem with compiling on platforms such as ATtiny where SS is not defined.<br>
              Added YIELD to RHMesh::recvfromAckTimeout().<br>
 \version 1.21 2014-06-24<br>
              Fixed an issue in RH_Serial where characters might be lost with back-to-back frames.
@@ -588,7 +589,7 @@ application. To purchase a commercial license, contact info@airspayce.com
              RH_RF95, updated power output measurements.<br>
              Testing RH_RF69 on Teensy 3.1 with RF69 on PJRC breakout board. OK.<br>
              Improvements so RadioHead will build under Arduino where SPI is not supported, such as 
-             ATTiny.<br>
+             ATtiny.<br>
              Improvements so RadioHead will build for ATTiny using Arduino IDE and tinycore arduino-tiny-0100-0018.zip.<br>
              Testing RH_ASK on ATTiny85. Reduced RAM footprint. 
              Added helpful documentation. Caution: RAM memory is *very* tight on this platform.<br>
@@ -955,10 +956,12 @@ application. To purchase a commercial license, contact info@airspayce.com
 \version 1.98 2020-01-06
              Rationalised use of RH_PLATFORM_ATTINY to be consistent with other platforms.<br>
 	     Added support for RH_PLATFORM_ATTINY_MEGA, for use with Spencer Konde's megaTinyCore 
-	     https://github.com/SpenceKonde/megaTinyCore on Atmel megaAVR AtTiny chips. 
+	     https://github.com/SpenceKonde/megaTinyCore on Atmel megaAVR ATtiny 1-series chips. 
 	     Tested with AtTiny 3217, 3216 and 1614, using 
 	     RH_Serial, RH_ASK, and RH_RF22 drivers.<br>
 
+\version 1.99 2020-03-07
+              Release under GPL V3
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1207,7 +1210,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 98
+#define RH_VERSION_MINOR 99
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
