@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.26 2019/11/02 02:34:22 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.27 2020/01/05 07:02:23 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -122,7 +122,7 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
     // test increasing prescaler (divisor), decreasing ulticks until no overflow
     // 1/Fraction of second needed to xmit one bit
     unsigned long inv_bit_time = ((unsigned long)speed) * 8;
-    for (prescaler=1; prescaler < NUM_PRESCALERS; prescaler += 1)
+    for (prescaler = 1; prescaler < NUM_PRESCALERS; prescaler += 1)
     {
 	// Integer arithmetic courtesy Jim Remington
 	// 1/Amount of time per CPU clock tick (in seconds)
@@ -196,11 +196,7 @@ void RH_ASK::timerSetup()
     // Start the timer counting
     timer.resume();
 
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) // Arduino specific
-    uint16_t nticks; // number of prescaled ticks needed
-    uint8_t prescaler; // Bit values for CS0[2:0]
-
- #ifdef RH_PLATFORM_ATTINY
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
     // figure out prescaler value and counter match value
     // REVISIT: does not correctly handle 1MHz clock speeds, only works with 8MHz clocks
     // At 1MHz clock, get 1/8 of the expected baud rate
@@ -228,8 +224,43 @@ void RH_ASK::timerSetup()
     TIMSK |= _BV(OCIE0A);
    #endif
 
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+    // Timer A is used for millis/micros, and B 0 for Tone by default
+    // Use Timer B 1
+    volatile TCB_t* timer = &TCB1;
 
- #elif defined(__arm__) && defined(CORE_TEENSY)
+    // Calculate compare value
+    uint32_t compare_val = F_CPU_CORRECTED / _speed / 8 - 1;
+    // If compare larger than 16bits, need to prescale (will be DIV64)
+    if (compare_val > 0xFFFF)
+    {
+        // recalculate with new prescaler
+        compare_val = F_CPU_CORRECTED / _speed / 8 / 64 - 1;
+	// Prescaler needed
+        timer->CTRLA = TCB_CLKSEL_CLKTCA_gc;
+    }
+    else
+    {
+	// No prescaler needed
+        timer->CTRLA = TCB_CLKSEL_CLKDIV1_gc;
+    }
+
+    // Timer to Periodic interrupt mode
+    // This write will also disable any active PWM outputs
+    timer->CTRLB = TCB_CNTMODE_INT_gc;
+    // Write compare register
+    timer->CCMP = compare_val;
+    // Enable interrupt
+    timer->INTCTRL = TCB_CAPTEI_bm;
+    // Enable Timer
+    timer->CTRLA |= TCB_ENABLE_bm;
+
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) // Arduino specific
+    uint16_t nticks; // number of prescaled ticks needed
+    uint8_t prescaler; // Bit values for CS0[2:0]
+
+
+ #if defined(__arm__) && defined(CORE_TEENSY)
     // on Teensy 3.0 (32 bit ARM), use an interval timer
     IntervalTimer *t = new IntervalTimer();
     void TIMER1_COMPA_vect(void);
@@ -559,6 +590,8 @@ void RH_INTERRUPT_ATTR RH_ASK::writeTx(bool value)
 {
 #if (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
     ((value) ? (RH_ASK_TX_PORT |= (1<<RH_ASK_TX_PIN)) : (RH_ASK_TX_PORT &= ~(1<<RH_ASK_TX_PIN)));
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+    digitalWrite(_txPin, (PinStatus)value);
 #else
     digitalWrite(_txPin, value);
 #endif
@@ -573,6 +606,8 @@ void RH_INTERRUPT_ATTR RH_ASK::writePtt(bool value)
  #else
     ((value) ? (RH_ASK_TX_PORT |= (1<<RH_ASK_TX_PIN)) : (RH_ASK_TX_PORT &= ~(1<<RH_ASK_TX_PIN)));
  #endif
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+    digitalWrite(_txPin, (PinStatus)(value ^ _pttInverted));
 #else
     digitalWrite(_pttPin, value ^ _pttInverted);
 #endif
@@ -584,15 +619,14 @@ uint8_t RH_ASK::maxMessageLength()
 }
 
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) 
- #if defined(RH_PLATFORM_ATTINY)
+ // Assume Arduino Uno (328p or similar)
+ #if defined(RH_ASK_ARDUINO_USE_TIMER2)
+  #define RH_ASK_TIMER_VECTOR TIMER2_COMPA_vect
+ #else
+  #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
+ #endif
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
   #define RH_ASK_TIMER_VECTOR TIM0_COMPA_vect
- #else // Assume Arduino Uno (328p or similar)
-  #if defined(RH_ASK_ARDUINO_USE_TIMER2)
-   #define RH_ASK_TIMER_VECTOR TIMER2_COMPA_vect
-  #else
-   #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
-  #endif
- #endif 
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
  #define __COMB(a,b,c) (a##b##c)
  #define _COMB(a,b,c) __COMB(a,b,c)
@@ -690,6 +724,12 @@ void RH_INTERRUPT_ATTR esp8266_timer_interrupt_handler()
 void IRAM_ATTR esp32_timer_interrupt_handler()
 {
     thisASKDriver->handleTimerInterrupt();
+}
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+ISR(TCB1_INT_vect)
+{
+    thisASKDriver->handleTimerInterrupt();
+    TCB1.INTFLAGS = TCB_CAPT_bm;
 }
 #endif
 

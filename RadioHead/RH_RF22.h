@@ -665,6 +665,32 @@
 /// \endcode
 /// You can of use other pins for NSEL and NIRQ if you prefer.
 ///
+/// To connect an ATTiny Mega x16 such as AtTiny 3216 etc
+/// (running at 5V) etc RF22 using Arduino using Spencer Kondes 
+/// megaTinyCore https://github.com/SpenceKonde/megaTinyCore connect the pins like this:
+/// (pin numbering based on https://github.com/SpenceKonde/megaTinyCore/blob/master/megaavr/extras/ATtiny_x16.md)
+/// \code
+///              AtTiny x16      RFM-22B
+///                 GND----------GND-\ (ground in)
+///                              SDN-/ (shutdown in)
+///                 VDD----------VCC   (5V in)
+/// interrupt   pin PA6----------NIRQ  (interrupt request out)
+///          SS pin PC0----------NSEL  (chip select in)
+///         SCK pin PA3----------SCK   (SPI clock in)
+///        MOSI pin PA1----------SDI   (SPI Data in)
+///        MISO pin PA2----------SDO   (SPI data out)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
+/// \endcode
+/// and initialise like this:
+/// \code
+/// RH_RF22 driver(10, 2);
+/// \endcode
+/// You can of use other pins for NSEL and NIRQ if you prefer.
+///
+///
 /// Note: It is possible to have 2 radios connected to one Arduino, provided each radio has its own 
 /// SS and interrupt line (SCK, SDI and SDO are common to both radios)
 ///

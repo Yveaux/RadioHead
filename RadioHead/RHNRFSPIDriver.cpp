@@ -1,7 +1,7 @@
 // RHNRFSPIDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHNRFSPIDriver.cpp,v 1.4 2017/11/06 00:04:08 mikem Exp $
+// $Id: RHNRFSPIDriver.cpp,v 1.5 2020/01/05 07:02:23 mikem Exp mikem $
 
 #include <RHNRFSPIDriver.h>
 

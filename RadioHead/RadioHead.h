@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.78 2019/09/06 04:40:40 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.80 2020/01/05 07:02:23 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.97.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.98.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -224,6 +224,14 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
   https://medium.com/jungletronics/attiny85-easy-flashing-through-arduino-b5f896c48189
   (Caution: these are very small processors and not all RadioHead features may be available, depending on memory requirements)
   (Caution: we have not had good success building RH_ASK sketches for ATTiny 85  with SpenceKonde ATTinyCore)
+
+- AtTiny Mega chips supported by Spencer Konde's megaTinyCore (https://github.com/SpenceKonde/megaTinyCore) 
+  (on Arduino 1.8.9 or later) such as AtTiny 3216, AtTiny 1616 etc. These chips can be easily programmed through their
+  UPDI pin, using an ordinary Arduino board programmed as a jtag2updi programmer as described in 
+  https://github.com/SpenceKonde/megaTinyCore/blob/master/MakeUPDIProgrammer.md. 
+  Make sure you set the programmer type to jtag2updi in the Arduino Tools->Programmer menu.
+  See https://github.com/SpenceKonde/megaTinyCore/blob/master/megaavr/extras/ImportantInfo.md for links to pinouts 
+  and pin numbering information for all the suported chips.
 
 - nRF51 compatible Arm chips such as nRF51822 with Arduino 1.6.4 and later using the procedures
   in http://redbearlab.com/getting-started-nrf51822/
@@ -944,6 +952,14 @@ application. To purchase a commercial license, contact info@airspayce.com
 \version 1.97 2019-11-02
              Added support for Mongoose OS, contributed by Paul Austen.
 
+\version 1.98 2020-01-06
+             Rationalised use of RH_PLATFORM_ATTINY to be consistent with other platforms.<br>
+	     Added support for RH_PLATFORM_ATTINY_MEGA, for use with Spencer Konde's megaTinyCore 
+	     https://github.com/SpenceKonde/megaTinyCore on Atmel megaAVR AtTiny chips. 
+	     Tested with AtTiny 3217, 3216 and 1614, using 
+	     RH_Serial, RH_ASK, and RH_RF22 drivers.<br>
+
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
 
@@ -1191,7 +1207,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 97
+#define RH_VERSION_MINOR 98
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1210,7 +1226,10 @@ these examples and explanations and extend them to suit your needs.
 #define RH_PLATFORM_ESP32            14						   
 #define RH_PLATFORM_NRF52            15
 #define RH_PLATFORM_MONGOOSE_OS      16
-
+#define RH_PLATFORM_ATTINY           17
+// Spencer Kondes megaTinyCore:						   
+#define RH_PLATFORM_ATTINY_MEGA      18
+						   
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
 #ifndef RH_PLATFORM
@@ -1220,9 +1239,9 @@ these examples and explanations and extend them to suit your needs.
  #elif defined(MPIDE)
   // Uno32 under old MPIDE, which has been discontinued:
   #define RH_PLATFORM RH_PLATFORM_UNO32
-#elif defined(NRF51)
+ #elif defined(NRF51)
   #define RH_PLATFORM RH_PLATFORM_NRF51
-#elif defined(NRF52)
+ #elif defined(NRF52)
   #define RH_PLATFORM RH_PLATFORM_NRF52
  #elif defined(ESP8266)
   #define RH_PLATFORM RH_PLATFORM_ESP8266
@@ -1230,11 +1249,15 @@ these examples and explanations and extend them to suit your needs.
   #define RH_PLATFORM RH_PLATFORM_ESP32
  #elif defined(MGOS)
   #define RH_PLATFORM RH_PLATFORM_MONGOOSE_OS
+ #elif defined(ARDUINO_attinyxy2) || defined(ARDUINO_attinyxy4) || defined(ARDUINO_attinyxy6) || defined(ARDUINO_attinyxy7)
+  #define RH_PLATFORM RH_PLATFORM_ATTINY_MEGA
+ #elif defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__) || defined(ARDUINO_attiny)
+  #define RH_PLATFORM RH_PLATFORM_ATTINY
  #elif defined(ARDUINO)
   #define RH_PLATFORM RH_PLATFORM_ARDUINO
  #elif defined(__MSP430G2452__) || defined(__MSP430G2553__)
   #define RH_PLATFORM RH_PLATFORM_MSP430
-#elif defined(MCU_STM32F103RE)
+ #elif defined(MCU_STM32F103RE)
   #define RH_PLATFORM RH_PLATFORM_STM32
  #elif defined(STM32F2XX)
   #define RH_PLATFORM RH_PLATFORM_STM32F2
@@ -1242,17 +1265,13 @@ these examples and explanations and extend them to suit your needs.
   #define RH_PLATFORM RH_PLATFORM_STM32STD
  #elif defined(RASPBERRY_PI)
   #define RH_PLATFORM RH_PLATFORM_RASPI
-#elif defined(__unix__) // Linux
+ #elif defined(__unix__) // Linux
   #define RH_PLATFORM RH_PLATFORM_UNIX
-#elif defined(__APPLE__) // OSX
+ #elif defined(__APPLE__) // OSX
   #define RH_PLATFORM RH_PLATFORM_UNIX
  #else
   #error Platform not defined! 	
  #endif
-#endif
-
-#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__) || defined(ARDUINO_attiny)
- #define RH_PLATFORM_ATTINY
 #endif
 
 ////////////////////////////////////////////////////
@@ -1263,19 +1282,20 @@ these examples and explanations and extend them to suit your needs.
  #else
   #include <wiring.h>
  #endif
- #ifdef RH_PLATFORM_ATTINY
-  #warning Arduino TinyCore does not support hardware SPI. Use software SPI instead.
- #else
   #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
   #define RH_HAVE_SERIAL
- #endif
  #if defined(ARDUINO_ARCH_STM32F4)
   // output to Serial causes hangs on STM32 F4 Discovery board
   // There seems to be no way to output text to the USB connection
   #define Serial Serial2
  #endif
-						   
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
+  #warning Arduino TinyCore does not support hardware SPI. Use software SPI instead.
+#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+ #include <SPI.h>
+  #define RH_HAVE_HARDWARE_SPI
+  #define RH_HAVE_SERIAL						   
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266) // ESP8266 processor on Arduino IDE
  #include <Arduino.h>
  #include <SPI.h>
@@ -1320,7 +1340,7 @@ these examples and explanations and extend them to suit your needs.
  #include "Energia.h"
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
- #define RH_HAVE_SERIAL
+ #define RH_HAVE_SERIALg
 
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32 || RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
  #include <WProgram.h>
@@ -1451,7 +1471,7 @@ these examples and explanations and extend them to suit your needs.
 // Try to be compatible with systems that support yield() and multitasking
 // instead of spin-loops
 // Recent Arduino IDE or Teensy 3 has yield()
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155 && !defined(RH_PLATFORM_ATTINY)) || (defined(TEENSYDUINO) && defined(__MK20DX128__))
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && ARDUINO >= 155) || (defined(TEENSYDUINO) && defined(__MK20DX128__))
  #define YIELD yield();
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
 // ESP8266 also has it

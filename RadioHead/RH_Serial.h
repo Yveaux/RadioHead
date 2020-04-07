@@ -35,6 +35,9 @@
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32F2)
  #define HardwareSerial USARTSerial
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(ARDUINO_attinyxy6)
+// AT Tiny Mega 3216 etc
+ #define HardwareSerial UartClass
 #endif
 
 class HardwareSerial;
