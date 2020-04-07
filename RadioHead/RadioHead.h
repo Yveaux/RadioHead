@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.99.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.100.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -97,10 +97,10 @@ Works with Nordic nRF905 based 433/868/915 MHz radio modules.
 
 - RH_NRF51
 Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
-Also works with Sparkfun nRF52832 breakout board, with Arduino 1.6.13 and
-Sparkfun nRF52 boards manager 0.2.3. Caution: although RadioHead compiles with nRF52832 as at 2019-06-06
+Also works with Sparkfun nRF52832 breakout board, with Arduino 1.8.9 and
+Sparkfun nRF52 boards manager 0.2.3. Caution: although RadioHead compiles with nRF52832 as at 2020-03-12
 there appears to be a problem with the support of interupt handlers in the Sparkfun support libraries,
-and drivers (ie most of the SPI based radio drivers) that require interrupts do not work correctly.
+and drivers (ie most of the other SPI based radio drivers) that require interrupts do not work correctly.
 
 - RH_RF95
 Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
@@ -963,6 +963,9 @@ application. To purchase a commercial license, contact info@airspayce.com
 \version 1.99 2020-03-07
               Release under GPL V3
 
+\version 1.100 2020-03-12
+             Fixed a problem that prevent compilation for Sparkfun nRF52832 Breakout board.<br>
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
 
@@ -1210,7 +1213,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 99
+#define RH_VERSION_MINOR 100
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1242,7 +1245,7 @@ these examples and explanations and extend them to suit your needs.
  #elif defined(MPIDE)
   // Uno32 under old MPIDE, which has been discontinued:
   #define RH_PLATFORM RH_PLATFORM_UNO32
- #elif defined(NRF51)
+ #elif defined(NRF51) || defined(NRF52)
   #define RH_PLATFORM RH_PLATFORM_NRF51
  #elif defined(NRF52)
   #define RH_PLATFORM RH_PLATFORM_NRF52
