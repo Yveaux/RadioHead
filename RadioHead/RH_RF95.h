@@ -840,7 +840,13 @@ public:
     /// false noise packets.
     /// \param[in] on bool, true enables CRCs in incoming and outgoing packets, false disables them
     void setPayloadCRC(bool on);
- 	
+
+    /// tilman_1@gloetzner.net
+    /// Returns device version from register 42
+    /// \param none
+    /// \return uint8_t deviceID
+    uint8_t getDeviceVersion();
+    
 protected:
     /// This is a low level function to handle the interrupts for one instance of RH_RF95.
     /// Called automatically by isr*()
@@ -904,6 +910,9 @@ private:
     /// If true, sends CRCs in every packet and requires a valid CRC in every received packet
     bool                _enableCRC;
 
+    /// device ID
+    uint8_t		_deviceVersion = 0x00;
+    
 };
 
 /// @example rf95_client.pde

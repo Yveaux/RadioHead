@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.31 2020/07/05 08:52:21 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.32 2020/08/04 09:02:14 mikem Exp $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -12,8 +12,12 @@
     // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
 
+#elif defined(BOARD_NAME)
+// ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+HardwareTimer timer(TIM1);
+    
 #elif defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
-// rogerclarkmelbourne/Arduino_STM32
+// Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
 // And stm32duino    
 HardwareTimer timer(1);
 
@@ -188,13 +192,26 @@ void RH_ASK::timerSetup()
     // or stm32duino
     // Pause the timer while we're configuring it
     timer.pause();
+
+#ifdef BOARD_NAME
+    void interrupt(HardwareTimer*); // defined below
+    // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+    uint16_t us=(1000000/8)/_speed;
+    timer.setMode(1, TIMER_OUTPUT_COMPARE);
+    timer.setOverflow(us, MICROSEC_FORMAT);
+    timer.setCaptureCompare(1, us - 1, MICROSEC_COMPARE_FORMAT);
+    timer.attachInterrupt(1, interrupt);
+
+#else
+    void interrupt(); // defined below
+    // Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
     timer.setPeriod((1000000/8)/_speed);
     // Set up an interrupt on channel 1
     timer.setChannel1Mode(TIMER_OUTPUT_COMPARE);
     timer.setCompare(TIMER_CH1, 1);  // Interrupt 1 count after each update
     void interrupt(); // defined below
     timer.attachCompare1Interrupt(interrupt);
-    
+#endif    
     // Refresh the timer's count, prescale, and overflow
     timer.refresh();
     
@@ -663,8 +680,14 @@ void TC1_Handler()
     TC_GetStatus(RH_ASK_DUE_TIMER, 1);
     thisASKDriver->handleTimerInterrupt();
 }
+#elif defined(BOARD_NAME)
+// ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+void interrupt(HardwareTimer*)
+{
+    thisASKDriver->handleTimerInterrupt();
+}
 #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4))
-//rogerclarkmelbourne/Arduino_STM32
+// Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
 void interrupt()
 {
     thisASKDriver->handleTimerInterrupt();

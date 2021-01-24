@@ -1,7 +1,7 @@
 // RHNRFSPIDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHNRFSPIDriver.cpp,v 1.5 2020/01/05 07:02:23 mikem Exp $
+// $Id: RHNRFSPIDriver.cpp,v 1.6 2020/08/04 09:02:14 mikem Exp $
 
 #include <RHNRFSPIDriver.h>
 
@@ -30,7 +30,7 @@ bool RHNRFSPIDriver::init()
 // Low level commands for interfacing with the device
 uint8_t RHNRFSPIDriver::spiCommand(uint8_t command)
 {
-    uint8_t status;
+    uint8_t status = 0;
     ATOMIC_BLOCK_START;
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     status = _spi.transfer(command);
@@ -47,7 +47,7 @@ uint8_t RHNRFSPIDriver::spiCommand(uint8_t command)
 
 uint8_t RHNRFSPIDriver::spiRead(uint8_t reg)
 {
-    uint8_t val;
+    uint8_t val = 0;
     ATOMIC_BLOCK_START;
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     val = _spi.transfer2B(reg, 0); // Send the address, discard the status, The written value is ignored, reg value is read

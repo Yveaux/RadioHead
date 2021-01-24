@@ -1,7 +1,7 @@
 // RH_RF22.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF22.h,v 1.38 2020/07/05 08:52:21 mikem Exp mikem $
+// $Id: RH_RF22.h,v 1.39 2020/08/04 09:02:14 mikem Exp $
 //
 
 #ifndef RH_RF22_h
@@ -690,6 +690,27 @@
 /// \endcode
 /// You can of use other pins for NSEL and NIRQ if you prefer.
 ///
+/// For ESP8266-based ESP-12 modules. Caution: on some breakout boards we have seen
+/// labels for D4 and D5 reversed.
+/// \code
+///                 ESP-12      RFM-22B
+///                 GND----------GND-\ (ground in)
+///                              SDN-/ (shutdown in)
+///                 3V3----------VCC   (3.3V in)
+/// interrupt 0 pin D4-----------NIRQ  (interrupt request out)
+///          SS pin D5-----------NSEL  (chip select in)
+///         SCK pin D14----------SCK   (SPI clock in)
+///        MOSI pin D13----------SDI   (SPI Data in)
+///        MISO pin D12----------SDO   (SPI data out)
+///                           /--GPIO0 (GPIO0 out to control transmitter antenna TX_ANT)
+///                           \--TX_ANT (TX antenna control in) RFM22B only
+///                           /--GPIO1 (GPIO1 out to control receiver antenna RX_ANT)
+///                           \--RX_ANT (RX antenna control in) RFM22B only
+/// \endcode
+/// and initialise like this:
+/// \code
+/// RH_RF22 driver(5, 4);
+/// \endcode
 ///
 /// Note: It is possible to have 2 radios connected to one Arduino, provided each radio has its own 
 /// SS and interrupt line (SCK, SDI and SDO are common to both radios)

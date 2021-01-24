@@ -7,7 +7,7 @@
 //
 // Author: Philippe.Rochat'at'gmail.com
 // Contributed to the RadioHead project by the author
-// $Id: RHEncryptedDriver.h,v 1.4 2020/07/05 08:52:21 mikem Exp mikem $
+// $Id: RHEncryptedDriver.h,v 1.4 2020/07/05 08:52:21 mikem Exp $
 
 #ifndef RHEncryptedDriver_h
 #define RHEncryptedDriver_h

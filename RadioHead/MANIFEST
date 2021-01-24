@@ -1,6 +1,7 @@
 RadioHead/LICENSE
 RadioHead/MANIFEST
 RadioHead/project.cfg
+RadioHead/library.properties
 RadioHead/RadioHead.h
 RadioHead/RH_ASK.cpp
 RadioHead/RH_ASK.h
@@ -127,12 +128,19 @@ RadioHead/examples/simulator/simulator_reliable_datagram_client/simulator_reliab
 RadioHead/examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.pde
 RadioHead/examples/raspi/RasPiRH.cpp
 RadioHead/examples/raspi/Makefile
+RadioHead/examples/raspi/rf95/shared
+RadioHead/examples/raspi/rf95/shared/help_functions.h
+RadioHead/examples/raspi/rf95/shared/gpsMT3339.h
+RadioHead/examples/raspi/rf95/shared/help_functions.cpp
+RadioHead/examples/raspi/rf95/shared/gpsMT3339.cpp
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_client/Makefile
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_client/rf95_reliable_datagram_client.cpp
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_server/Makefile
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_server/rf95_reliable_datagram_server.cpp
 RadioHead/examples/raspi/rf95/rf95_server/Makefile
 RadioHead/examples/raspi/rf95/rf95_server/rf95_server.cpp
+RadioHead/examples/raspi/rf95/rf95_server/rf95_server1.cpp
+RadioHead/examples/raspi/rf95/rf95_server/rf95_server2.cpp
 RadioHead/examples/raspi/rf95/rf95_router_test/Makefile
 RadioHead/examples/raspi/rf95/rf95_router_test/rf95_router_test.cpp
 RadioHead/examples/raspi/rf95/rf95_mesh_server3/rf95_mesh_server3.cpp
@@ -143,6 +151,8 @@ RadioHead/examples/raspi/rf95/rf95_mesh_server2/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server2/rf95_mesh_server2.cpp
 RadioHead/examples/raspi/rf95/rf95_client/Makefile
 RadioHead/examples/raspi/rf95/rf95_client/rf95_client.cpp
+RadioHead/examples/raspi/rf95/rf95_client/rf95_client1.cpp
+RadioHead/examples/raspi/rf95/rf95_client/rf95_client2.cpp
 RadioHead/examples/raspi/rf95/rf95_router_client/Makefile
 RadioHead/examples/raspi/rf95/rf95_router_client/rf95_router_client.cpp
 RadioHead/examples/raspi/rf95/rf95_router_server2/Makefile

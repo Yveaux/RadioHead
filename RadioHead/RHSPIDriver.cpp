@@ -1,7 +1,7 @@
 // RHSPIDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.cpp,v 1.12 2020/06/15 23:39:39 mikem Exp $
+// $Id: RHSPIDriver.cpp,v 1.13 2020/08/04 09:02:14 mikem Exp $
 
 #include <RHSPIDriver.h>
 
@@ -43,7 +43,7 @@ bool RHSPIDriver::init()
 
 uint8_t RHSPIDriver::spiRead(uint8_t reg)
 {
-    uint8_t val;
+    uint8_t val = 0;
     ATOMIC_BLOCK_START;
     _spi.beginTransaction();
     selectSlave();
