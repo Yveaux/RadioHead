@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.29 2020/05/06 22:26:45 mikem Exp $
+// $Id: RH_ASK.cpp,v 1.30 2020/06/15 23:39:39 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -205,7 +205,8 @@ void RH_ASK::timerSetup()
     // figure out prescaler value and counter match value
     // REVISIT: does not correctly handle 1MHz clock speeds, only works with 8MHz clocks
     // At 1MHz clock, get 1/8 of the expected baud rate
-    prescaler = timerCalc(_speed, (uint8_t)-1, &nticks);
+    uint16_t nticks;
+    uint8_t prescaler = timerCalc(_speed, (uint8_t)-1, &nticks);
     if (!prescaler)
         return; // fault
 

@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.84 2020/05/22 04:47:33 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.85 2020/06/15 23:39:39 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.106.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.107.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1020,6 +1020,11 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Fixed documentation SS->NSEL pin for RH_RF22 with AtMega. Seems that SS on that platform
 	     is now defined as pin 10, not 53. Dont know when that changed.<br>
 
+\version 1.107 2020-06-26
+             Improvements to RHEncryptedDriver, so that you will get an explanatory error message if you 
+	     include RHEncryptedDriver.h without enabling the class with RH_ENABLE_ENCRYPTION_MODULE in RadioHead.h.<br>
+	     Fixed newly introduced errors when compiling for ATTiny 25/45/85.<br>
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1267,7 +1272,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 106
+#define RH_VERSION_MINOR 107
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1354,7 +1359,8 @@ these examples and explanations and extend them to suit your needs.
   #define Serial Serial2
  #endif
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
-  #warning Arduino TinyCore does not support hardware SPI. Use software SPI instead.
+  #include <Arduino.h>
+//  #warning Arduino TinyCore does not support hardware SPI. Use software SPI instead.
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
  #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
@@ -1661,7 +1667,7 @@ these examples and explanations and extend them to suit your needs.
   #define ntohl(x) (x)
 
  #else
-  #error "Dont know how to define htons and friends for this processor" 
+  #error "RadioHead.h: Dont know how to define htons and friends for this processor" 
  #endif
 #endif
 

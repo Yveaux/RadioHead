@@ -31,15 +31,16 @@ void setup()
   // to the host without resetting the CPU with the Boot button
 //  while (!Serial) ; 
 
-  if (!abz.init())
-    Serial.println("init failed");  
-  // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
-
-  // You must be sure that the TCXO settings are appropriate for your board.
+  // You must be sure that the TCXO settings are appropriate for your board and radio.
   // See the RH_ABZ documentation for more information.
   // This call is adequate for Tlera boards supported by the Grumpy Old Pizza Arduino Core
   // It may or may not be innocuous for others
   SX1276SetBoardTcxo(true);
+  delay(1);
+
+  if (!abz.init())
+    Serial.println("init failed");  
+  // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
   abz.setFrequency(868.0);
 

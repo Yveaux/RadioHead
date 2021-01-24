@@ -1,7 +1,7 @@
 // RH_RF95.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.25 2020/05/22 04:47:33 mikem Exp mikem $
+// $Id: RH_RF95.cpp,v 1.26 2020/06/15 23:39:39 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -91,8 +91,6 @@ bool RH_RF95::init()
 		return false; // Too many devices, not enough interrupt vectors
 	}
 	_deviceForInterrupt[_myInterruptIndex] = this;
-	Serial.println("ATTACH");
-	Serial.println(interruptNumber);
 	
 	if (_myInterruptIndex == 0)
 	    attachInterrupt(interruptNumber, isr0, RISING);

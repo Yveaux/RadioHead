@@ -244,5 +244,8 @@ private:
 /// @example serial_encrypted_reliable_datagram_server.pde
 
 
+#else // RH_ENABLE_ENCRYPTION_MODULE
+#error "You have included RHEncryptedDriver.h, but not enabled RH_ENABLE_ENCRYPTION_MODULE in RadioHead.h"
 #endif
+
 #endif
