@@ -916,6 +916,7 @@ private:
 };
 
 /// @example rf95_client.pde
+/// @example rf95_client.pde
 /// @example rf95_server.pde
 /// @example rf95_encrypted_client.pde
 /// @example rf95_encrypted_server.pde

@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.112.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.113.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -125,6 +125,8 @@ HopeRF RFM83C / RFM85. Supports ASK (OOK).
 - RH_ABZ Works with EcoNode SmartTrap, Tlera Grasshopper and family. Almost any board equipped with a muRata cmwx1zzabz module
 should work. Tested with EcoNode SmartTrap, Arduino 1.8.9, GrumpyOldPizza Arduino Core for STM32L0.
 When building for EcoNode SmartTrap in Arduino IDE, select board type Grasshopper-L082CZ.
+This chip and GrumpyOldPizza Arduino Core for STM32L0 are now supported by PlatformIO: 
+https://docs.platformio.org/en/latest/platforms/ststm32.html#arduino-stm32l0-configuration-system
 
 - RH_Serial
 Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
@@ -307,7 +309,7 @@ existing code will run mostly without modification. See the RH_RF22 documentatio
 
 \par Installation
 
-Install in the usual way: unzip the distribution zip file to the libraries
+For Arduino IDE, install in the usual way: unzip the distribution zip file to the libraries
 sub-folder of your sketchbook. 
 The example sketches will be visible in in your Arduino, mpide, maple-ide or whatever.
 http://arduino.cc/en/Guide/Libraries
@@ -382,7 +384,7 @@ tend only to use the simplest and least demanding (in terms of memory and CPU) C
 facilities. In particular we avoid as much as possible dynamic
 memory allocation, and the use of complex objects like C++
 strings, IO and buffers. We are happy with this, but we are aware
-that some people may think we are legaving useful tools on the
+that some people may think we are leaving useful tools on the
 table. You should not use this code as an example of how to do
 generalised C++ programming on well resourced processors.
 
@@ -397,8 +399,9 @@ that meet the following criteria:
 - Are backwards compatible.
 - Are properly and completely documented.
 - Conform to the coding style of the rest of the library.
-- Clearly transfer the ownership of the intellectual property to AirSpayce Pty Ltd.
-- Are posted on the Google group as a patch in unified Diff format.
+- Clearly transfer the ownership of the intellectual property to Mike McCauley
+- Are posted on the Google group as a patch in unified Diff format, 
+  made against the latest version of the library.
 
 \par Donations
 
@@ -419,7 +422,7 @@ It is not to be confused with any other similar marks covering other goods and s
 
 \par Copyright
 
-This software is Copyright (C) 2011-2018 Mike McCauley. Use is subject to license
+This software is Copyright (C) 2011-2020 Mike McCauley. Use is subject to license
 conditions. The main licensing options available are GPL V3 or Commercial:
 
 \par Open Source Licensing GPL V3
@@ -569,7 +572,7 @@ application. To purchase a commercial license, contact info@airspayce.com
              Suggested by Steve Childress.<br>
              Brought previous RHutil/crc16.h code into mainline RHCRC.cpp to prevent name collisions
              with other similarly named code in other libraries. Suggested by Steve Childress.<br>
-             Fix SPI bus speed errors on 8MHz Arduinos.
+k             Fix SPI bus speed errors on 8MHz Arduinos.
 \version 1.22 2014-07-01<br>
              Update RH_ASK documentation for common wiring connections.<br>
              Testing RH_ASK with HopeRF RFM83C/RFM85 courtesy Anarduino http://www.anarduino.com/<br>
@@ -1058,14 +1061,21 @@ application. To purchase a commercial license, contact info@airspayce.com
 
 \version 1.112 2020-08-05
              Fixed some compiler warnings in STM32 Discovery and other processors.<br>
-	     Adde support for ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+	     Added support for ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
 	     to RH_ASK, per https://github.com/r-map/rmap/commit/edf9931b21cb7df5b4f67835307255e0fcb301bb.<br>
-	     Added documentation about requiremnts for code contributions.
-	     Added library.properties file that some IDEs need.
-	     Added support for multithreaded RH_RF95 support on Raspberry Pi, courtesy Tilman Glötzner.
+	     Added documentation about requirements for code contributions.<br>
+	     Added library.properties file that some IDEs need.<br>
+	     Added support for multithreaded RH_RF95 support on Raspberry Pi, courtesy Tilman Glötzner.<br>
 	     Includes example programs, including for the Dragino Lora/GPS Hat which
 	     send GPS coordinates.<br>
 	     
+\version 1.113 2020-10-15
+             Changes to RH_ASK on SpenceKonde's megaTinyCore so it will use TCB0 on platforms 
+	     where TCB1 is not available.<br>
+	     Minor imprvements to documentation.<br>
+	     Move to local git for source code control.<br>
+	     Added support for RH_ABZ::deinit() for Matt Way.
+	     Fixed compilation error in RH_ASK caused by changes to interrupt API in Arduino_Core_STM32 1.9
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1314,7 +1324,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 112
+#define RH_VERSION_MINOR 113
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1408,10 +1418,16 @@ these examples and explanations and extend them to suit your needs.
  #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
   #define RH_HAVE_SERIAL
-  // On most AT_TINY_MEGA, Timer A is used for millis/micros, and B 0 for Tone by default. We therefore choose Timer B 1
-  // But not all devices support TCB1, so you may want to change these to TCB0 on some variants
-#define RH_ATTINY_MEGA_ASK_TIMER TCB1
-#define RH_ATTINY_MEGA_ASK_TIMER_VECTOR TCB1_INT_vect
+  // On most AT_TINY_MEGA, Timer A is used for millis/micros, and B 0 or 1 for Tone by default.
+  // But not all devices support TCB1, so we use TCB0 on some variants.
+  // This is the same strategy for timer selection that Tone uses:
+  #if defined(MILLIS_USE_TIMERB0) && defined(TCB1)
+   #define RH_ATTINY_MEGA_ASK_TIMER TCB1
+   #define RH_ATTINY_MEGA_ASK_TIMER_VECTOR TCB1_INT_vect
+  #else
+   #define RH_ATTINY_MEGA_ASK_TIMER TCB0
+   #define RH_ATTINY_MEGA_ASK_TIMER_VECTOR TCB0_INT_vect
+  #endif
 						   
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266) // ESP8266 processor on Arduino IDE
  #include <Arduino.h>

@@ -94,6 +94,7 @@ RadioHead/examples/rf22/rf22_router_server2/rf22_router_server2.pde
 RadioHead/examples/rf22/rf22_router_server3/rf22_router_server3.pde
 RadioHead/examples/rf22/rf22_router_test/rf22_router_test.pde
 RadioHead/examples/rf22/rf22_server/rf22_server.pde
+RadioHead/examples/rf22/rf22_cw/rf22_cw.ino
 RadioHead/examples/rf24/rf24_client/rf24_client.pde
 RadioHead/examples/rf24/rf24_lowpower_client/rf24_lowpower_client.pde
 RadioHead/examples/rf24/rf24_reliable_datagram_client/rf24_reliable_datagram_client.pde
@@ -124,6 +125,7 @@ RadioHead/examples/nrf905/nrf905_reliable_datagram_server/nrf905_reliable_datagr
 RadioHead/examples/nrf905/nrf905_server/nrf905_server.pde
 RadioHead/examples/serial/serial_reliable_datagram_client/serial_reliable_datagram_client.pde
 RadioHead/examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.pde
+RadioHead/examples/serial/serial_gateway/serial_gateway.pde 
 RadioHead/examples/simulator/simulator_reliable_datagram_client/simulator_reliable_datagram_client.pde
 RadioHead/examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.pde
 RadioHead/examples/raspi/RasPiRH.cpp
@@ -138,7 +140,6 @@ RadioHead/examples/raspi/rf95/rf95_reliable_datagram_client/rf95_reliable_datagr
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_server/Makefile
 RadioHead/examples/raspi/rf95/rf95_reliable_datagram_server/rf95_reliable_datagram_server.cpp
 RadioHead/examples/raspi/rf95/rf95_server/Makefile
-RadioHead/examples/raspi/rf95/rf95_server/rf95_server.cpp
 RadioHead/examples/raspi/rf95/rf95_server/rf95_server1.cpp
 RadioHead/examples/raspi/rf95/rf95_server/rf95_server2.cpp
 RadioHead/examples/raspi/rf95/rf95_router_test/Makefile
@@ -150,7 +151,6 @@ RadioHead/examples/raspi/rf95/rf95_mesh_client/rf95_mesh_client.cpp
 RadioHead/examples/raspi/rf95/rf95_mesh_server2/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server2/rf95_mesh_server2.cpp
 RadioHead/examples/raspi/rf95/rf95_client/Makefile
-RadioHead/examples/raspi/rf95/rf95_client/rf95_client.cpp
 RadioHead/examples/raspi/rf95/rf95_client/rf95_client1.cpp
 RadioHead/examples/raspi/rf95/rf95_client/rf95_client2.cpp
 RadioHead/examples/raspi/rf95/rf95_router_client/Makefile

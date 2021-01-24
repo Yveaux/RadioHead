@@ -194,13 +194,22 @@ void RH_ASK::timerSetup()
     timer.pause();
 
 #ifdef BOARD_NAME
-    void interrupt(HardwareTimer*); // defined below
     // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+    // Declaration of the callback function changed in 1.9. Sigh
+ #if (STM32_CORE_VERSION >= 0x01090000)
+    callback_function_t interrupt();
+ #else
+    void interrupt(HardwareTimer*); // defined below
+ #endif
     uint16_t us=(1000000/8)/_speed;
     timer.setMode(1, TIMER_OUTPUT_COMPARE);
     timer.setOverflow(us, MICROSEC_FORMAT);
     timer.setCaptureCompare(1, us - 1, MICROSEC_COMPARE_FORMAT);
+ #if (STM32_CORE_VERSION >= 0x01090000)
+    timer.attachInterrupt(interrupt);
+ #else
     timer.attachInterrupt(1, interrupt);
+ #endif
 
 #else
     void interrupt(); // defined below
@@ -682,7 +691,12 @@ void TC1_Handler()
 }
 #elif defined(BOARD_NAME)
 // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+// Declaration of the callback function changed in 1.9
+ #if (STM32_CORE_VERSION >= 0x01090000)
+callback_function_t interrupt()
+ #else
 void interrupt(HardwareTimer*)
+ #endif
 {
     thisASKDriver->handleTimerInterrupt();
 }

@@ -5,7 +5,7 @@
 
 #include <RH_RF95.h>
 
-// Maybe a mutex for multithreading
+// Maybe a mutex for multithreading on Raspberry Pi?
 #ifdef RH_USE_MUTEX
 RH_DECLARE_MUTEX(lock);
 #endif

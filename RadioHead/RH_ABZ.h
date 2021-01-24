@@ -28,6 +28,8 @@
 /// Works with EcoNode SmartTrap, Tlera Grasshopper and family. Almost any board equipped with a muRata cmwx1zzabz module
 /// should work. Tested with EcoNode SmartTrap, Arduino 1.8.9, GrumpyOldPizza Arduino Core for STM32L0.
 /// When building for EcoNode SmartTrap in Arduino IDE, select board type Grasshopper-L082CZ.
+/// This chip and GrumpyOldPizza Arduino Core for STM32L0 are now supported by PlatformIO: 
+/// https://docs.platformio.org/en/latest/platforms/ststm32.html#arduino-stm32l0-configuration-system
 ///
 /// \par Overview
 ///
@@ -161,6 +163,11 @@ public:
     /// \return true if initialisation succeeded.
     virtual bool    init();
 
+    /// Deinitialise the interrupt handler, allowing the radio to be temporarily used by another stack.
+    /// If you wish to use the radio again after this call, you wil need to call init() again.
+    /// \return true if deinitialisation succeeded.
+    bool deinit();
+    
 protected:
     /// Called by RH_RF95 when the radio mode is about to change to a new setting.
     /// Configures the antenna switch to connect to the right radio pin.

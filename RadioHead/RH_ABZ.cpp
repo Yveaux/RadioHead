@@ -84,6 +84,13 @@ bool RH_ABZ::init()
     return RH_RF95::init();
 }
 
+bool RH_ABZ::deinit()
+{
+    setModeIdle();
+    stm32l0_exti_detach(STM32L0_GPIO_PIN_PB4);
+    return true;
+}
+
 void  RH_ABZ::selectSlave()
 {
     stm32l0_gpio_pin_write(STM32L0_GPIO_PIN_PA15, 0);
@@ -98,7 +105,7 @@ bool RH_ABZ::modeWillChange(RHMode mode)
 {
     if (mode == RHModeTx)
     {
-	// Tell the antenna switch to connect to one of thetransmoitter output pins
+	// Tell the antenna switch to connect to one of the transmitter output pins
 	stm32l0_gpio_pin_write(STM32L0_GPIO_PIN_PA1, 0);                // RX
 	stm32l0_gpio_pin_write(STM32L0_GPIO_PIN_PC2, _useRFO ? 1 : 0);  // RFO
 	stm32l0_gpio_pin_write(STM32L0_GPIO_PIN_PC1, _useRFO ? 0 : 1);  // BOOST
