@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.29 2020/05/06 22:26:45 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.29 2020/05/06 22:26:45 mikem Exp $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>
@@ -179,6 +179,9 @@ void RH_ASK::timerSetup()
     TA0CTL = TASSEL_2 + MC_1;       // SMCLK, up mode
     TA0CCTL0 |= CCIE;               // CCR0 interrupt enabled
 
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0)
+    Serial.println("FIXME");
+    
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
     // Maple etc
     // or rogerclarkmelbourne/Arduino_STM32

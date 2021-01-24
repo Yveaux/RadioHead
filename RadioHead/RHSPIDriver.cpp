@@ -5,6 +5,8 @@
 
 #include <RHSPIDriver.h>
 
+// Some platforms may need special slave select driving
+
 RHSPIDriver::RHSPIDriver(uint8_t slaveSelectPin, RHGenericSPI& spi)
     : 
     _spi(spi),
@@ -20,10 +22,14 @@ bool RHSPIDriver::init()
 
     // Initialise the slave select pin
     // On Maple, this must be _after_ spi.begin
-    pinMode(_slaveSelectPin, OUTPUT);
-    digitalWrite(_slaveSelectPin, HIGH);
 
-    delay(100);
+    // Sometimes we dont want to work the _slaveSelectPin here
+    if (_slaveSelectPin != 0xff)
+	pinMode(_slaveSelectPin, OUTPUT);
+
+    deselectSlave();
+
+    delay(10);
     return true;
 }
 
@@ -31,10 +37,10 @@ uint8_t RHSPIDriver::spiRead(uint8_t reg)
 {
     uint8_t val;
     ATOMIC_BLOCK_START;
-    digitalWrite(_slaveSelectPin, LOW);
+    selectSlave();
     _spi.transfer(reg & ~RH_SPI_WRITE_MASK); // Send the address with the write mask off
     val = _spi.transfer(0); // The written value is ignored, reg value is read
-    digitalWrite(_slaveSelectPin, HIGH);
+    deselectSlave();
     ATOMIC_BLOCK_END;
     return val;
 }
@@ -44,10 +50,10 @@ uint8_t RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    selectSlave();
     status = _spi.transfer(reg | RH_SPI_WRITE_MASK); // Send the address with the write mask on
     _spi.transfer(val); // New value follows
-    digitalWrite(_slaveSelectPin, HIGH);
+    deselectSlave();
     _spi.endTransaction();
     ATOMIC_BLOCK_END;
     return status;
@@ -58,11 +64,11 @@ uint8_t RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    selectSlave();
     status = _spi.transfer(reg & ~RH_SPI_WRITE_MASK); // Send the start address with the write mask off
     while (len--)
 	*dest++ = _spi.transfer(0);
-    digitalWrite(_slaveSelectPin, HIGH);
+    deselectSlave();
     _spi.endTransaction();
     ATOMIC_BLOCK_END;
     return status;
@@ -73,11 +79,11 @@ uint8_t RHSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
     _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    selectSlave();
     status = _spi.transfer(reg | RH_SPI_WRITE_MASK); // Send the start address with the write mask on
     while (len--)
 	_spi.transfer(*src++);
-    digitalWrite(_slaveSelectPin, HIGH);
+    deselectSlave();
     _spi.endTransaction();
     ATOMIC_BLOCK_END;
     return status;
@@ -93,3 +99,12 @@ void RHSPIDriver::spiUsingInterrupt(uint8_t interruptNumber)
     _spi.usingInterrupt(interruptNumber);
 }
 
+void RHSPIDriver::selectSlave()
+{
+    digitalWrite(_slaveSelectPin, LOW);
+}
+    
+void RHSPIDriver::deselectSlave()
+{
+    digitalWrite(_slaveSelectPin, HIGH);
+}

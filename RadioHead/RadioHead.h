@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.83 2020/05/06 22:26:45 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.84 2020/05/22 04:47:33 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.102.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.103.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -122,6 +122,10 @@ Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers s
 (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver; FS1000A/XY-MK-5V transceiver;
 HopeRF RFM83C / RFM85. Supports ASK (OOK).
 
+- RH_ABZ Works with EcoNode SmartTrap, Tlera Grasshopper and family. Almost any board equipped with a muRata cmwx1zzabz module
+should work. Tested with EcoNode SmartTrap, Arduino 1.8.9, GrumpyOldPizza Arduino Core for STM32L0.
+When building for EcoNode SmartTrap in Arduino IDE, select board type Grasshopper-L082CZ.
+
 - RH_Serial
 Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
 or with TTL serial UARTs such as those on Arduino and many other processors,
@@ -159,14 +163,14 @@ Managers are provided:
 Addressed, unreliable variable length messages, with optional broadcast facilities.
 
 - RHReliableDatagram
-Addressed, reliable, retransmitted, acknowledged variable length messages.
+  Addressed, reliable, retransmitted, acknowledged variable length messages.
 
 - RHRouter
-Multi-hop delivery of RHReliableDatagrams from source node to destination node via 0 or more
-intermediate nodes, with manual, pre-programmed routing.
+  Multi-hop delivery of RHReliableDatagrams from source node to destination node via 0 or more
+  intermediate nodes, with manual, pre-programmed routing.
 
 - RHMesh
-Multi-hop delivery of RHReliableDatagrams with automatic route discovery and rediscovery.
+  Multi-hop delivery of RHReliableDatagrams with automatic route discovery and rediscovery.
 
 Any Manager may be used with any Driver.
 
@@ -266,6 +270,9 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
   available under Apache License Version 2.0. It supports low power, connected microcontrollers such as: 
   ESP32, ESP8266, TI CC3200, TI CC3220, STM32. 
   https://mongoose-os.com/ 
+
+- muRata cmwx1zzabz module, which includes an STM32L0 processor,
+  a SX1276 LoRa radio and an antenna switch.
 
 Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 We welcome contributions that will expand the range of supported platforms. 
@@ -986,7 +993,17 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     and send.c test program.
 	     Fixed a problem with (re-)definition of SS on ESP32, reported and fixed by Justin Newitter.
 
-\author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
+\version 1.103 2020-05-30
+             Fixed some errors in RH_RF95::setTxPower which cased the power levels to be set incorrectly.
+	     Checked operation and improved documentation. Valid settings are:
+	     2 to 20 (useRFO false) and 0 to 15 (useRFO true). 18, 19 and 20 (useRFO false) turn on the PA_DAC.
+	     Fixed RF95 examples to reflect correct use.
+	     Added RH_ABZ driver, which supports the muRata CMWX1ZZABZ (TypeABZ) module
+	     which includes an STM32L0 processor, a SX1276 LoRa radio and an antenna switch. 
+	     Requires the Grumpy Old Pizza Arduino Core installed per https://github.com/GrumpyOldPizza/ArduinoCore-stm32l0
+	     Examples provided.
+
+\author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
 /*! \page packingdata 
@@ -1233,7 +1250,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 102
+#define RH_VERSION_MINOR 103
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1255,6 +1272,7 @@ these examples and explanations and extend them to suit your needs.
 #define RH_PLATFORM_ATTINY           17
 // Spencer Kondes megaTinyCore:						   
 #define RH_PLATFORM_ATTINY_MEGA      18
+#define RH_PLATFORM_STM32L0          19
 						   
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -1273,6 +1291,8 @@ these examples and explanations and extend them to suit your needs.
   #define RH_PLATFORM RH_PLATFORM_ESP8266
  #elif defined(ESP32)
   #define RH_PLATFORM RH_PLATFORM_ESP32
+ #elif defined(STM32L0) || defined(ARDUINO_ARCH_STM32L0)
+  #define RH_PLATFORM RH_PLATFORM_STM32L0
  #elif defined(MGOS)
   #define RH_PLATFORM RH_PLATFORM_MONGOOSE_OS
  #elif defined(ARDUINO_attinyxy2) || defined(ARDUINO_attinyxy4) || defined(ARDUINO_attinyxy6) || defined(ARDUINO_attinyxy7)
@@ -1366,7 +1386,7 @@ these examples and explanations and extend them to suit your needs.
  #include "Energia.h"
  #include <SPI.h>
  #define RH_HAVE_HARDWARE_SPI
- #define RH_HAVE_SERIALg
+ #define RH_HAVE_SERIAL
 
 #elif (RH_PLATFORM == RH_PLATFORM_UNO32 || RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
  #include <WProgram.h>
@@ -1388,6 +1408,15 @@ these examples and explanations and extend them to suit your needs.
  #define memcpy_P memcpy
  #define Serial SerialUSB
  #define RH_HAVE_SERIAL
+
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0)   // https://github.com/UT2UH/ArduinoCore-stm32l0/tree/SX1276_exposed_on_SPI
+ #include <Arduino.h>
+ #include <SPI.h>
+ #include <stm32l0_gpio.h>
+ #include <stm32l0_exti.h>
+ #include <stm32l0_rtc.h>
+ #define RH_HAVE_HARDWARE_SPI
+ #define RH_HAVE_SERIAL 
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Particle Photon with firmware-develop
  #include <stm32f2xx.h>
@@ -1480,6 +1509,9 @@ these examples and explanations and extend them to suit your needs.
  #include <peripheral/int.h>
  #define ATOMIC_BLOCK_START unsigned int __status = INTDisableInterrupts(); {
  #define ATOMIC_BLOCK_END } INTRestoreInterrupts(__status);
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0) 
+ #define ATOMIC_BLOCK_START uint32_t primask = __get_PRIMASK(); __disable_irq(); {
+ #define ATOMIC_BLOCK_END } __set_PRIMASK(primask);
 #elif (RH_PLATFORM == RH_PLATFORM_STM32F2) // Particle Photon with firmware-develop
  #define ATOMIC_BLOCK_START { int __prev = HAL_disable_irq();
  #define ATOMIC_BLOCK_END  HAL_enable_irq(__prev); }
@@ -1501,6 +1533,8 @@ these examples and explanations and extend them to suit your needs.
  #define YIELD yield();
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
 // ESP8266 also has it
+ #define YIELD yield();
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0)
  #define YIELD yield();
 #elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
  //ESP32 and ESP8266 use freertos so we include calls
@@ -1557,7 +1591,7 @@ these examples and explanations and extend them to suit your needs.
 #endif
 
 // On some platforms, attachInterrupt() takes a pin number, not an interrupt number
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAM_DUE))
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAM_DUE)) || defined(ARDUINO_ARCH_STM32L0)
  #define RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
 #endif
 
@@ -1617,9 +1651,16 @@ these examples and explanations and extend them to suit your needs.
 // This is the address that indicates a broadcast
 #define RH_BROADCAST_ADDRESS 0xff
 
+// Specifies an invalid IO pin selection
+#define RH_INVALID_PIN       0xff
+
 // Uncomment this is to enable Encryption (see RHEncryptedDriver):
 // But ensure you have installed the Crypto directory from arduinolibs first:
 // http://rweather.github.io/arduinolibs/index.html
 //#define RH_ENABLE_ENCRYPTION_MODULE
+
+// Some platforms like RocketScream need this to see debug Serial output from within RH
+// and if it goes to Serial, get a hang after a few minutes.
+//#define Serial SerialUSB
 
 #endif

@@ -90,6 +90,15 @@ public:
     void spiUsingInterrupt(uint8_t interruptNumber);
 
     protected:
+
+    // Override this if you need an unusual way of selecting the slave before SPI transactions
+    // The default uses digitalWrite(_slaveSelectPin, LOW)
+    virtual void selectSlave();
+    
+    // Override this if you need an unusual way of selecting the slave before SPI transactions
+    // The default uses digitalWrite(_slaveSelectPin, HIGH)
+    virtual void deselectSlave();
+    
     /// Reference to the RHGenericSPI instance to use to transfer data with the SPI device
     RHGenericSPI&       _spi;
 

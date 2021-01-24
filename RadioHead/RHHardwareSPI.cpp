@@ -20,7 +20,11 @@ HardwareSPI SPI(1);
 HardwareSPI SPI(1);
 #elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS) // Mongoose OS platform
 HardwareSPI SPI(1);
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0) && defined STM32L082xx
+ extern SPIClass radio_spi; // Created in RH_ABZ.cpp
+ #define SPI radio_spi
 #endif
+
 
 // Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
 // as per other Arduinos
@@ -39,6 +43,10 @@ RHHardwareSPI::RHHardwareSPI(Frequency frequency, BitOrder bitOrder, DataMode da
     :
     RHGenericSPI(frequency, bitOrder, dataMode)
 {
+#if (RH_PLATFORM == RH_PLATFORM_STM32L0) && defined STM32L082xx
+//    stm32l0_spi_create(&RADIO_SPI, &RADIO_SPI_PARAMS);
+//    stm32l0_spi_enable(&RADIO_SPI);
+#endif
 }
 
 uint8_t RHHardwareSPI::transfer(uint8_t data) 
@@ -95,10 +103,11 @@ void RHHardwareSPI::begin()
    else
        frequency = 1000000;
 
-#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32) || defined(NRF52)
+#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(NRF52)
     // Arduino Due in 1.5.5 has its own BitOrder :-(
     // So too does Arduino Zero
     // So too does rogerclarkmelbourne/Arduino_STM32
+    // So too does GrumpyOldPizza/ArduinoCore-stm32l0 
     ::BitOrder bitOrder;
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
    ::BitOrder bitOrder;
