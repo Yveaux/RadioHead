@@ -755,15 +755,18 @@ public:
     virtual bool    isChannelActive();
 
     /// Enable TCXO mode
-    /// Call this immediately after init(), to force your radio to use an external 
+    /// Call this immediately after init(), to force your radio to use an external
     /// frequency source, such as a Temperature Compensated Crystal Oscillator (TCXO), if available.
     /// See the comments in the main documentation about the sensitivity of this radio to
     /// clock frequency especially when using narrow bandwidths.
     /// Leaves the module in sleep mode.
-    /// Caution, this function has not been tested by us.
-    /// Caution, the TCXO model radios are not low power when in sleep (consuming
+    /// Caution: the TCXO model radios are not low power when in sleep (consuming
     /// about ~600 uA, reported by Phang Moh Lim.<br>
-    void enableTCXO();
+    /// Caution: if you enable TCXO and there is no exernal TCXO signal connected to the radio
+    /// or if the exerrnal TCXO is not
+    /// powered up, the radio <b>will not work<\b>
+    /// \param[in] on If true (the default) enables the radio to use the external TCXO.
+    void enableTCXO(bool on = true);
 
     /// Returns the last measured frequency error.
     /// The LoRa receiver estimates the frequency offset between the receiver centre frequency

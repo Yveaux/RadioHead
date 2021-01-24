@@ -10,7 +10,6 @@
 // Pointer to the _only_ permitted ABZ instance (there is only one radio connected to this device)
 RH_ABZ* RH_ABZ::_thisDevice;
 
-
 // The muRata cmwx1zzabz module has its builtin SX1276 radio connected to the processor's SPI1 port,
 // but the Arduino compatible SPI interface in Grumpy Pizzas Arduino Core is configured for SPI1 or SPI2
 // depending on the exact board variant selected.
@@ -30,12 +29,12 @@ static const stm32l0_spi_params_t RADIO_SPI_PARAMS = {
     },
 };
 
-// Create and configure an Arduino compatible SPI interface. Thius will be referred to in RHHardwareSPI.cpp
+// Create and configure an Arduino compatible SPI interface. This will be referred to in RHHardwareSPI.cpp
 // and used as the SPI interface to the radio.
 static stm32l0_spi_t RADIO_SPI;
 SPIClass radio_spi(&RADIO_SPI, &RADIO_SPI_PARAMS);
 
-// Glue code between the DIO0 interrupt the interrupt handler in RH_RF95
+// Glue code between the 'C' DIO0 interrupt and the C++ interrupt handler in RH_RF95
 void RH_INTERRUPT_ATTR RH_ABZ::isr()
 {
     _thisDevice->handleInterrupt();
@@ -56,10 +55,13 @@ bool RH_ABZ::init()
     // It will later be configured as an interrupt
     stm32l0_gpio_pin_configure(STM32L0_GPIO_PIN_PB4,     (STM32L0_GPIO_PARK_NONE | STM32L0_GPIO_PUPD_PULLDOWN | STM32L0_GPIO_OSPEED_HIGH | STM32L0_GPIO_OTYPE_PUSHPULL | STM32L0_GPIO_MODE_INPUT));
 
-    // Here we configure the interrupt handler for DIO0 to call the interrupt handler in RH_RF95, in a roundabout way
-//    stm32l0_exti_attach(STM32L0_GPIO_PIN_PB4, (STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL | STM32L0_EXTI_CONTROL_EDGE_RISING), (stm32l0_exti_callback_t)isr, NULL); // STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL not in 0.0.10
+    // Here we configure the interrupt handler for DIO0 to call the C++
+    // interrupt handler in RH_RF95, in a roundabout way
+#ifdef STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL
+    stm32l0_exti_attach(STM32L0_GPIO_PIN_PB4, (STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL | STM32L0_EXTI_CONTROL_EDGE_RISING), (stm32l0_exti_callback_t)isr, NULL); // STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL not in 0.0.10
+#else
     stm32l0_exti_attach(STM32L0_GPIO_PIN_PB4, STM32L0_EXTI_CONTROL_EDGE_RISING, (stm32l0_exti_callback_t)isr, NULL);
-    
+#endif
     // The SX1276 radio slave select (NSS) is connected to STM32 pin PA15
     stm32l0_gpio_pin_configure(STM32L0_GPIO_PIN_PA15,      (STM32L0_GPIO_PARK_HIZ | STM32L0_GPIO_PUPD_NONE | STM32L0_GPIO_OSPEED_HIGH | STM32L0_GPIO_OTYPE_PUSHPULL | STM32L0_GPIO_MODE_OUTPUT));
     

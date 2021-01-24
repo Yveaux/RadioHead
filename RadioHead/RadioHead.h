@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.105.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.106.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1004,12 +1004,21 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Examples provided.
 
 \version 1.104 2020-06-08
-             Fixed a problem with new RH_ABZ module that prevents compilation with standard 0.0.10 version of STM32L0 
+             Fixed a problem with new RH_ABZ module that prevents compilation with standard 0.0.10 version of STM32L0 <br>
 	     Arduino Core installed with Board Manager: STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL 
-	     is only available in later versions.
+	     is only available in later versions.<br>
 
 \version 1.105 2020-06-03
-             Added support for RH_ABZ on STM32L072xx on Grumpy Old Pizza Arduino Core
+             Added support for RH_ABZ on STM32L072xx on Grumpy Old Pizza Arduino Core<br>
+
+\version 1.106 2020-06-16
+             Patch from	Livio Tenze for RH_RF22 to fix a problem with interrupts on on ESP8266.<br>
+	     Added examples/rf22/rf22_cw, with example showing how to emit a carrier wave (CW).<br>
+	     Reverted delay in RHSPIDriver::init() back to 100ms for all platforms except ABZ, where
+	     100ms interferes with the USB serial port with at least some versions of the core.<br>
+	     Updated and clarified documentation about TCXO use in RH_ABZ and examples.<br>
+	     Fixed documentation SS->NSEL pin for RH_RF22 with AtMega. Seems that SS on that platform
+	     is now defined as pin 10, not 53. Dont know when that changed.<br>
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1258,7 +1267,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 105
+#define RH_VERSION_MINOR 106
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

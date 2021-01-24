@@ -41,6 +41,29 @@
 ///
 /// All the comments in the RH_RF95 class concerning modulation, packet formats etc apply equally to this module.
 ///
+/// \par Temperature Controlled Crystal Oscillator (TCXO)
+///
+/// The muRata cmwx1zzabz module includes a TCXO. Pins to enable the TCXO and to connect to 32MHz output to the radio
+/// are exposed on the module. Some boards (Econode SmartTrap for example) permanently power the TCXO and permanenetly
+/// connect it to the radio. Other boards (Grasshopper for example) have the TCXO enable connected to a GPIO pin, allowing
+/// the TCXO to be controlled by software. Different boards may use different GPIO pins to control the TCXO.
+///
+/// The SX1276 radio can be configured to use the TCXO, and the Arduino Core defaults the radio to using TCXO.
+/// Therefore it is important that you ensure the TCXO is powered up, at least when you want the radio to operate.
+/// If the TCXO is not powered, the radio will not work.
+///
+/// On the Tlera boards supported the Arduino Core, you can call SX1276SetBoardTcxo() to enable or disable the TCXO
+/// by controlling the correct pin for your board.
+/// By default the core disables TCXO at the end of initialisation, so by the time your sketch starts to run
+/// the TCXO is powered off.
+/// You will almost certainly need to call
+/// \code
+/// SX1276SetBoardTcxo(true); 
+/// \endcode
+/// in your setup() or at other times when you want the radio to operate.
+///
+/// If you have a board where the TCXO is permanently powered, this is unnecessary.
+///
 /// \par Connecting and configuring the radio
 ///
 /// There is no special configuration for the SX1276 radio in the  muRata cmwx1zzabz module: the CPU, radio and
@@ -119,6 +142,13 @@
 ///   14                           11.5
 ///   15                           12.5
 /// \endcode
+
+/// In the the Grumpy Old Pizza Arduino Core, there is a function for turning the
+/// TCXO power source on and off, which depends on exactly which board is being compiled for
+/// If the Radio in your boards has its TCXO connected to a programmable power pin,
+/// and if you enable TCXO on the radio (by default it is on these boards)
+/// then this function needs to be called to enable the TCXO before the radio will work.
+extern "C" void SX1276SetBoardTcxo( bool state ); 
 
 class RH_ABZ : public RH_RF95
 {

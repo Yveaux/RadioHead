@@ -19,6 +19,7 @@ RH_ABZ abz;
 #define YELLOW_LED 12
 #define RED_LED 11
 
+
 void setup() 
 {
   pinMode(GREEN_LED, OUTPUT);
@@ -36,14 +37,16 @@ void setup()
     Serial.println("init failed");
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
-  // On the EcoNode SmartTrap board, the radio TCXO is always powered, so 
-  // you can tell the radio to use the TCXO like this/. For other boards, you may need 
-  // to enable the power to the TCXO before telling the radio to use it
-  abz.enableTCXO();
+  // You must be sure that the TCXO settings are appropriate for your board.
+  // See the RH_ABZ documentation for more information.
+  // This call is adequate for Tlera boards supported by the Grumpy Old Pizza Arduino Core
+  // It may or may not be innocuous for others
+  SX1276SetBoardTcxo(true);
+  
   abz.setFrequency(868.0);
 
-  // You can change the moduation speed etc from the default
-//  abz.setModemConfig(RH_RF95::Bw125Cr45Sf128);
+  // You can change the modulation speed etc from the default
+  //abz.setModemConfig(RH_RF95::Bw125Cr45Sf128);
   //abz.setModemConfig(RH_RF95::Bw125Cr45Sf2048);
   
   // The default transmitter power is 13dBm, using PA_BOOST.
@@ -57,8 +60,8 @@ void loop()
   digitalWrite(GREEN_LED, 0);
   digitalWrite(RED_LED, 0);
   
-  Serial.println("Sending to rf95_server");
-  // Send a message to rf95_server
+  Serial.println("Sending to abz_server");
+  // Send a message to abz_server
   uint8_t data[] = "Hello World!";
   abz.send(data, sizeof(data));
   abz.waitPacketSent();
@@ -89,7 +92,7 @@ void loop()
   }
   else
   {
-    Serial.println("No reply, is rf95_server running?");
+    Serial.println("No reply, is abz_server running?");
       digitalWrite(RED_LED, 1);
   }
   digitalWrite(YELLOW_LED, 0);

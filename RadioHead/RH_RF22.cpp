@@ -5,6 +5,12 @@
 
 #include <RH_RF22.h>
 
+#ifdef ESP8266
+// This voltatile array is used in the ESP8266 platform to manage the interrupt
+// service routines in a main loop, avoiding SPI calls inside the isr functions.
+volatile bool flagIsr[3] = {false, false, false};
+#endif
+
 // Interrupt vectors for the 2 Arduino interrupt pins
 // Each interrupt can be handled by a different instance of RH_RF22, allowing you to have
 // 2 RH_RF22s per Arduino
@@ -73,6 +79,12 @@ void RH_RF22::setIdleMode(uint8_t idleMode)
 
 bool RH_RF22::init()
 { 
+#ifdef ESP8266
+	flagIsr[0] = false;
+	flagIsr[1] = false;
+	flagIsr[2] = false;
+#endif
+
     if (!RHSPIDriver::init())
 	return false;
 
@@ -306,23 +318,56 @@ void RH_RF22::handleInterrupt()
     }
 }
 
+#ifdef ESP8266
+void RH_RF22::loopIsr()
+{
+	if (flagIsr[0]) {
+		if (_deviceForInterrupt[0])
+			_deviceForInterrupt[0]->handleInterrupt();
+		flagIsr[0] = false;
+	}
+	if (flagIsr[1]) {
+		if (_deviceForInterrupt[1])
+			_deviceForInterrupt[1]->handleInterrupt();
+		flagIsr[1] = false;
+	}
+	if (flagIsr[2]) {
+		if (_deviceForInterrupt[2])
+			_deviceForInterrupt[2]->handleInterrupt();
+		flagIsr[2] = false;
+	}
+}
+#endif
+
 // These are low level functions that call the interrupt handler for the correct
 // instance of RH_RF22.
 // 3 interrupts allows us to have 3 different devices
 void RH_INTERRUPT_ATTR RH_RF22::isr0()
 {
+#ifdef ESP8266
+	flagIsr[0] = true;
+#else
     if (_deviceForInterrupt[0])
 	_deviceForInterrupt[0]->handleInterrupt();
+#endif
 }
 void RH_INTERRUPT_ATTR RH_RF22::isr1()
 {
+#ifdef ESP8266
+	flagIsr[1] = true;
+#else
     if (_deviceForInterrupt[1])
 	_deviceForInterrupt[1]->handleInterrupt();
+#endif
 }
 void RH_INTERRUPT_ATTR RH_RF22::isr2()
 {
+#ifdef ESP8266
+	flagIsr[2] = true;
+#else
     if (_deviceForInterrupt[2])
 	_deviceForInterrupt[2]->handleInterrupt();
+#endif
 }
 
 void RH_RF22::reset()
@@ -551,6 +596,17 @@ bool RH_RF22::available()
     }
     return _rxBufValid;
 }
+
+#ifdef ESP8266
+bool RH_RF22::waitPacketSent()
+{
+	while (_mode == RHModeTx) {
+		loopIsr();
+		YIELD; // Wait for any previous transmit to finish
+	}
+	return true;
+}
+#endif
 
 bool RH_RF22::recv(uint8_t* buf, uint8_t* len)
 {

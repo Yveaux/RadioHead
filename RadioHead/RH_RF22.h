@@ -521,7 +521,7 @@
 ///                              SDN-/ (shutdown in)
 ///                 3V3----------VCC   (3.3V in)
 /// interrupt 0 pin D2-----------NIRQ  (interrupt request out)
-///          SS pin D53----------NSEL  (chip select in)
+///          SS pin D10----------NSEL  (chip select in)
 ///         SCK pin D52----------SCK   (SPI clock in)
 ///        MOSI pin D51----------SDI   (SPI Data in)
 ///        MISO pin D50----------SDO   (SPI data out)
@@ -926,7 +926,15 @@
 class RH_RF22 : public RHSPIDriver
 {
 public:
-
+#ifdef ESP8266
+	/// \brief Method only for ESP8266 to avoid SPI calls from the ISRs
+	///
+	/// This method is used only with ESP8266 platform and must be called from
+	/// the main loop. It checks if the Isr flags have been asserted and calls,
+	/// from the main loop, the interrupt handler methods (where SPI calls are
+	/// needed to process the communication).
+	void loopIsr();
+#endif
     /// \brief Defines register values for a set of modem configuration registers
     ///
     /// Defines register values for a set of modem configuration registers
@@ -1163,6 +1171,13 @@ public:
     /// recv()
     bool        available();
 
+#ifdef ESP8266
+    /// Reimplementation of virtual waitPacketSent method only for ESP8266. This method calls
+    /// the loopIsr method to check when a new interrupt is asserted and handles the interrupt
+    /// service routine.
+    bool waitPacketSent();
+#endif
+
     /// Turns the receiver on if it not already on.
     /// If there is a valid message available, copy it to buf and return true
     /// else return false.
@@ -1366,5 +1381,6 @@ protected:
 
 /// @example rf22_client.pde
 /// @example rf22_server.pde
+/// @example rf22_cw.ino
 
 #endif 

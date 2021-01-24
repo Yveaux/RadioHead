@@ -35,14 +35,16 @@ void setup()
     Serial.println("init failed");  
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
-  // On the EcoNode SmartTrap board, the radio TCXO is always powered, so 
-  // you can tell the radio to use the TCXO like this/. For other boards, you may need 
-  // to enable the power to the TCXO before telling the radio to use it
-  abz.enableTCXO();
+  // You must be sure that the TCXO settings are appropriate for your board.
+  // See the RH_ABZ documentation for more information.
+  // This call is adequate for Tlera boards supported by the Grumpy Old Pizza Arduino Core
+  // It may or may not be innocuous for others
+  SX1276SetBoardTcxo(true);
+
   abz.setFrequency(868.0);
 
-  // You can change the moduation speed etc from the default
-//  abz.setModemConfig(RH_RF95::Bw125Cr45Sf128);
+  // You can change the modulation speed etc from the default
+  //abz.setModemConfig(RH_RF95::Bw125Cr45Sf128);
   //abz.setModemConfig(RH_RF95::Bw125Cr45Sf2048);
 
   // The default transmitter power is 13dBm, using PA_BOOST.
