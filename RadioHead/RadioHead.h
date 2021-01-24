@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.104.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.105.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1003,7 +1003,12 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Requires the Grumpy Old Pizza Arduino Core installed per https://github.com/GrumpyOldPizza/ArduinoCore-stm32l0
 	     Examples provided.
 
-\version 1.104 2020-06-03
+\version 1.104 2020-06-08
+             Fixed a problem with new RH_ABZ module that prevents compilation with standard 0.0.10 version of STM32L0 
+	     Arduino Core installed with Board Manager: STM32L0_EXTI_CONTROL_PRIORITY_CRITICAL 
+	     is only available in later versions.
+
+\version 1.105 2020-06-03
              Added support for RH_ABZ on STM32L072xx on Grumpy Old Pizza Arduino Core
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
@@ -1253,7 +1258,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 104
+#define RH_VERSION_MINOR 105
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
