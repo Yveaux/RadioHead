@@ -1,7 +1,7 @@
 // RH_RF95.cpp
 //
 // Copyright (C) 2011 Mike McCauley
-// $Id: RH_RF95.cpp,v 1.22 2020/01/05 07:02:23 mikem Exp $
+// $Id: RH_RF95.cpp,v 1.23 2020/05/06 22:26:45 mikem Exp mikem $
 
 #include <RH_RF95.h>
 
@@ -20,6 +20,7 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
     { 0x92,   0x74,    0x04}, // Bw500Cr45Sf128, AGC enabled
     { 0x48,   0x94,    0x04}, // Bw31_25Cr48Sf512, AGC enabled
     { 0x78,   0xc4,    0x0c}, // Bw125Cr48Sf4096, AGC enabled
+    { 0x72,   0xb4,    0x04}, // Bw125Cr45Sf2048, AGC enabled
     
 };
 
@@ -30,6 +31,7 @@ RH_RF95::RH_RF95(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi
 {
     _interruptPin = interruptPin;
     _myInterruptIndex = 0xff; // Not allocated yet
+    _enableCRC = true;
 }
 
 bool RH_RF95::init()
@@ -127,17 +129,27 @@ void RH_RF95::handleInterrupt()
     uint8_t irq_flags = spiRead(RH_RF95_REG_12_IRQ_FLAGS);
     // Read the RegHopChannel register to check if CRC presence is signalled
     // in the header. If not it might be a stray (noise) packet.*
-    uint8_t crc_present = spiRead(RH_RF95_REG_1C_HOP_CHANNEL);
+    uint8_t hop_channel = spiRead(RH_RF95_REG_1C_HOP_CHANNEL);
+//    Serial.println(irq_flags, HEX);
+//    Serial.println(_mode, HEX);
+//    Serial.println(hop_channel, HEX);
+//    Serial.println(_enableCRC, HEX);
 
+    // error if:
+    // timeout
+    // bad CRC
+    // CRC is required but it is not present
     if (_mode == RHModeRx
-	&& ((irq_flags & (RH_RF95_RX_TIMEOUT | RH_RF95_PAYLOAD_CRC_ERROR))
-	    | !(crc_present & RH_RF95_RX_PAYLOAD_CRC_IS_ON)))
+	&& (   (irq_flags & (RH_RF95_RX_TIMEOUT | RH_RF95_PAYLOAD_CRC_ERROR))
+	    || (_enableCRC && !(hop_channel & RH_RF95_RX_PAYLOAD_CRC_IS_ON)) ))
 //    if (_mode == RHModeRx && irq_flags & (RH_RF95_RX_TIMEOUT | RH_RF95_PAYLOAD_CRC_ERROR))
     {
+//	Serial.println("E");
 	_rxBad++;
     }
     else if (_mode == RHModeRx && irq_flags & RH_RF95_RX_DONE)
     {
+//	Serial.println("R");
 	// Have received a packet
 	uint8_t len = spiRead(RH_RF95_REG_13_RX_NB_BYTES);
 
@@ -172,14 +184,21 @@ void RH_RF95::handleInterrupt()
     }
     else if (_mode == RHModeTx && irq_flags & RH_RF95_TX_DONE)
     {
+//	Serial.println("T");
 	_txGood++;
 	setModeIdle();
     }
     else if (_mode == RHModeCad && irq_flags & RH_RF95_CAD_DONE)
     {
+//	Serial.println("C");
         _cad = irq_flags & RH_RF95_CAD_DETECTED;
         setModeIdle();
     }
+    else
+    {
+//	Serial.println("?");
+    }
+	
     // Sigh: on some processors, for some unknown reason, doing this only once does not actually
     // clear the radio's interrupt flag. So we do it twice. Why?
     spiWrite(RH_RF95_REG_12_IRQ_FLAGS, 0xff); // Clear all IRQ flags
@@ -278,7 +297,7 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     // The message data
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);
     spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);
-
+    
     setModeTx(); // Start the transmitter
     // when Tx is done, interruptHandler will fire and radio mode will return to STANDBY
     return true;
@@ -609,5 +628,6 @@ void RH_RF95::setPayloadCRC(bool on)
 	spiWrite(RH_RF95_REG_1E_MODEM_CONFIG2, current | RH_RF95_PAYLOAD_CRC_ON);
     else
 	spiWrite(RH_RF95_REG_1E_MODEM_CONFIG2, current);
+    _enableCRC = on;
 }
  

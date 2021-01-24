@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.24 2020/04/09 23:40:34 mikem Exp mikem $
+// $Id: RH_RF95.h,v 1.24 2020/04/09 23:40:34 mikem Exp $
 // 
 
 #ifndef RH_RF95_h
@@ -596,7 +596,8 @@ public:
 	Bw125Cr45Sf128 = 0,	   ///< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range
 	Bw500Cr45Sf128,	           ///< Bw = 500 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Fast+short range
 	Bw31_25Cr48Sf512,	   ///< Bw = 31.25 kHz, Cr = 4/8, Sf = 512chips/symbol, CRC on. Slow+long range
-	Bw125Cr48Sf4096,           ///< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, CRC on. Slow+long range
+	Bw125Cr48Sf4096,           ///< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, low data rate, CRC on. Slow+long range
+	Bw125Cr45Sf2048,           ///< Bw = 125 kHz, Cr = 4/5, Sf = 2048chips/symbol, CRC on. Slow+long range
     } ModemConfigChoice;
 
     /// Constructor. You can have multiple instances, but each instance must have its own
@@ -806,7 +807,8 @@ public:
     /// Sets the coding rate to 4/5, 4/6, 4/7 or 4/8.
     /// Valid denominator values are 5, 6, 7 or 8. A value of 5 sets the coding rate to 4/5 etc.
     /// Values below 5 are clamped at 5
-    /// values above 8 are clamped at 8
+    /// values above 8 are clamped at 8.
+    /// Default for all standard modem config options is 4/5.
     /// \param[in] denominator uint8_t range 5..8
     void     setCodingRate4(uint8_t denominator);
  	
@@ -817,9 +819,15 @@ public:
     void 	 setLowDatarate();
  	
     /// brian.n.norman@gmail.com 9th Nov 2018
-    /// allows the payload CRC bit to be turned on/off. Normally this should be left on
-    /// so that packets with a bad CRC are rejected
-    /// \patam[in] on bool, true turns the payload CRC on, false turns it off
+    /// Allows the CRC to be turned on/off. Default is true (enabled)
+    /// When true, RH_RF95 sends a CRC in outgoing packets and requires a valid CRC to be
+    /// present and correct on incoming packets.
+    /// When false, does not send CRC in outgoing packets and does not require a CRC to be
+    /// present on incoming packets. However if a CRC is present, it must be correct.
+    /// Normally this should be left on (the default)
+    /// so that packets with a bad CRC are rejected. If turned off you wil be much more likely to receive
+    /// false noise packets.
+    /// \patam[in] on bool, true enables CRCs in incoming and outgoing packets, false disables them
     void setPayloadCRC(bool on);
  	
 protected:
@@ -871,6 +879,9 @@ private:
 
     // Last measured SNR, dB
     int8_t              _lastSNR;
+
+    // If true, sends CRCs in every packet and requires a valid CRC in every received packet
+    bool                _enableCRC;
 };
 
 /// @example rf95_client.pde

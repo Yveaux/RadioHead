@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.82 2020/04/09 23:40:34 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.83 2020/05/06 22:26:45 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.101.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.102.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -977,6 +977,15 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     Now builds and run RH_ASK examples with STM32F4 Discovery board. 
 	     Build without error for STM32 F1 and F4 but Does not compile for Generic STM32F3.
 
+\version 1.102 2020-05-15
+             Updated RH_RF95::setPayloadCRC to affect CRC generation on outgoing packets as well 
+	     as CRC detection and checking on incoming packets.
+	     Added new modem config for RH_RF95. RH_RF95::Bw125Cr45Sf2048
+	     Bw = 125 kHz, Cr = 4/5, Sf = 2048chips/symbol, CRC on. Slow+long range. Tested
+	     against RPI with LoRa-file-ops driver https://github.com/starnight/LoRa/tree/file-ops 
+	     and send.c test program.
+	     Fixed a problem with (re-)definition of SS on ESP32, reported and fixed by Justin Newitter.
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
 
@@ -1224,7 +1233,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 101
+#define RH_VERSION_MINOR 102
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1553,11 +1562,15 @@ these examples and explanations and extend them to suit your needs.
 #endif
 
 // Slave select pin, some platforms such as ATTiny do not define it.
-#ifndef SS
- #define SS 10
+// ESP32 pins_arduino.h uses static const uint8_t SS = <UINT>; instead
+// of a #define to declare the SS constant.
+#if (RH_PLATFORM != RH_PLATFORM_ESP32)
+  #ifndef SS
+    #define SS 10
+  #endif
 #endif
 
-// Some platforms require specail attributes for interrupt routines						   
+// Some platforms require special attributes for interrupt routines						   
 #if (RH_PLATFORM == RH_PLATFORM_ESP8266)
     // interrupt handler and related code must be in RAM on ESP8266,
     // according to issue #46.
