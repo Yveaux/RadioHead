@@ -231,17 +231,16 @@ void RH_ASK::timerSetup()
    #endif
 
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
-    // Timer A is used for millis/micros, and B 0 for Tone by default
-    // Use Timer B 1
-    volatile TCB_t* timer = &TCB1;
+    // If your processor does not have a TCB1, you can change the timer used in RadioHead.h
+    volatile TCB_t* timer = &RH_ATTINY_MEGA_ASK_TIMER;
 
     // Calculate compare value
-    uint32_t compare_val = F_CPU_CORRECTED / _speed / 8 - 1;
+    uint32_t compare_val = F_CPU / _speed / 8 - 1;
     // If compare larger than 16bits, need to prescale (will be DIV64)
     if (compare_val > 0xFFFF)
     {
         // recalculate with new prescaler
-        compare_val = F_CPU_CORRECTED / _speed / 8 / 64 - 1;
+        compare_val = F_CPU / _speed / 8 / 64 - 1;
 	// Prescaler needed
         timer->CTRLA = TCB_CLKSEL_CLKTCA_gc;
     }
@@ -596,8 +595,9 @@ void RH_INTERRUPT_ATTR RH_ASK::writeTx(bool value)
 {
 #if (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
     ((value) ? (RH_ASK_TX_PORT |= (1<<RH_ASK_TX_PIN)) : (RH_ASK_TX_PORT &= ~(1<<RH_ASK_TX_PIN)));
-#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
-    digitalWrite(_txPin, (PinStatus)value);
+// No longer relevant: PinStatus onlty used in old versions
+//#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+//    digitalWrite(_txPin, (PinStatus)value);
 #else
     digitalWrite(_txPin, value);
 #endif
@@ -612,8 +612,9 @@ void RH_INTERRUPT_ATTR RH_ASK::writePtt(bool value)
  #else
     ((value) ? (RH_ASK_TX_PORT |= (1<<RH_ASK_TX_PIN)) : (RH_ASK_TX_PORT &= ~(1<<RH_ASK_TX_PIN)));
  #endif
-#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
-    digitalWrite(_txPin, (PinStatus)(value ^ _pttInverted));
+// This no longer relevant: ater version use uint8_t
+//#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+//    digitalWrite(_txPin, (PinStatus)(value ^ _pttInverted));
 #else
     digitalWrite(_pttPin, value ^ _pttInverted);
 #endif
@@ -732,10 +733,10 @@ void IRAM_ATTR esp32_timer_interrupt_handler()
     thisASKDriver->handleTimerInterrupt();
 }
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
-ISR(TCB1_INT_vect)
+ISR(RH_ATTINY_MEGA_ASK_TIMER_VECTOR)
 {
     thisASKDriver->handleTimerInterrupt();
-    TCB1.INTFLAGS = TCB_CAPT_bm;
+    RH_ATTINY_MEGA_ASK_TIMER.INTFLAGS = TCB_CAPT_bm;
 }
 #endif
 

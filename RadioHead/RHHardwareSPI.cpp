@@ -105,8 +105,9 @@ void RHHardwareSPI::begin()
     // So too does rogerclarkmelbourne/Arduino_STM32
     // So too does GrumpyOldPizza/ArduinoCore-stm32l0 
     ::BitOrder bitOrder;
-#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
-   ::BitOrder bitOrder;
+// This no longer relevant: new versions is uint8_t
+//#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
+//   ::BitOrder bitOrder;
 #else
     uint8_t bitOrder;
 #endif

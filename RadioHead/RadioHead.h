@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.110.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.111.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1035,6 +1035,13 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     to allow the hop count to be retreived if desired.
 \version 1.110 2020-07-28
 	     Fixed a problem where _spi.beginTransaction and _spi.endTransaction were missing from RHSPIDriver::spiRead.
+\version 1.111 2020-07-30
+             Fixed some compilation problems on some platforms with RH_PLATFORM_ATTINY_MEGA and Kondes MegaTinyCore 1.1.2.<br>
+	     Fixed some other errors with  Kondes MegaTinyCore 2.0.5: F_CPU_CORRECTED no longer exists, 
+	     bitOrder and PinStatus no longer needed.<br>
+	     Improved detection of RH_PLATFORM_ATTINY_MEGA by looking for defined(MEGATINYCORE), defined
+	     in later versions of MegaTinyCore.
+
 	     
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
@@ -1284,7 +1291,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 110
+#define RH_VERSION_MINOR 111
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1329,7 +1336,7 @@ these examples and explanations and extend them to suit your needs.
   #define RH_PLATFORM RH_PLATFORM_STM32L0
  #elif defined(MGOS)
   #define RH_PLATFORM RH_PLATFORM_MONGOOSE_OS
- #elif defined(ARDUINO_attinyxy2) || defined(ARDUINO_attinyxy4) || defined(ARDUINO_attinyxy6) || defined(ARDUINO_attinyxy7)
+#elif defined(MEGATINYCORE) || defined(ARDUINO_attinyxy2) || defined(ARDUINO_attinyxy4) || defined(ARDUINO_attinyxy6) || defined(ARDUINO_attinyxy7)
   #define RH_PLATFORM RH_PLATFORM_ATTINY_MEGA
  #elif defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtinyX313__) || defined(ARDUINO_attiny)
   #define RH_PLATFORM RH_PLATFORM_ATTINY
@@ -1376,7 +1383,12 @@ these examples and explanations and extend them to suit your needs.
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
  #include <SPI.h>
   #define RH_HAVE_HARDWARE_SPI
-  #define RH_HAVE_SERIAL						   
+  #define RH_HAVE_SERIAL
+  // On most AT_TINY_MEGA, Timer A is used for millis/micros, and B 0 for Tone by default. We therefore choose Timer B 1
+  // But not all devices support TCB1, so you may want to change these to TCB0 on some variants
+#define RH_ATTINY_MEGA_ASK_TIMER TCB1
+#define RH_ATTINY_MEGA_ASK_TIMER_VECTOR TCB1_INT_vect
+						   
 #elif (RH_PLATFORM == RH_PLATFORM_ESP8266) // ESP8266 processor on Arduino IDE
  #include <Arduino.h>
  #include <SPI.h>
