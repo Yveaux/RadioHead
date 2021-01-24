@@ -1,7 +1,7 @@
 // RH_ASK.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.cpp,v 1.30 2020/06/15 23:39:39 mikem Exp mikem $
+// $Id: RH_ASK.cpp,v 1.31 2020/07/05 08:52:21 mikem Exp mikem $
 
 #include <RH_ASK.h>
 #include <RHCRC.h>

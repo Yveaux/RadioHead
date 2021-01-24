@@ -274,9 +274,10 @@ public:
     /// \param[in] dest If present and not NULL, the referenced uint8_t will be set to the DEST address
     /// \param[in] id If present and not NULL, the referenced uint8_t will be set to the ID
     /// \param[in] flags If present and not NULL, the referenced uint8_t will be set to the FLAGS
+    /// \param[in] hops If present and not NULL, the referenced uint8_t will be set to the HOPS
     /// (not just those addressed to this node).
     /// \return true if a valid message was recvived for this node copied to buf
-    bool recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source = NULL, uint8_t* dest = NULL, uint8_t* id = NULL, uint8_t* flags = NULL);
+    bool recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source = NULL, uint8_t* dest = NULL, uint8_t* id = NULL, uint8_t* flags = NULL, uint8_t* hops = NULL);
 
     /// Starts the receiver if it is not running already.
     /// Similar to recvfromAck(), this will block until either a valid message available for this node
@@ -288,9 +289,10 @@ public:
     /// \param[in] dest If present and not NULL, the referenced uint8_t will be set to the DEST address
     /// \param[in] id If present and not NULL, the referenced uint8_t will be set to the ID
     /// \param[in] flags If present and not NULL, the referenced uint8_t will be set to the FLAGS
+    /// \param[in] hops If present and not NULL, the referenced uint8_t will be set to the HOPS
     /// (not just those addressed to this node).
     /// \return true if a valid message was copied to buf
-    bool recvfromAckTimeout(uint8_t* buf, uint8_t* len,  uint16_t timeout, uint8_t* source = NULL, uint8_t* dest = NULL, uint8_t* id = NULL, uint8_t* flags = NULL);
+    bool recvfromAckTimeout(uint8_t* buf, uint8_t* len,  uint16_t timeout, uint8_t* source = NULL, uint8_t* dest = NULL, uint8_t* id = NULL, uint8_t* flags = NULL, uint8_t* hops = NULL);
 
 protected:
 

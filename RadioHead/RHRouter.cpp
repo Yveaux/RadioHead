@@ -209,7 +209,7 @@ void RHRouter::peekAtMessage(RoutedMessage* message, uint8_t messageLen)
 }
 
 ////////////////////////////////////////////////////////////////////
-bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags)
+bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags, uint8_t* hops)
 {  
     uint8_t tmpMessageLen = sizeof(_tmpMessage);
     uint8_t _from;
@@ -257,7 +257,7 @@ bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t*
 	    || (_thisAddress == 4 && _from == 2)
 
 #endif
-)
+	    )
 	{
 	    // OK
 	}
@@ -276,6 +276,7 @@ bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t*
 	    if (dest)   *dest    = _tmpMessage.header.dest;
 	    if (id)     *id      = _tmpMessage.header.id;
 	    if (flags)  *flags   = _tmpMessage.header.flags;
+	    if (hops)   *hops    = _tmpMessage.header.hops;
 	    uint8_t msgLen = tmpMessageLen - sizeof(RoutedMessageHeader);
 	    if (*len > msgLen)
 		*len = msgLen;
@@ -299,7 +300,7 @@ bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t*
 }
 
 ////////////////////////////////////////////////////////////////////
-bool RHRouter::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags)
+bool RHRouter::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags, uint8_t* hops)
 {  
     unsigned long starttime = millis();
     int32_t timeLeft;
@@ -307,7 +308,7 @@ bool RHRouter::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, 
     {
 	if (waitAvailableTimeout(timeLeft))
 	{
-	    if (recvfromAck(buf, len, source, dest, id, flags))
+	    if (recvfromAck(buf, len, source, dest, id, flags, hops))
 		return true;
 	}
 	YIELD;

@@ -2,8 +2,9 @@
 //
 // Author: Philippe.Rochat'at'gmail.com
 // Contributed to the RadioHead project by the author
-// $Id: RHEncryptedDriver.cpp,v 1.5 2019/07/14 00:18:48 mikem Exp $
+// $Id: RHEncryptedDriver.cpp,v 1.6 2020/07/05 08:52:21 mikem Exp mikem $
 
+#include <RadioHead.h>
 #ifdef RH_ENABLE_ENCRYPTION_MODULE
 #include <RHEncryptedDriver.h>
 

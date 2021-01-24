@@ -152,14 +152,15 @@ bool RHMesh::isPhysicalAddress(uint8_t* address, uint8_t addresslen)
 }
 
 ////////////////////////////////////////////////////////////////////
-bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags)
+bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* dest, uint8_t* id, uint8_t* flags, uint8_t* hops)
 {     
     uint8_t tmpMessageLen = sizeof(_tmpMessage);
     uint8_t _source;
     uint8_t _dest;
     uint8_t _id;
     uint8_t _flags;
-    if (RHRouter::recvfromAck(_tmpMessage, &tmpMessageLen, &_source, &_dest, &_id, &_flags))
+    uint8_t _hops;
+    if (RHRouter::recvfromAck(_tmpMessage, &tmpMessageLen, &_source, &_dest, &_id, &_flags, &_hops))
     {
 	MeshMessageHeader* p = (MeshMessageHeader*)&_tmpMessage;
 
@@ -172,6 +173,7 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 	    if (dest)   *dest   = _dest;
 	    if (id)     *id     = _id;
 	    if (flags)  *flags  = _flags;
+	    if (hops)   *hops   = _hops;
 	    uint8_t msgLen = tmpMessageLen - sizeof(MeshMessageHeader);
 	    if (*len > msgLen)
 		*len = msgLen;
@@ -231,7 +233,7 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 }
 
 ////////////////////////////////////////////////////////////////////
-bool RHMesh::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* from, uint8_t* to, uint8_t* id, uint8_t* flags)
+bool RHMesh::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, uint8_t* from, uint8_t* to, uint8_t* id, uint8_t* flags, uint8_t* hops)
 {  
     unsigned long starttime = millis();
     int32_t timeLeft;
@@ -239,7 +241,7 @@ bool RHMesh::recvfromAckTimeout(uint8_t* buf, uint8_t* len, uint16_t timeout, ui
     {
 	if (waitAvailableTimeout(timeLeft))
 	{
-	    if (recvfromAck(buf, len, from, to, id, flags))
+	    if (recvfromAck(buf, len, from, to, id, flags, hops))
 		return true;
 	    YIELD;
 	}

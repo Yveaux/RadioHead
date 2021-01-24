@@ -1,7 +1,7 @@
 // RHSPIDriver.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.cpp,v 1.12 2020/06/15 23:39:39 mikem Exp mikem $
+// $Id: RHSPIDriver.cpp,v 1.12 2020/06/15 23:39:39 mikem Exp $
 
 #include <RHSPIDriver.h>
 
