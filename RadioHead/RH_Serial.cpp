@@ -1,7 +1,7 @@
 // RH_Serial.cpp
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_Serial.cpp,v 1.17 2020/01/07 23:35:02 mikem Exp mikem $
+// $Id: RH_Serial.cpp,v 1.17 2020/01/07 23:35:02 mikem Exp $
 
 #include <RH_Serial.h>
 #if (RH_PLATFORM == RH_PLATFORM_STM32F2)

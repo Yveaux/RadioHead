@@ -5,7 +5,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2017 Mike McCauley
-// $Id: RH_E32.h,v 1.4 2018/02/11 23:57:18 mikem Exp $
+// $Id: RH_E32.h,v 1.5 2020/04/09 23:40:34 mikem Exp mikem $
 // 
 
 #ifndef RH_E32_h
@@ -188,7 +188,7 @@
 ///
 /// This radio supports a range of different data rates and powers.
 /// The lowest speeds are the most reliable, however you should note that at 1kbps and with an 13 octet payload,
-/// the transmission time for one packet approaches 5 seconds. Therefore you should be cautios about trying to
+/// the transmission time for one packet approaches 5 seconds. Therefore you should be cautious about trying to
 /// send too many or too long messages per unit of time, lest you monopolise the airwaves.
 /// Be a good neighbour and use the lowest power and fastest speed that you can.
 ///

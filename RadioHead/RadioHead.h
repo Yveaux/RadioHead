@@ -1,7 +1,7 @@
 // RadioHead.h
 // Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
-// $Id: RadioHead.h,v 1.81 2020/01/07 23:35:02 mikem Exp mikem $
+// $Id: RadioHead.h,v 1.82 2020/04/09 23:40:34 mikem Exp mikem $
 
 /*! \mainpage RadioHead Packet Radio library for embedded microprocessors
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.100.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.101.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -98,9 +98,7 @@ Works with Nordic nRF905 based 433/868/915 MHz radio modules.
 - RH_NRF51
 Works with Nordic nRF51 compatible 2.4 GHz SoC/devices such as the nRF51822.
 Also works with Sparkfun nRF52832 breakout board, with Arduino 1.8.9 and
-Sparkfun nRF52 boards manager 0.2.3. Caution: although RadioHead compiles with nRF52832 as at 2020-03-12
-there appears to be a problem with the support of interupt handlers in the Sparkfun support libraries,
-and drivers (ie most of the other SPI based radio drivers) that require interrupts do not work correctly.
+Sparkfun nRF52 boards manager 0.2.3. 
 
 - RH_RF95
 Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
@@ -202,6 +200,8 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
    Caution: with this library and board, sending text to Serial causes the board to hang in mysterious ways. 
    Serial2 emits to PA2. The default SPI pins are SCK: PB3, MOSI PB5, MISO PB4. 
    We tested with PB0 as slave select and PB1 as interrupt pin for various radios. RH_ASK and RH_Serial also work.
+   Also works with stm32duino 1.8.0 from https://github.com/stm32duino/Arduino_Core_STM32, wich can be 
+   installed on Arduino with BoardManager. Select board: STM32 Discovery F407.
 
 - ChipKIT Core with Arduino IDE on any ChipKIT Core supported Digilent processor (tested on Uno32)
   http://chipkit.net/wiki/index.php?title=ChipKIT_core
@@ -964,7 +964,18 @@ application. To purchase a commercial license, contact info@airspayce.com
               Release under GPL V3
 
 \version 1.100 2020-03-12
-             Fixed a problem that prevent compilation for Sparkfun nRF52832 Breakout board.<br>
+             Fixed a problem that prevented compilation of RH_NRF51 
+	     on Arduino for Sparkfun nRF52832 Breakout board.<br>
+
+\version 1.101 2020-04-10
+	     Tested nRF52832 with RFM69W module and RH_RF69, using Software SPI and hardware interrutps OK.<br>
+	     Fixed warnings about 'deleting object of polymorphic class' if driver is dynamically allocated.<br>
+	     Fixed problems in RH_ASK and HardwareSPI to work with STM32F4 Discovery with latest 
+	     version of stm32duino https://github.com/stm32duino/Arduino_Core_STM32.
+	     Testing with stm32duino 1.8.0 downloaded with Board Manager per 
+	     https://github.com/stm32duino/Arduino_Core_STM32 .
+	     Now builds and run RH_ASK examples with STM32F4 Discovery board. 
+	     Build without error for STM32 F1 and F4 but Does not compile for Generic STM32F3.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE LIST GIVEN ABOVE
 */
@@ -1213,7 +1224,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 100
+#define RH_VERSION_MINOR 101
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

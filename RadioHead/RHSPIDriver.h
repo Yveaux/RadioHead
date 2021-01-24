@@ -1,7 +1,7 @@
 // RHSPIDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHSPIDriver.h,v 1.14 2019/09/06 04:40:40 mikem Exp $
+// $Id: RHSPIDriver.h,v 1.15 2020/04/09 23:40:34 mikem Exp mikem $
 
 #ifndef RHSPIDriver_h
 #define RHSPIDriver_h
@@ -43,7 +43,7 @@ public:
     /// during SPI communications with the SPI device that uis iused by this Driver.
     /// \param[in] spi Reference to the SPI interface to use. The default is to use a default built-in Hardware interface.
     RHSPIDriver(uint8_t slaveSelectPin = SS, RHGenericSPI& spi = hardware_spi);
-
+    
     /// Initialise the Driver transport hardware and software.
     /// Make sure the Driver is properly configured before calling init().
     /// \return true if initialisation succeeded.

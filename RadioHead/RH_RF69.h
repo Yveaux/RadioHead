@@ -1,7 +1,7 @@
 // RH_RF69.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF69.h,v 1.37 2019/07/14 00:18:48 mikem Exp $
+// $Id: RH_RF69.h,v 1.38 2020/04/09 23:40:34 mikem Exp mikem $
 //
 ///
 
@@ -552,6 +552,27 @@
 /// and initialise with
 /// \code
 /// RH_RF69 driver(15, 0);
+/// \endcode
+/// If you are connecting an RF69 to a Sparkfun nRF52832 Breakout board 
+/// with Arduino 1.8.9 with board:
+/// "SparkFun nRF52 Boards by Sparkfun Electronics version 0.2.3",
+/// you can connect like this:
+/// \code
+///                 nRF52832     RFM69W
+///                 GND----------GND   (ground in)
+///                 3V3----------3.3V  (3.3V in)
+/// interrupt 0 pin 02-----------DIO0  (interrupt request out)
+///          SS pin 08-----------NSS   (chip select in)
+///     SCK SPI pin 13-----------SCK   (SPI clock in)
+///    MOSI SPI pin 11-----------MOSI  (SPI Data in)
+///    MISO SPI pin 12-----------MISO  (SPI Data out)
+/// \endcode
+/// and initialise with
+/// \code
+/// RHSoftwareSPI softwarespi;
+/// RH_RF69 driver(8, 2, softwarespi);
+/// and inside your setup() function:
+///    softwarespi.setPins(12, 11, 13);
 /// \endcode
 ///
 /// It is possible to have 2 or more radios connected to one Arduino, provided

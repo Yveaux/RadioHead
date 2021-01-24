@@ -12,8 +12,9 @@
     // Maple etc
 HardwareTimer timer(MAPLE_TIMER);
 
-#elif  defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
-    // rogerclarkmelbourne/Arduino_STM32
+#elif defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
+// rogerclarkmelbourne/Arduino_STM32
+// And stm32duino    
 HardwareTimer timer(1);
 
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
@@ -178,9 +179,10 @@ void RH_ASK::timerSetup()
     TA0CTL = TASSEL_2 + MC_1;       // SMCLK, up mode
     TA0CCTL0 |= CCIE;               // CCR0 interrupt enabled
 
-#elif (RH_PLATFORM == RH_PLATFORM_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
+#elif (RH_PLATFORM == RH_PLATFORM_STM32) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
     // Maple etc
     // or rogerclarkmelbourne/Arduino_STM32
+    // or stm32duino
     // Pause the timer while we're configuring it
     timer.pause();
     timer.setPeriod((1000000/8)/_speed);
@@ -656,7 +658,7 @@ void TC1_Handler()
     TC_GetStatus(RH_ASK_DUE_TIMER, 1);
     thisASKDriver->handleTimerInterrupt();
 }
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F4)
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4))
 //rogerclarkmelbourne/Arduino_STM32
 void interrupt()
 {

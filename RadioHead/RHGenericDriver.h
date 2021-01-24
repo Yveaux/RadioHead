@@ -1,7 +1,7 @@
 // RHGenericDriver.h
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RHGenericDriver.h,v 1.23 2018/09/23 23:54:01 mikem Exp $
+// $Id: RHGenericDriver.h,v 1.24 2020/04/09 23:40:34 mikem Exp mikem $
 
 #ifndef RHGenericDriver_h
 #define RHGenericDriver_h
@@ -58,6 +58,9 @@ public:
     /// Constructor
     RHGenericDriver();
 
+    /// Generic destructor to prevent warnings when objects are dynamically allocated
+    virtual ~RHGenericDriver() {};
+    
     /// Initialise the Driver transport hardware and software.
     /// Make sure the Driver is properly configured before calling init().
     /// \return true if initialisation succeeded.

@@ -1,7 +1,7 @@
 // RH_ASK.h
 //
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_ASK.h,v 1.21 2020/01/07 23:35:02 mikem Exp mikem $
+// $Id: RH_ASK.h,v 1.21 2020/01/07 23:35:02 mikem Exp $
 
 #ifndef RH_ASK_h
 #define RH_ASK_h
@@ -264,7 +264,7 @@
 /// \code
 /// RH_ASK driver(2000, PA3, PA4);
 /// \endcode
-/// and connect the serail to pins PA3 and PA4
+/// and connect the serial to pins PA3 and PA4
 class RH_ASK : public RHGenericDriver
 {
 public:

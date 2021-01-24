@@ -6,7 +6,7 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2014 Mike McCauley
-// $Id: RH_RF95.h,v 1.23 2019/11/02 02:34:22 mikem Exp $
+// $Id: RH_RF95.h,v 1.24 2020/04/09 23:40:34 mikem Exp mikem $
 // 
 
 #ifndef RH_RF95_h
@@ -619,7 +619,7 @@ public:
     /// \param[in] spi Pointer to the SPI interface object to use. 
     ///                Defaults to the standard Arduino hardware SPI interface
     RH_RF95(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 2, RHGenericSPI& spi = hardware_spi);
-  
+    
     /// Initialise the Driver transport hardware and software.
     /// Make sure the Driver is properly configured before calling init().
     /// \return true if initialisation succeeded.
