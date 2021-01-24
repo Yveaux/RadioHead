@@ -5,7 +5,7 @@
 
 #include <RH_RF22.h>
 
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 // This voltatile array is used in the ESP8266 platform to manage the interrupt
 // service routines in a main loop, avoiding SPI calls inside the isr functions.
 volatile bool flagIsr[3] = {false, false, false};
@@ -78,11 +78,11 @@ void RH_RF22::setIdleMode(uint8_t idleMode)
 }
 
 bool RH_RF22::init()
-{ 
-#ifdef ESP8266
-	flagIsr[0] = false;
-	flagIsr[1] = false;
-	flagIsr[2] = false;
+{
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
+    flagIsr[0] = false;
+    flagIsr[1] = false;
+    flagIsr[2] = false;
 #endif
 
     if (!RHSPIDriver::init())
@@ -318,24 +318,27 @@ void RH_RF22::handleInterrupt()
     }
 }
 
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 void RH_RF22::loopIsr()
 {
-	if (flagIsr[0]) {
-		if (_deviceForInterrupt[0])
-			_deviceForInterrupt[0]->handleInterrupt();
-		flagIsr[0] = false;
-	}
-	if (flagIsr[1]) {
-		if (_deviceForInterrupt[1])
-			_deviceForInterrupt[1]->handleInterrupt();
-		flagIsr[1] = false;
-	}
-	if (flagIsr[2]) {
-		if (_deviceForInterrupt[2])
-			_deviceForInterrupt[2]->handleInterrupt();
-		flagIsr[2] = false;
-	}
+    if (flagIsr[0])
+    {
+	if (_deviceForInterrupt[0])
+	    _deviceForInterrupt[0]->handleInterrupt();
+	flagIsr[0] = false;
+    }
+    if (flagIsr[1])
+    {
+	if (_deviceForInterrupt[1])
+	    _deviceForInterrupt[1]->handleInterrupt();
+	flagIsr[1] = false;
+    }
+    if (flagIsr[2])
+    {
+	if (_deviceForInterrupt[2])
+	    _deviceForInterrupt[2]->handleInterrupt();
+	flagIsr[2] = false;
+    }
 }
 #endif
 
@@ -344,7 +347,7 @@ void RH_RF22::loopIsr()
 // 3 interrupts allows us to have 3 different devices
 void RH_INTERRUPT_ATTR RH_RF22::isr0()
 {
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 	flagIsr[0] = true;
 #else
     if (_deviceForInterrupt[0])
@@ -353,7 +356,7 @@ void RH_INTERRUPT_ATTR RH_RF22::isr0()
 }
 void RH_INTERRUPT_ATTR RH_RF22::isr1()
 {
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 	flagIsr[1] = true;
 #else
     if (_deviceForInterrupt[1])
@@ -362,7 +365,7 @@ void RH_INTERRUPT_ATTR RH_RF22::isr1()
 }
 void RH_INTERRUPT_ATTR RH_RF22::isr2()
 {
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 	flagIsr[2] = true;
 #else
     if (_deviceForInterrupt[2])
@@ -590,21 +593,26 @@ bool RH_RF22::available()
 {
     if (!_rxBufValid)
     {
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
+	loopIsr();
+#endif
 	if (_mode == RHModeTx)
 	    return false;
 	setModeRx(); // Make sure we are receiving
+	YIELD; // Wait for any previous transmit to finish
     }
     return _rxBufValid;
 }
 
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
 bool RH_RF22::waitPacketSent()
 {
-	while (_mode == RHModeTx) {
-		loopIsr();
-		YIELD; // Wait for any previous transmit to finish
-	}
-	return true;
+    while (_mode == RHModeTx)
+    {
+	loopIsr();
+	YIELD; // Make sure the watchdog is fed
+    }
+    return true;
 }
 #endif
 

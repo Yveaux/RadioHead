@@ -858,6 +858,12 @@
 /// module.
 ///
 /// Note: with RFM23BP, the reported maximum possible power when operating on 3.3V is 27dBm.
+/// The BP version is an RFM23 with a PA 
+/// external to the Silicon Labs radio chip.  
+/// The RFM23BP only supports the top three power settings because those three 
+/// output levels from the RFM23 provide enough drive to the PA to make it 
+/// saturate.  Less drive and the PA will dissipate more heat.  However, those 
+/// three levels don't change the output power from the PA.
 ///
 /// We have made some actual power measurements against
 /// programmed power for Sparkfun RFM22 wireless module under the following conditions:
@@ -926,15 +932,6 @@
 class RH_RF22 : public RHSPIDriver
 {
 public:
-#ifdef ESP8266
-	/// \brief Method only for ESP8266 to avoid SPI calls from the ISRs
-	///
-	/// This method is used only with ESP8266 platform and must be called from
-	/// the main loop. It checks if the Isr flags have been asserted and calls,
-	/// from the main loop, the interrupt handler methods (where SPI calls are
-	/// needed to process the communication).
-	void loopIsr();
-#endif
     /// \brief Defines register values for a set of modem configuration registers
     ///
     /// Defines register values for a set of modem configuration registers
@@ -1171,7 +1168,7 @@ public:
     /// recv()
     bool        available();
 
-#ifdef ESP8266
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
     /// Reimplementation of virtual waitPacketSent method only for ESP8266. This method calls
     /// the loopIsr method to check when a new interrupt is asserted and handles the interrupt
     /// service routine.
@@ -1329,6 +1326,16 @@ protected:
     /// idle current but slower transitions. Call this function after init().
     /// \param[in] idleMode The chip operating mode to use when the driver is idle. One of the valid definitions for RH_RF22_REG_07_OPERATING_MODE
     void setIdleMode(uint8_t idleMode);
+
+#if RH_PLATFORM == RH_PLATFORM_ESP8266
+	/// \brief Method only for ESP8266 to avoid SPI calls from the ISRs
+	///
+	/// This method is used only with ESP8266 platform and must be called from
+	/// the main loop. It checks if the Isr flags have been asserted and calls,
+	/// from the main loop, the interrupt handler methods (where SPI calls are
+	/// needed to process the communication).
+	void loopIsr();
+#endif
 
 protected:
     /// Low level interrupt service routine for RF22 connected to interrupt 0

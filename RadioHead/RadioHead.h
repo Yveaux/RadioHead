@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.107.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.108.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1025,6 +1025,10 @@ application. To purchase a commercial license, contact info@airspayce.com
 	     include RHEncryptedDriver.h without enabling the class with RH_ENABLE_ENCRYPTION_MODULE in RadioHead.h.<br>
 	     Fixed newly introduced errors when compiling for ATTiny 25/45/85.<br>
 
+\version 1.108 2020-07-05
+             Fixed a problem with RH_RF22 on ESP8266 introcuced in version 1.106 which prevented
+	     messages being received. Some other cleanups in RH_RF22<br>
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1272,7 +1276,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 107
+#define RH_VERSION_MINOR 108
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
