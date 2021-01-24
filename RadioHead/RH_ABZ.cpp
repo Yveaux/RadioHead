@@ -3,7 +3,8 @@
 // Copyright (C) 2020 Mike McCauley
 // $Id: RH_RF95.cpp,v 1.25 2020/05/22 04:47:33 mikem Exp mikem $
 
-#if (RH_PLATFORM == RH_PLATFORM_STM32L0) && defined STM32L082xx
+#if (RH_PLATFORM == RH_PLATFORM_STM32L0) && (defined STM32L082xx || defined STM32L072xx)
+
 #include <RH_ABZ.h>
 
 // Pointer to the _only_ permitted ABZ instance (there is only one radio connected to this device)

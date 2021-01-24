@@ -20,7 +20,7 @@ HardwareSPI SPI(1);
 HardwareSPI SPI(1);
 #elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS) // Mongoose OS platform
 HardwareSPI SPI(1);
-#elif (RH_PLATFORM == RH_PLATFORM_STM32L0) && defined STM32L082xx
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0) && (defined STM32L082xx || defined STM32L072xx)
  extern SPIClass radio_spi; // Created in RH_ABZ.cpp
  #define SPI radio_spi
 #endif
@@ -43,10 +43,6 @@ RHHardwareSPI::RHHardwareSPI(Frequency frequency, BitOrder bitOrder, DataMode da
     :
     RHGenericSPI(frequency, bitOrder, dataMode)
 {
-#if (RH_PLATFORM == RH_PLATFORM_STM32L0) && defined STM32L082xx
-//    stm32l0_spi_create(&RADIO_SPI, &RADIO_SPI_PARAMS);
-//    stm32l0_spi_enable(&RADIO_SPI);
-#endif
 }
 
 uint8_t RHHardwareSPI::transfer(uint8_t data) 

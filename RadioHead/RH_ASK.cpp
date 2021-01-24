@@ -180,7 +180,7 @@ void RH_ASK::timerSetup()
     TA0CCTL0 |= CCIE;               // CCR0 interrupt enabled
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32L0)
-    Serial.println("FIXME");
+    Serial.println("STM32L0 RH_ASK NOT YET IMPLEMENTED ");
     
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
     // Maple etc
