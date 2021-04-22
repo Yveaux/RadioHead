@@ -89,7 +89,7 @@
 #define RH_MRF89_CMOD_SLEEP                 0x00
 
 #define RH_MRF89_FBS                        0x18
-#define RH_MRF89_FBS_950_960                0x10
+#define RH_MRF89_FBS_950_960_or_863_870     0x10
 #define RH_MRF89_FBS_915_928                0x08
 #define RH_MRF89_FBS_902_915                0x00
 

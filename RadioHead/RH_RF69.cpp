@@ -230,8 +230,8 @@ void RH_RF69::handleInterrupt()
 void RH_RF69::readFifo()
 {
     ATOMIC_BLOCK_START;
-    digitalWrite(_slaveSelectPin, LOW);
     _spi.beginTransaction();
+    digitalWrite(_slaveSelectPin, LOW);
     _spi.transfer(RH_RF69_REG_00_FIFO); // Send the start address with the write mask off
     uint8_t payloadlen = _spi.transfer(0); // First byte is payload len (counting the headers)
     if (payloadlen <= RH_RF69_MAX_ENCRYPTABLE_PAYLOAD_LEN &&
@@ -522,6 +522,7 @@ bool RH_RF69::send(const uint8_t* data, uint8_t len)
 	return false;  // Check channel activity
 
     ATOMIC_BLOCK_START;
+     _spi.beginTransaction();
     digitalWrite(_slaveSelectPin, LOW);
     _spi.transfer(RH_RF69_REG_00_FIFO | RH_RF69_SPI_WRITE_MASK); // Send the start address with the write mask on
     _spi.transfer(len + RH_RF69_HEADER_LEN); // Include length of headers
@@ -534,6 +535,7 @@ bool RH_RF69::send(const uint8_t* data, uint8_t len)
     while (len--)
 	_spi.transfer(*data++);
     digitalWrite(_slaveSelectPin, HIGH);
+    _spi.endTransaction();
     ATOMIC_BLOCK_END;
 
     setModeTx(); // Start the transmitter

@@ -167,6 +167,7 @@ RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp
 RadioHead/tools/simBuild
+RadioHead/tools/createGPX.pl
 RadioHead/doc
 RadioHead/STM32ArduinoCompat/HardwareSerial.cpp
 RadioHead/STM32ArduinoCompat/HardwareSerial.h

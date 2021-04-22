@@ -108,7 +108,7 @@ FSK/GFSK/OOK modes are not (yet) supported.
 
 - RH_MRF89
 Works with Microchip MRF89XA and compatible transceivers.
-and modules such as MRF89XAM9A.
+and modules such as MRF89XAM9A and MRF89XAM8A.
 
 - RH_CC110
 Works with Texas Instruments CC110L transceivers and compatible modules such as
@@ -1076,6 +1076,22 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Move to local git for source code control.<br>
 	     Added support for RH_ABZ::deinit() for Matt Way.
 	     Fixed compilation error in RH_ASK caused by changes to interrupt API in Arduino_Core_STM32 1.9
+
+\version 1.114 2021-03-24
+             Fixed compile warnings, errors on some platforms, in RH_ASK.cpp for STM32 core 1.9.0
+	     to do with odd behaviour of callback_function_t.<br>
+	     Fixed some problems with SPI transactions in RH_RF69 and RH_RF24 that affected 
+	     operations with STM32F030F4. Reported and patched by Adam De Muri.<br>
+	     Added tools/createGPX.pl, contributed by Tilman Glötzner: A perl script to process the dump files that can be 
+	     produced with the  Dragino LoRa-GPS-hat and rf95_client2 + rf95_server2. 
+	     The programs exchange sequence numbers, timestamps and gps coordinates 
+	     via Lora which can be used for range measurements or visualization. The 
+	     perl script is meant for post processing and  converts the log files 
+	     into Gpx-files which in turn can be imported to google maps.<br>
+	     Added support for MRF89XAM9A, which has suport for different frequency bands to RH_MRF89. Patch courtesy 
+	     Michael Kefeder.
+
+
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */

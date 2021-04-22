@@ -117,7 +117,7 @@ bool RH_MRF89::init()
     // frequency bands 902-915 or 915-928
     // VCOT 60mV
     // OOK max 28kbps
-    // Based on 70622C.pdf, section 3.12: 
+    // Based on 70622C.pdf, section 3.12:
     spiWriteRegister(RH_MRF89_REG_00_GCONREG, RH_MRF89_CMOD_STANDBY | RH_MRF89_FBS_950_960 | RH_MRF89_VCOT_60MV);
     spiWriteRegister(RH_MRF89_REG_01_DMODREG, RH_MRF89_MODSEL_FSK | RH_MRF89_OPMODE_PACKET); // FSK, Packet mode, LNA 0dB
     spiWriteRegister(RH_MRF89_REG_02_FDEVREG, 0); // Set by setModemConfig
@@ -162,7 +162,8 @@ bool RH_MRF89::init()
     uint8_t syncwords[] = { 0x69, 0x81, 0x7e, 0x96 }; // Same as RH_MRF89XA
     setSyncWords(syncwords, sizeof(syncwords));
     setTxPower(RH_MRF89_TXOPVAL_1DBM);
-    if (!setFrequency(915.4))
+    // try first MRF89XAM9A then MRF89XAM8A
+    if (!setFrequency(915.4) && !setFrequency(865.0))
 	return false;
     // Some slow, reliable default speed and modulation
     if (!setModemConfig(FSK_Rb20Fd40))
@@ -469,24 +470,28 @@ bool RH_MRF89::setFrequency(float centre)
     uint8_t FBS;
     if (centre >= 902.0 && centre < 915.0)
     {
+	// The MRF89XAM9A does support this frequency band
 	FBS = RH_MRF89_FBS_902_915;
     }
     else if (centre >= 915.0 && centre <= 928.0)
     {
+	// The MRF89XAM9A does support this frequency band
 	FBS = RH_MRF89_FBS_915_928;
     }
     else if (centre >= 950.0 && centre <= 960.0)
     {
 	// Not all modules support this frequency band:
 	// The MRF98XAM9A does not
-	FBS = RH_MRF89_FBS_950_960;
+        // The MRF89XA does support this frequency band
+        FBS = RH_MRF89_FBS_950_960_or_863_870;
     }
-//    else if (centre >= 863.0 && centre <= 870.0)
-//    {
-//	// Not all modules support this frequency band:
-//	// The MRF98XAM9A does not
-//	FBS = RH_MRF89_FBS_950_960; // Yes same as above
-//    }
+    else if (centre >= 863.0 && centre <= 870.0)
+    {
+	// Not all modules support this frequency band:
+	// The MRF98XAM9A does not
+        // The MRF89XAM8A does support this frequency band
+        FBS = RH_MRF89_FBS_950_960_or_863_870;
+    }
     else
     {
 	// Cant do this freq

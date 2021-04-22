@@ -378,6 +378,8 @@
 /// // Slave Select is pin 10, interrupt is Pin 3
 /// RH_RF95 driver(10, 3);
 /// \endcode
+/// You can use the same constructor for Arduino Due, and this pinout diagram may be useful:
+/// http://www.robgray.com/temp/Due-pinout-WEB.png
 ///
 /// If you have a Rocket Scream Mini Ultra Pro with the RFM95W:
 /// - Ensure you have Arduino SAMD board support 1.6.5 or later in Arduino IDE 1.6.8 or later.

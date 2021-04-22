@@ -397,6 +397,7 @@ void RH_RF24::readNextFragment()
     // So we have room
     // Now read the fifo_len bytes from the RX FIFO
     // This is different to command() since we dont wait for CTS
+    _spi.beginTransaction();
     digitalWrite(_slaveSelectPin, LOW);
     _spi.transfer(RH_RF24_CMD_RX_FIFO_READ);
     uint8_t* p = _buf + _bufLen;
@@ -404,6 +405,7 @@ void RH_RF24::readNextFragment()
     while (l--)
 	*p++ = _spi.transfer(0);
     digitalWrite(_slaveSelectPin, HIGH);
+     _spi.endTransaction();
     _bufLen += fifo_len;
 }
 
@@ -631,6 +633,7 @@ bool RH_RF24::command(uint8_t cmd, const uint8_t* write_buf, uint8_t write_len, 
 
     ATOMIC_BLOCK_START;
     // First send the command
+     _spi.beginTransaction();
     digitalWrite(_slaveSelectPin, LOW);
     _spi.transfer(cmd);
 
@@ -669,6 +672,7 @@ bool RH_RF24::command(uint8_t cmd, const uint8_t* write_buf, uint8_t write_len, 
 	// Finalise the read
 	digitalWrite(_slaveSelectPin, HIGH);
     }
+    _spi.endTransaction();
     ATOMIC_BLOCK_END;
     return done; // False if too many attempts at CTS
 }
@@ -770,11 +774,13 @@ uint8_t RH_RF24::frr_read(uint8_t reg)
     // Do not wait for CTS
     ATOMIC_BLOCK_START;
     // First send the command
+    _spi.beginTransaction();
     digitalWrite(_slaveSelectPin, LOW);
     _spi.transfer(RH_RF24_PROPERTY_FRR_CTL_A_MODE + reg);
     // Get the fast response
     ret = _spi.transfer(0);
     digitalWrite(_slaveSelectPin, HIGH);
+    _spi.endTransaction();
     ATOMIC_BLOCK_END;
     return ret;
 }
