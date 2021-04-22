@@ -24,14 +24,24 @@ HardwareTimer timer(1);
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
 // Michael Cain
 DRAM_ATTR hw_timer_t * timer;
-
+//jPerotto Non-constant static data from ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/general-notes.html#dram-data-ram
+#define RH_DRAM_ATTR DRAM_ATTR  
+#else
+    #define RH_DRAM_ATTR 
 #endif
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
 // Define RH_ASK_ARDUINO_USE_TIMER2 if you want to use Timer 2 instead of Timer 1 on Arduino
-// You may need this to work around other librraies that insist on using timer 1
+// You may need this to work around other libraries that insist on using timer 1
 // Should be moved to header file
 //#define RH_ASK_ARDUINO_USE_TIMER2
+
+// RH_ASK on ATtiny8x uses Timer 0 to generate interrupts 8 times per bit interval. 
+// Timer 0 is used by Arduino platform for millis()/micros() which is used by delay()
+// Uncomment the define RH_ASK_ATTINY_USE_TIMER1 bellow, if you want to use Timer 1 instead of Timer 0 on ATtiny
+// Timer 1 is also used by some other libraries, e.g. Servo. Alway check usage of Timer 1 before enabling this.
+//  Should be moved to header file
+//#define RH_ASK_ATTINY_USE_TIMER1
 
 // Interrupt handler uses this to find the most recently initialised instance of this driver
 static RH_ASK* thisASKDriver;
@@ -40,7 +50,7 @@ static RH_ASK* thisASKDriver;
 // Used to convert the high and low nybbles of the transmitted data
 // into 6 bit symbols for transmission. Each 6-bit symbol has 3 1s and 3 0s 
 // with at most 3 consecutive identical bits
-static uint8_t symbols[] =
+RH_DRAM_ATTR static uint8_t symbols[] =
 {
     0xd,  0xe,  0x13, 0x15, 0x16, 0x19, 0x1a, 0x1c, 
     0x23, 0x25, 0x26, 0x29, 0x2a, 0x2c, 0x32, 0x34
@@ -95,10 +105,13 @@ bool RH_ASK::init()
 }
 
 // Put these prescaler structs in PROGMEM, not on the stack
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) || (RH_PLATFORM == RH_PLATFORM_ATTINY) 
  #if defined(RH_ASK_ARDUINO_USE_TIMER2)
  // Timer 2 has different prescalers
  PROGMEM static const uint16_t prescalers[] = {0, 1, 8, 32, 64, 128, 256, 3333}; 
+#elif defined(RH_ASK_ATTINY_USE_TIMER1) && defined(TCCR1)
+ // ATtiny85 Timer1 prescalers
+ PROGMEM static const uint16_t prescalers[] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 1024, 2048, 4096, 8192, 16384, 33333}; 
  #else
  PROGMEM static const uint16_t prescalers[] = {0, 1, 8, 64, 256, 1024, 3333}; 
  #endif
@@ -111,7 +124,7 @@ bool RH_ASK::init()
 // returns 0 & nticks = 0 on fault
 uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
 {
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) || (RH_PLATFORM == RH_PLATFORM_ATTINY)
     // Clock divider (prescaler) values - 0/3333: error flag
     uint8_t prescaler;     // index into array & return bit value
     unsigned long ulticks; // calculate by ntick overflow
@@ -235,7 +248,39 @@ void RH_ASK::timerSetup()
     uint8_t prescaler = timerCalc(_speed, (uint8_t)-1, &nticks);
     if (!prescaler)
         return; // fault
+ #if defined(RH_ASK_ATTINY_USE_TIMER1)
+   #if defined(TCCR1)
+    // ATtiny85
+    TCCR1 = 0;
+    TCCR1 = _BV(CTC1); // Turn on CTC mode / Output Compare pins disconnected
 
+    // convert prescaler index to TCCR1 prescaler bits CS10, CS11, CS12, CS13
+    TCCR1 |= prescaler; // set CS10, CS11, CS12, CS13 (other bits not needed)
+
+    // Number of ticks to count before firing interrupt
+    OCR1A = uint8_t(nticks);
+    //  Number of ticks to count before counter reset (CTC mode)
+    OCR1C = uint8_t(nticks);
+    // Synchronous mode and PLL disabled
+    PLLCSR = 0;
+    // Set mask to fire interrupt when OCF1A bit is set in TIFR1
+    TIMSK |= _BV(OCIE1A); 
+   #else //TCCR1
+    // ATtiny84
+    TCCR1A = 0; // Output Compare pins disconnected
+    TCCR1B = _BV(WGM12); // Turn on CTC mode
+
+    // convert prescaler index to TCCRnB prescaler bits CS10, CS11, CS12
+    TCCR1B |= prescaler;
+    TCCR1C = 0;
+
+    // Caution: special procedures for setting 16 bit regs
+    // is handled by the compiler
+    OCR1A = nticks;
+    //enable interupt
+    TIMSK1 |= _BV(OCIE1A);   
+   #endif //
+  #else //RH_ASK_ATTINY_USE_TIMER1
     TCCR0A = 0;
     TCCR0A = _BV(WGM01); // Turn on CTC mode / Output Compare pins disconnected
 
@@ -255,7 +300,7 @@ void RH_ASK::timerSetup()
     // ATtiny85
     TIMSK |= _BV(OCIE0A);
    #endif
-
+  #endif //RH_ASK_ATTINY_USE_TIMER1
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
     // If your processor does not have a TCB1, you can change the timer used in RadioHead.h
     volatile TCB_t* timer = &RH_ATTINY_MEGA_ASK_TIMER;
@@ -659,7 +704,11 @@ uint8_t RH_ASK::maxMessageLength()
   #define RH_ASK_TIMER_VECTOR TIMER1_COMPA_vect
  #endif
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
+#if defined(RH_ASK_ATTINY_USE_TIMER1)
+  #define RH_ASK_TIMER_VECTOR TIM1_COMPA_vect
+ #else 
   #define RH_ASK_TIMER_VECTOR TIM0_COMPA_vect
+ #endif //RH_ASK_ATTINY_USE_TIMER1
 #elif (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
  #define __COMB(a,b,c) (a##b##c)
  #define _COMB(a,b,c) __COMB(a,b,c)
@@ -708,7 +757,7 @@ void interrupt()
 {
     thisASKDriver->handleTimerInterrupt();
 }
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8)
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) || (RH_PLATFORM == RH_PLATFORM_ATTINY)
 // This is the interrupt service routine called when timer1 overflows
 // Its job is to output the next bit from the transmitter (every 8 calls)
 // and to call the PLL code if the receiver is enabled

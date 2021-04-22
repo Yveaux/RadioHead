@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.113.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.116.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1088,11 +1088,19 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     via Lora which can be used for range measurements or visualization. The 
 	     perl script is meant for post processing and  converts the log files 
 	     into Gpx-files which in turn can be imported to google maps.<br>
-	     Added support for MRF89XAM9A, which has suport for different frequency bands to RH_MRF89. Patch courtesy 
+	     Added support for MRF89XAM8A, which has support for different frequency bands to RH_MRF89. Patch courtesy 
 	     Michael Kefeder.
 
 \version 1.115 2021-03-24
-             Fix compile error in new MRF89XAM9A support.
+             Fix compile error in new MRF89XAM8A support.
+
+\version 1.116 2021-03-30
+             Patch from Vlasta Hajek: 1.  Made RH_ASK usable again for ATTINY after breaking changes.
+	     2. Added the possibility to use Timer 1 on ATtiny8x. Tested on ATtiny 85 
+	     and ATtiny84 for more than a year.
+	     3. Added patch for ESP32 from jPerotto. This finally makes receiving via 
+	     RH_ASK on ESP32 without panics. Tested for more than 6 months.<br>
+
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1341,7 +1349,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 113
+#define RH_VERSION_MINOR 116
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
