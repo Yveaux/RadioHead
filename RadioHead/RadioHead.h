@@ -1091,7 +1091,8 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Added support for MRF89XAM9A, which has suport for different frequency bands to RH_MRF89. Patch courtesy 
 	     Michael Kefeder.
 
-
+\version 1.115 2021-03-24
+             Fix compile error in new MRF89XAM9A support.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */

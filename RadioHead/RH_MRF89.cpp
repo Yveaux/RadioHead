@@ -118,7 +118,8 @@ bool RH_MRF89::init()
     // VCOT 60mV
     // OOK max 28kbps
     // Based on 70622C.pdf, section 3.12:
-    spiWriteRegister(RH_MRF89_REG_00_GCONREG, RH_MRF89_CMOD_STANDBY | RH_MRF89_FBS_950_960 | RH_MRF89_VCOT_60MV);
+
+    spiWriteRegister(RH_MRF89_REG_00_GCONREG, RH_MRF89_CMOD_STANDBY | RH_MRF89_FBS_902_915 | RH_MRF89_VCOT_60MV);
     spiWriteRegister(RH_MRF89_REG_01_DMODREG, RH_MRF89_MODSEL_FSK | RH_MRF89_OPMODE_PACKET); // FSK, Packet mode, LNA 0dB
     spiWriteRegister(RH_MRF89_REG_02_FDEVREG, 0); // Set by setModemConfig
     spiWriteRegister(RH_MRF89_REG_03_BRSREG,  0); // Set by setModemConfig
