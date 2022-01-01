@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.118.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.119.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1130,6 +1130,10 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Fixed problems reported with crashes in RH_ASK on STM32 boards with core >= 1.9.0 due to 
 	     incorrect declaration of interrupt function.  <br>
 
+\version 1.119 2021-08-02
+             Changes to RadioHead.h RHHardwareSPI.cpp and RHSPIDriver.cpp for ESP32 support
+	     provided by Juliano Perotto.
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1377,7 +1381,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 118
+#define RH_VERSION_MINOR 119
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1635,7 +1639,7 @@ these examples and explanations and extend them to suit your needs.
 ////////////////////////////////////////////////////
 // This is an attempt to make a portable atomic block
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
-#if defined(__arm__)
+ #if defined(__arm__)
   #include <RHutil/atomic.h>
  #else
   #include <util/atomic.h>
@@ -1661,6 +1665,10 @@ these examples and explanations and extend them to suit your needs.
 // See hardware/esp8266/2.0.0/cores/esp8266/Arduino.h
  #define ATOMIC_BLOCK_START { uint32_t __savedPS = xt_rsil(15);
  #define ATOMIC_BLOCK_END xt_wsr_ps(__savedPS);}
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+// jPerotto see hardware/esp32/1.0.4/tools/sdk/include/esp32/xtensa/xruntime.h
+ #define ATOMIC_BLOCK_START uint32_t volatile register ilevel = XTOS_DISABLE_ALL_INTERRUPTS;
+ #define ATOMIC_BLOCK_END XTOS_RESTORE_INTLEVEL(ilevel);
 #else 
  // TO BE DONE:
  #define ATOMIC_BLOCK_START
@@ -1686,6 +1694,9 @@ these examples and explanations and extend them to suit your needs.
    void mgosYield(void);
  }
  #define YIELD mgosYield()
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+ // ESP32 also has it
+ #define YIELD yield();
 #else
  #define YIELD
 #endif
@@ -1725,6 +1736,13 @@ these examples and explanations and extend them to suit your needs.
  #elif (RH_PLATFORM == RH_PLATFORM_UNO32) || (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
   // Hmmm, this is correct for Uno32, but what about other boards on ChipKIT Core?
   #define digitalPinToInterrupt(p) ((p) == 38 ? 0 : ((p) == 2 ? 1 : ((p) == 7 ? 2 : ((p) == 8 ? 3 : ((p) == 735 ? 4 : NOT_AN_INTERRUPT)))))
+
+ #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+  #define digitalPinToInterrupt(p) (((p) < 40) ? (p) : -1)
+
+ #elif (RH_PLATFORM == RH_PLATFORM_ESP8266)
+  #define digitalPinToInterrupt(p) (((p) < EXTERNAL_NUM_INTERRUPTS)? (p) : NOT_AN_INTERRUPT)
+
 
  #else
   // Everything else (including Due and Teensy) interrupt number the same as the interrupt pin number

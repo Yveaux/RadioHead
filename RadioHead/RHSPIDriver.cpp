@@ -41,7 +41,7 @@ bool RHSPIDriver::init()
     return true;
 }
 
-uint8_t RHSPIDriver::spiRead(uint8_t reg)
+uint8_t RH_INTERRUPT_ATTR RHSPIDriver::spiRead(uint8_t reg)
 {
     uint8_t val = 0;
     ATOMIC_BLOCK_START;
@@ -55,7 +55,7 @@ uint8_t RHSPIDriver::spiRead(uint8_t reg)
     return val;
 }
 
-uint8_t RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
+uint8_t RH_INTERRUPT_ATTR RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
@@ -72,7 +72,7 @@ uint8_t RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
     return status;
 }
 
-uint8_t RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
+uint8_t RH_INTERRUPT_ATTR RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
@@ -87,7 +87,7 @@ uint8_t RHSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
     return status;
 }
 
-uint8_t RHSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
+uint8_t RH_INTERRUPT_ATTR RHSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t len)
 {
     uint8_t status = 0;
     ATOMIC_BLOCK_START;
