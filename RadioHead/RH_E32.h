@@ -12,6 +12,7 @@
 #define RH_E32_h
 
 #include <RHGenericDriver.h>
+#include <Stream.h>
 
 // The buffer in the E32 is 512 bytes, but we arbitrarily limit messages to a maximum of 58 octets
 // We use some for headers, keeping fewer for RadioHead messages
@@ -219,7 +220,6 @@
 /// permitted power level for unlicensed users in the ISM bands in most countries. Be sure you comply with your local
 /// regulations. Be a good neighbour and use the lowest power and fastest speed that you can.
 ///
-class Stream;
 class RH_E32 : public RHGenericDriver
 {
  public:
@@ -308,7 +308,7 @@ class RH_E32 : public RHGenericDriver
     /// You should be sure to call this function frequently enough to not miss any messages
     /// It is recommended that you call it in your main loop.
     /// \param[in] buf Location to copy the received message
-    /// \param[in,out] len Pointer to available space in buf. Set to the actual number of octets copied.
+    /// \param[in,out] len Pointer to the number of octets available in buf. The number be reset to the actual number of octets copied.
     /// \return true if a valid message was copied to buf
     bool recv(uint8_t* buf, uint8_t* len);
     

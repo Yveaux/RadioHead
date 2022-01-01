@@ -13,7 +13,7 @@
 #define RHEncryptedDriver_h
 
 #include <RHGenericDriver.h>
-#ifdef RH_ENABLE_ENCRYPTION_MODULE
+#if defined(RH_ENABLE_ENCRYPTION_MODULE) || defined(DOXYGEN)
 #include <BlockCipher.h>
 
 // Undef this if trailing 0 on each enrypted message is ok.

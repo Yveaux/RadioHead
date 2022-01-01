@@ -145,7 +145,7 @@ public:
     /// You should be sure to call this function frequently enough to not miss any messages.
     /// It is recommended that you call it in your main loop.
     /// \param[in] buf Location to copy the received message
-    /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
+    /// \param[in,out] len Pointer to the number of octets available in buf. The number be reset to the actual number of octets copied.
     /// \param[in] from If present and not NULL, the referenced uint8_t will be set to the SRC address
     /// \param[in] to If present and not NULL, the referenced uint8_t will be set to the DEST address
     /// \param[in] id If present and not NULL, the referenced uint8_t will be set to the ID
@@ -162,7 +162,7 @@ public:
     /// You should be sure to call this function frequently enough to not miss any messages.
     /// It is recommended that you call it in your main loop.
     /// \param[in] buf Location to copy the received message
-    /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
+    /// \param[in,out] len Pointer to the number of octets available in buf. The number be reset to the actual number of octets copied.
     /// \param[in] timeout Maximum time to wait in milliseconds
     /// \param[in] from If present and not NULL, the referenced uint8_t will be set to the SRC address
     /// \param[in] to If present and not NULL, the referenced uint8_t will be set to the DEST address

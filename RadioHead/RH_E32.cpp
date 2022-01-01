@@ -7,7 +7,6 @@
 #ifdef RH_HAVE_SERIAL // No serial
 
 #include <RH_E32.h>
-#include <Stream.h>
 
 RH_E32::RH_E32(Stream *s, uint8_t m0_pin, uint8_t m1_pin, uint8_t aux_pin)
   :

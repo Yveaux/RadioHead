@@ -26,16 +26,20 @@ bool RHGenericDriver::init()
 }
 
 // Blocks until a valid message is received
-void RHGenericDriver::waitAvailable()
+void RHGenericDriver::waitAvailable(uint16_t polldelay)
 {
     while (!available())
+      {
 	YIELD;
+	if (polldelay)
+	  delay(polldelay);
+      }
 }
 
 // Blocks until a valid message is received or timeout expires
 // Return true if there is a message available
 // Works correctly even on millis() rollover
-bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout)
+bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout, uint16_t polldelay)
 {
     unsigned long starttime = millis();
     while ((millis() - starttime) < timeout)
@@ -45,6 +49,8 @@ bool RHGenericDriver::waitAvailableTimeout(uint16_t timeout)
            return true;
 	}
 	YIELD;
+	if (polldelay)
+	  delay(polldelay);
     }
     return false;
 }

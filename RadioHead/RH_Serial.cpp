@@ -4,14 +4,6 @@
 // $Id: RH_Serial.cpp,v 1.17 2020/01/07 23:35:02 mikem Exp $
 
 #include <RH_Serial.h>
-#if (RH_PLATFORM == RH_PLATFORM_STM32F2)
-#elif defined (ARDUINO_ARCH_STM32F4)
- #include <libmaple/HardwareSerial.h>
-#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)
- #include <UART.h>
-#else
- #include <HardwareSerial.h>
-#endif
 #include <RHCRC.h>
 
 #ifdef RH_HAVE_SERIAL
@@ -43,18 +35,18 @@ bool RH_Serial::available()
     return _rxBufValid;
 }
 
-void RH_Serial::waitAvailable()
+void RH_Serial::waitAvailable(uint16_t polldelay)
 {
 #if (RH_PLATFORM == RH_PLATFORM_UNIX)
     // Unix version driver in RHutil/HardwareSerial knows how to wait without polling
     while (!available())
 	_serial.waitAvailable();
 #else
-    RHGenericDriver::waitAvailable();
+    RHGenericDriver::waitAvailable(polldelay);
 #endif
 }
 
-bool RH_Serial::waitAvailableTimeout(uint16_t timeout)
+bool RH_Serial::waitAvailableTimeout(uint16_t timeout, uint16_t polldelay)
 {
 #if (RH_PLATFORM == RH_PLATFORM_UNIX)
     // Unix version driver in RHutil/HardwareSerial knows how to wait without polling
@@ -65,10 +57,12 @@ bool RH_Serial::waitAvailableTimeout(uint16_t timeout)
         if (available())
            return true;
 	YIELD;
+	if (polldelay)
+	    delay(polldelay);
     }
     return false;
 #else
-    return RHGenericDriver::waitAvailableTimeout(timeout);
+    return RHGenericDriver::waitAvailableTimeout(timeout, polldelay);
 #endif
 }
 

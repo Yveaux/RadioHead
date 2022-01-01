@@ -1,5 +1,5 @@
 // RadioHead.h
-// Author: Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY
+// Author: Mike McCauley DO NOT CONTACT THE AUTHOR DIRECTLY
 // Copyright (C) 2014 Mike McCauley
 // $Id: RadioHead.h,v 1.89 2020/08/05 04:32:19 mikem Exp mikem $
 
@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.116.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.117.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -422,7 +422,7 @@ It is not to be confused with any other similar marks covering other goods and s
 
 \par Copyright
 
-This software is Copyright (C) 2011-2020 Mike McCauley. Use is subject to license
+This software is Copyright (C) 2011-2021 Mike McCauley. Use is subject to license
 conditions. The main licensing options available are GPL V3 or Commercial:
 
 \par Open Source Licensing GPL V3
@@ -1101,6 +1101,14 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     3. Added patch for ESP32 from jPerotto. This finally makes receiving via 
 	     RH_ASK on ESP32 without panics. Tested for more than 6 months.<br>
 
+\version 1.117 2021-05-26
+             Added documention to RH_MRF89 about how to achieve 1μA power consumption in sleep mode.
+	     Courtesy Fernando Faria.<br>
+	     Improved documentation for the meaning of 'len' in all recv*, as suggested by Sean. E. Sean.<br>
+	     waitAvailable and waitAvaiableTimeout now take an optional polldelay argument that 
+	     can be useful for introducing on multitasking systems where a driver requires polling.<br>
+	     Fixed compile errors with forward declarations in RH_E32.h and RH_Serial.h on Ardiono IDE on Windows 
+	     reported by Skywodd.
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1349,7 +1357,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 116
+#define RH_VERSION_MINOR 117
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

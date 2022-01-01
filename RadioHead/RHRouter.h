@@ -269,7 +269,7 @@ public:
     /// This is the preferred function for getting messages addressed to this node.
     /// If the message is not a broadcast, acknowledge to the sender before returning.
     /// \param[in] buf Location to copy the received message
-    /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
+    /// \param[in,out] len Pointer to the number of octets available in buf. The number be reset to the actual number of octets copied.
     /// \param[in] source If present and not NULL, the referenced uint8_t will be set to the SOURCE address
     /// \param[in] dest If present and not NULL, the referenced uint8_t will be set to the DEST address
     /// \param[in] id If present and not NULL, the referenced uint8_t will be set to the ID
@@ -283,7 +283,7 @@ public:
     /// Similar to recvfromAck(), this will block until either a valid message available for this node
     /// or the timeout expires. 
     /// \param[in] buf Location to copy the received message
-    /// \param[in,out] len Available space in buf. Set to the actual number of octets copied.
+    /// \param[in,out] len Pointer to the number of octets available in buf. The number be reset to the actual number of octets copied.
     /// \param[in] timeout Maximum time to wait in milliseconds
     /// \param[in] source If present and not NULL, the referenced uint8_t will be set to the SOURCE address
     /// \param[in] dest If present and not NULL, the referenced uint8_t will be set to the DEST address
