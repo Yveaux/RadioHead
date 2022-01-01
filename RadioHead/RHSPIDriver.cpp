@@ -63,6 +63,9 @@ uint8_t RHSPIDriver::spiWrite(uint8_t reg, uint8_t val)
     selectSlave();
     status = _spi.transfer(reg | RH_SPI_WRITE_MASK); // Send the address with the write mask on
     _spi.transfer(val); // New value follows
+    // Based on https://forum.pjrc.com/attachment.php?attachmentid=10948&d=1499109224
+    // Need this delay from some processors when running fast:
+    delayMicroseconds(1);
     deselectSlave();
     _spi.endTransaction();
     ATOMIC_BLOCK_END;

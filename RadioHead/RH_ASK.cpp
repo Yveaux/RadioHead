@@ -10,24 +10,25 @@
 
 #if (RH_PLATFORM == RH_PLATFORM_STM32)
     // Maple etc
-HardwareTimer timer(MAPLE_TIMER);
+  HardwareTimer timer(MAPLE_TIMER);
 
 #elif defined(BOARD_NAME)
-// ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
-HardwareTimer timer(TIM1);
+  // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+  HardwareTimer timer(TIM1);
     
 #elif defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
-// Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
-// And stm32duino    
-HardwareTimer timer(1);
+  // Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
+  // And stm32duino    
+  HardwareTimer timer(1);
+#endif
 
-#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
-// Michael Cain
-DRAM_ATTR hw_timer_t * timer;
-//jPerotto Non-constant static data from ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/general-notes.html#dram-data-ram
-#define RH_DRAM_ATTR DRAM_ATTR  
+#if (RH_PLATFORM == RH_PLATFORM_ESP32)
+  // Michael Cain
+  DRAM_ATTR hw_timer_t * timer;
+  //jPerotto Non-constant static data from ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/general-notes.html#dram-data-ram
+   #define RH_DRAM_ATTR DRAM_ATTR
 #else
-    #define RH_DRAM_ATTR 
+   #define RH_DRAM_ATTR 
 #endif
 
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
@@ -210,7 +211,7 @@ void RH_ASK::timerSetup()
     // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
     // Declaration of the callback function changed in 1.9. Sigh
  #if (STM32_CORE_VERSION >= 0x01090000)
-    callback_function_t interrupt();
+    void interrupt();
  #else
     void interrupt(HardwareTimer*); // defined below
  #endif

@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.117.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.118.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1110,6 +1110,26 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Fixed compile errors with forward declarations in RH_E32.h and RH_Serial.h on Ardiono IDE on Windows 
 	     reported by Skywodd.
 
+\version 1.118 2021-07-16
+             Added a 1 us delay in RHSPIDriver::spiWrite as recommended in 
+	     https://forum.pjrc.com/attachment.php?attachmentid=10948&d=1499109224 
+	     for corect operation with some fast processors. <br>
+	     Tested Ebyte E22-900T22S radios with serial interface and the examples from 
+	     examples/serial/serial_reliable_datagram_* on Linux. 
+	     These radios implement a transparent serial connection
+	     using LORA. They can also be configured as independent relays.
+	     You can alter the default configuration of the radios (including frequency, 
+	     transmission rates, node addresses etc) by using the 
+	     Ebyte RF Settings for E22 tool from https://www.cdebyte.net/download-tools and after
+	     setting the device to configuraiotn mode (M1 high: temporarily remove the M1 link). 
+	     Caution, to use this
+	     tool on Windows, you also must install the CH340 USB-Serial port driver, see
+	     https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all#windows-710   
+	     These modules can also be configured programatically, but this is not supported by RadioHead. <br>
+	     Fixed compile errors to do with RH_DRAM_ATTR on non-ESP-32 platforms. <br>
+	     Fixed problems reported with crashes in RH_ASK on STM32 boards with core >= 1.9.0 due to 
+	     incorrect declaration of interrupt function.  <br>
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1357,7 +1377,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 117
+#define RH_VERSION_MINOR 118
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
