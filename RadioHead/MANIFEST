@@ -27,6 +27,8 @@ RadioHead/RH_CC110.cpp
 RadioHead/RH_CC110.h
 RadioHead/RH_E32.cpp
 RadioHead/RH_E32.h
+RadioHead/RH_LoRaFileOps.cpp
+RadioHead/RH_LoRaFileOps.h
 RadioHead/RH_NRF24.cpp
 RadioHead/RH_NRF24.h
 RadioHead/RH_NRF51.cpp
@@ -163,6 +165,8 @@ RadioHead/examples/raspi/rf95/rf95_router_server1/rf95_router_server1.cpp
 RadioHead/examples/raspi/rf95/rf95_router_server1/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server1/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server1/rf95_mesh_server1.cpp
+RadioHead/examples/lorafileops/lorafileops_client/lorafileops_client.cpp
+RadioHead/examples/lorafileops/lorafileops_server/lorafileops_server.cpp
 RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp

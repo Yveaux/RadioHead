@@ -129,7 +129,7 @@ bool RH_CC110::init()
 
     spiWriteRegister(RH_CC110_REG_02_IOCFG0, RH_CC110_GDO_CFG_CRC_OK_AUTORESET);  // gdo0 interrupt on CRC_OK
     spiWriteRegister(RH_CC110_REG_06_PKTLEN, RH_CC110_MAX_PAYLOAD_LEN); // max packet length
-    spiWriteRegister(RH_CC110_REG_07_PKTCTRL1, RH_CC110_CRC_AUTOFLUSH); // no append status, crc autoflush, no addr check
+    spiWriteRegister(RH_CC110_REG_07_PKTCTRL1, RH_CC110_CRC_AUTOFLUSH | RH_CC110_APPEND_STATUS); // append status, crc autoflush, no addr check
     spiWriteRegister(RH_CC110_REG_08_PKTCTRL0, RH_CC110_PKT_FORMAT_NORMAL | RH_CC110_CRC_EN | RH_CC110_LENGTH_CONFIG_VARIABLE);
     spiWriteRegister(RH_CC110_REG_13_MDMCFG1, RH_CC110_NUM_PREAMBLE_4); // 4 preamble bytes, chan spacing not used
     spiWriteRegister(RH_CC110_REG_17_MCSM1, RH_CC110_CCA_MODE_RSSI_PACKET | RH_CC110_RXOFF_MODE_RX | RH_CC110_TXOFF_MODE_IDLE);
@@ -163,13 +163,17 @@ void RH_CC110::handleInterrupt()
 	// Radio is configured to stay in RX until we move it to IDLE after a CRC_OK message for us
 	// We only get interrupts in RX mode, on CRC_OK
 
+#if 0
+	// SIGH: reading RH_CC110_REG_34_RSSI here does not yield the RSSI of when the packet was received
+	// Must get it from the end of the packet read
 	uint8_t raw_rssi = spiBurstReadRegister(RH_CC110_REG_34_RSSI); // Was set when sync word was detected
 	// Conversion of RSSI value to received power level in dBm per TI section 5.18.2
 	if (raw_rssi >= 128) 
 	    _lastRssi = (((int16_t)raw_rssi - 256) / 2) - 74;
 	else 
 	    _lastRssi = ((int16_t)raw_rssi / 2) - 74;
-
+#endif
+	
 	_bufLen = spiReadRegister(RH_CC110_REG_3F_FIFO);
 	if (_bufLen < 4)
 	{
@@ -178,7 +182,16 @@ void RH_CC110::handleInterrupt()
 	    clearRxBuf();
 	    return;
 	}
-	spiBurstRead(RH_CC110_REG_3F_FIFO | RH_CC110_SPI_BURST_MASK | RH_CC110_SPI_READ_MASK, _buf, _bufLen);
+	
+	// Because we have RH_CC110_APPEND_STATUS set, we can read another 2 octets, the RSSI and the CRC state
+	spiBurstRead(RH_CC110_REG_3F_FIFO | RH_CC110_SPI_BURST_MASK | RH_CC110_SPI_READ_MASK, _buf, _bufLen + 2);
+	// And then decode the RSSI
+	int  raw_rssi = _buf[_bufLen];
+	if (raw_rssi >= 128) 
+	    _lastRssi = (((int16_t)raw_rssi - 256) / 2) - 74;
+	else 
+	    _lastRssi = ((int16_t)raw_rssi / 2) - 74;
+	
 	// All good so far. See if its for us
 	validateRxBuf(); 
 	if (_rxBufValid)

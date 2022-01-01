@@ -23,6 +23,9 @@ HardwareSPI SPI(1);
 #elif (RH_PLATFORM == RH_PLATFORM_STM32L0) && (defined STM32L082xx || defined STM32L072xx)
  extern SPIClass radio_spi; // Created in RH_ABZ.cpp
  #define SPI radio_spi
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32 && defined(RH_ESP32_USE_HSPI))
+ SPIClass SPI_HSPI(HSPI);
+ #define SPI SPI_HSPI
 #endif
 
 
@@ -99,11 +102,12 @@ void RHHardwareSPI::begin()
    else
        frequency = 1000000;
 
-#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(NRF52)
+#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(NRF52) || defined (ARDUINO_ARCH_RP2040)
     // Arduino Due in 1.5.5 has its own BitOrder :-(
     // So too does Arduino Zero
     // So too does rogerclarkmelbourne/Arduino_STM32
-    // So too does GrumpyOldPizza/ArduinoCore-stm32l0 
+    // So too does GrumpyOldPizza/ArduinoCore-stm32l0
+    // So too does RPI Pico
     ::BitOrder bitOrder;
 // This no longer relevant: new versions is uint8_t
 //#elif (RH_PLATFORM == RH_PLATFORM_ATTINY_MEGA)

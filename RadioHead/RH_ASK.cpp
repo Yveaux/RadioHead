@@ -11,6 +11,7 @@
 #if (RH_PLATFORM == RH_PLATFORM_STM32)
     // Maple etc
   HardwareTimer timer(MAPLE_TIMER);
+#elif defined(ARDUINO_ARCH_RP2040)
 
 #elif defined(BOARD_NAME)
   // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
@@ -125,7 +126,7 @@ bool RH_ASK::init()
 // returns 0 & nticks = 0 on fault
 uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
 {
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) || (RH_PLATFORM == RH_PLATFORM_ATTINY)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO && !defined(ARDUINO_ARCH_RP2040)) || (RH_PLATFORM == RH_PLATFORM_GENERIC_AVR8) || (RH_PLATFORM == RH_PLATFORM_ATTINY)
     // Clock divider (prescaler) values - 0/3333: error flag
     uint8_t prescaler;     // index into array & return bit value
     unsigned long ulticks; // calculate by ntick overflow
@@ -174,6 +175,15 @@ uint8_t RH_ASK::timerCalc(uint16_t speed, uint16_t max_ticks, uint16_t *nticks)
 #endif
 }
 
+#if defined(RH_PLATFORM_ARDUINO) && defined(ARDUINO_ARCH_RP2040)
+void set_pico_alarm(uint32_t speed)
+{
+    uint32_t period = (1000000 / 8) / speed; // In microseconds
+    uint64_t target = timer_hw->timerawl + period;
+    timer_hw->alarm[RH_ASK_PICO_ALARM_NUM] = (uint32_t) target;
+}
+#endif
+
 // The idea here is to get 8 timer interrupts per bit period
 void RH_ASK::timerSetup()
 {
@@ -207,25 +217,25 @@ void RH_ASK::timerSetup()
     // Pause the timer while we're configuring it
     timer.pause();
 
-#ifdef BOARD_NAME
+ #ifdef BOARD_NAME
     // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
     // Declaration of the callback function changed in 1.9. Sigh
- #if (STM32_CORE_VERSION >= 0x01090000)
+  #if (STM32_CORE_VERSION >= 0x01090000)
     void interrupt();
- #else
+  #else
     void interrupt(HardwareTimer*); // defined below
- #endif
+  #endif
     uint16_t us=(1000000/8)/_speed;
     timer.setMode(1, TIMER_OUTPUT_COMPARE);
     timer.setOverflow(us, MICROSEC_FORMAT);
     timer.setCaptureCompare(1, us - 1, MICROSEC_COMPARE_FORMAT);
- #if (STM32_CORE_VERSION >= 0x01090000)
+  #if (STM32_CORE_VERSION >= 0x01090000)
     timer.attachInterrupt(interrupt);
- #else
+  #else
     timer.attachInterrupt(1, interrupt);
- #endif
+  #endif
 
-#else
+ #else
     void interrupt(); // defined below
     // Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
     timer.setPeriod((1000000/8)/_speed);
@@ -234,7 +244,7 @@ void RH_ASK::timerSetup()
     timer.setCompare(TIMER_CH1, 1);  // Interrupt 1 count after each update
     void interrupt(); // defined below
     timer.attachCompare1Interrupt(interrupt);
-#endif    
+ #endif    
     // Refresh the timer's count, prescale, and overflow
     timer.refresh();
     
@@ -333,8 +343,6 @@ void RH_ASK::timerSetup()
     timer->CTRLA |= TCB_ENABLE_bm;
 
 #elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) // Arduino specific
-    uint16_t nticks; // number of prescaled ticks needed
-    uint8_t prescaler; // Bit values for CS0[2:0]
 
 
  #if defined(__arm__) && defined(CORE_TEENSY)
@@ -408,8 +416,18 @@ void RH_ASK::timerSetup()
     NVIC_ClearPendingIRQ(RH_ASK_DUE_TIMER_IRQ);
     NVIC_EnableIRQ(RH_ASK_DUE_TIMER_IRQ);
     TC_Start(RH_ASK_DUE_TIMER, RH_ASK_DUE_TIMER_CHANNEL);
+ #elif defined(ARDUINO_ARCH_RP2040)
+    // Per https://emalliab.wordpress.com/2021/04/18/raspberry-pi-pico-arduino-core-and-timers/
+    hw_set_bits(&timer_hw->inte, 1u << RH_ASK_PICO_ALARM_NUM);
+    void picoInterrupt(); // Forward declaration of interrupt handler
+    irq_set_exclusive_handler(RH_ASK_PICO_ALARM_IRQ, picoInterrupt);
+    irq_set_enabled(RH_ASK_PICO_ALARM_IRQ, true);
+    set_pico_alarm(_speed);
 
  #else
+    uint16_t nticks; // number of prescaled ticks needed
+    uint8_t prescaler; // Bit values for CS0[2:0]
+
     // This is the path for most Arduinos
     // figure out prescaler value and counter match value
   #if defined(RH_ASK_ARDUINO_USE_TIMER2)
@@ -739,6 +757,15 @@ void TC1_Handler()
     TC_GetStatus(RH_ASK_DUE_TIMER, 1);
     thisASKDriver->handleTimerInterrupt();
 }
+
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(ARDUINO_ARCH_RP2040)
+void picoInterrupt()
+{
+    hw_clear_bits(&timer_hw->intr, 1u << RH_ASK_PICO_ALARM_NUM);
+    set_pico_alarm(thisASKDriver->speed());
+    thisASKDriver->handleTimerInterrupt();
+}
+
 #elif defined(BOARD_NAME)
 // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
 // Declaration of the callback function changed in 1.9
@@ -752,7 +779,7 @@ void interrupt(HardwareTimer*)
 {
     thisASKDriver->handleTimerInterrupt();
 }
-#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4))
+#elif (RH_PLATFORM == RH_PLATFORM_ARDUINO) && (defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4) || defined(ARDUINO_ARCH_RP2040))
 // Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32
 void interrupt()
 {

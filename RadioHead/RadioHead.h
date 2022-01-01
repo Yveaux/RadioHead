@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.119.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.120.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -105,6 +105,13 @@ Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
 Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
 FSK/GFSK/OOK modes are not (yet) supported.
+
+Also works with the same chips on Linux using LoRa-file-ops Linux driver ioctls to
+transmit and receive RadioHead compatible messages. 
+Requires a modified version of LoRa-file-ops driver to be installed,
+and a compatible radio to be connected appropriately:
+https://github.com/starnight/LoRa/tree/file-ops
+See the RH_LoRaFileOps class documentation for more information.
 
 - RH_MRF89
 Works with Microchip MRF89XA and compatible transceivers.
@@ -255,7 +262,9 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
 
 - ESP32 built using Arduino IDE 1.8.9 or later using the ESP32 toolchain installed per
   https://github.com/espressif/arduino-esp32
-  The internal 2.4GHz radio is not yet supported. Tested with RFM22 using SPI interface
+  The internal 2.4GHz radio is not yet supported. Tested with RFM22 using SPI interface. 
+  Uses the VSPI SPI bus by default.
+  You can enable use of the alternative HSPI bus for SPI by defining RH_ESP32_USE_HSPI in RadioHead.h.
 
 - Raspberry Pi
   Uses BCM2835 library for GPIO http://www.airspayce.com/mikem/bcm2835/
@@ -275,6 +284,11 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/
 
 - muRata cmwx1zzabz module, which includes an STM32L0 processor,
   a SX1276 LoRa radio and an antenna switch.
+
+- Raspberry Pi Pico, on Arduino, using either the Raspberry Pi Pico/RP2040 core by Earle F. Philhower, version 1.93,
+  installed per https://arduino-pico.readthedocs.io/_/downloads/en/latest/pdf/
+  or the alternative Arduino MBED OS RP2040 core version 2.4.1. At this stage support is partial: RH_ASK works
+  but radio drivers that use interrupts do not (yet) work in either core.
 
 Other platforms are partially supported, such as Generic AVR 8 bit processors, MSP430. 
 We welcome contributions that will expand the range of supported platforms. 
@@ -1134,6 +1148,28 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Changes to RadioHead.h RHHardwareSPI.cpp and RHSPIDriver.cpp for ESP32 support
 	     provided by Juliano Perotto.
 
+\version 1.120 2021-11-13
+             Added intial support for Raspberry Pi Pico, using the Raspberry Pi Pico/RP2040 core by Earle F. Philhower, version 1.93,
+	     installed per https://arduino-pico.readthedocs.io/_/downloads/en/latest/pdf/
+	     RH_ASK works with default pins (11 and 12). But it seems that interrupt callbacks (needed by most SPI based
+	     radio drivers in RadioHead) are not working (yet) in this core, at least when compiled on our Linux platform. 
+	     It appears
+	     there is some bug in std::map that causes the interrupt handling to not work correctly 
+	     (which I have been able to reproduce in a simple sketch that only uses std::map). This is very strange.
+	     Interrupts _are_ supported and work in the alternative Arduino MBED OS RP2040 core version 2.4.1, 
+	     but there are other mysterious crashes RadioHead when a radio driver reads SPI inside an interrupt. 
+	     But RH_ASK also works with this core.
+	     So the result (so far) is partial support of RadioHead using either core (so far). 
+	     We will revisit this when either core is updated<br>
+	     On ESP32, added support for using the non-default HSPI bus by defining RH_ESP32_USE_HSPI.<br>
+	     Improved the reading of RSSI for the last packet in RH_CC110: seems that it was being read too soon. Now
+	     read it from the end received packet with RH_CC110_APPEND_STATUS.<br>
+             Added RH_LoRaFileOps, driver on RPi+Linux and using LoRa-file-ops Linux driver ioctls to
+	     transmit and receive RadioHead compatible messages via SX1276/77/78/79
+	     and compatible radios. Requires a modified version of LoRa-file-ops driver to be installed,
+	     and a compatible radio to be connected appropriately:
+	     https://github.com/starnight/LoRa/tree/file-ops <br>
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1381,7 +1417,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 119
+#define RH_VERSION_MINOR 120
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1404,6 +1440,7 @@ these examples and explanations and extend them to suit your needs.
 // Spencer Kondes megaTinyCore:						   
 #define RH_PLATFORM_ATTINY_MEGA      18
 #define RH_PLATFORM_STM32L0          19
+#define RH_PLATFORM_RASPI_PICO       20
 						   
 ////////////////////////////////////////////////////
 // Select platform automatically, if possible
@@ -1446,14 +1483,16 @@ these examples and explanations and extend them to suit your needs.
   #define RH_PLATFORM RH_PLATFORM_UNIX
  #elif defined(__APPLE__) // OSX
   #define RH_PLATFORM RH_PLATFORM_UNIX
+						   
  #else
   #error Platform not defined! 	
  #endif
 #endif
-
+						   
 ////////////////////////////////////////////////////
 // Platform specific headers:
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO)
+
  #if (ARDUINO >= 100)
   #include <Arduino.h>
  #else
@@ -1467,6 +1506,10 @@ these examples and explanations and extend them to suit your needs.
   // There seems to be no way to output text to the USB connection
   #undef Serial						   
   #define Serial Serial2
+ #elif defined(ARDUINO_ARCH_RP2040)
+  // Raspi Pico
+  #define RH_ASK_PICO_ALARM_IRQ TIMER_IRQ_1
+  #define RH_ASK_PICO_ALARM_NUM 1
  #endif
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
   #include <Arduino.h>
@@ -1499,8 +1542,21 @@ these examples and explanations and extend them to suit your needs.
  #define RH_HAVE_HARDWARE_SPI
  #define RH_HAVE_SERIAL
  #define RH_MISSING_SPIUSINGINTERRUPT
-
- #elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS) // Mongoose OS platform
+ // ESP32 has 2 user SPI buses: VSPI and HSPI. They are essentially identical, but use different pins.
+ // The usual, default bus VSPI (available as SPI object in Arduino) uses pins:
+ // SCLK:      18
+ // MISO:      19
+ // MOSI:      23
+ // SS:	       5
+ // The other HSPI bus uses pins
+ // SCLK:      14
+ // MISO:      12
+ // MOSI:      12
+ // SS:	       15
+ // By default RadioHead uses VSPI, but you can make it use HSPI by defining this:
+ //#define RH_ESP32_USE_HSPI
+						   
+#elif (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS) // Mongoose OS platform
   #include <mgos.h>
   #include <mgos_adc.h>
   #include <mgos_pwm.h>
@@ -1644,8 +1700,15 @@ these examples and explanations and extend them to suit your needs.
  #else
   #include <util/atomic.h>
  #endif
- #define ATOMIC_BLOCK_START     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
- #define ATOMIC_BLOCK_END }
+ #if defined(ARDUINO_ARCH_MBED_RP2040)
+  // Standard arduino ATOMIC block crashes on MBED version of Pico as at 2021-08-12						   
+  #define ATOMIC_BLOCK_START {
+  #define ATOMIC_BLOCK_END }						   
+ #else
+  // Most Arduinos
+  #define ATOMIC_BLOCK_START     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  #define ATOMIC_BLOCK_END }
+ #endif
 #elif (RH_PLATFORM == RH_PLATFORM_CHIPKIT_CORE)
  // UsingChipKIT Core on Arduino IDE
  #define ATOMIC_BLOCK_START unsigned int __status = disableInterrupts(); {
@@ -1751,7 +1814,7 @@ these examples and explanations and extend them to suit your needs.
 #endif
 
 // On some platforms, attachInterrupt() takes a pin number, not an interrupt number
-#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAM_DUE)) || defined(ARDUINO_ARCH_STM32L0)
+#if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAM_DUE)) || defined(ARDUINO_ARCH_STM32L0) 
  #define RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
 #endif
 

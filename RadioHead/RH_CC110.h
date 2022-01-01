@@ -880,7 +880,8 @@ private:
     volatile uint8_t    _bufLen;
     
     /// The receiver/transmitter buffer
-    uint8_t             _buf[RH_CC110_MAX_PAYLOAD_LEN];
+    /// Allow for 2 status bytes so we can read packet RSSI
+    uint8_t             _buf[RH_CC110_MAX_PAYLOAD_LEN + 2];
 
     /// True when there is a valid message in the buffer
     volatile bool       _rxBufValid;

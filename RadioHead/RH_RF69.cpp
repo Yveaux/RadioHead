@@ -194,9 +194,9 @@ bool RH_RF69::init()
 }
 
 // C++ level interrupt handler for this instance
-// RH_RF69 is unusual in Mthat it has several interrupt lines, and not a single, combined one.
+// RH_RF69 is unusual in that it has several interrupt lines, and not a single, combined one.
 // On Moteino, only one of the several interrupt lines (DI0) from the RH_RF69 is connnected to the processor.
-// We use this to get PACKETSDENT and PAYLOADRADY interrupts.
+// We use the single interrupt line to get PACKETSENT and PAYLOADREADY interrupts.
 void RH_RF69::handleInterrupt()
 {
     // Get the interrupt cause
@@ -208,6 +208,7 @@ void RH_RF69::handleInterrupt()
 	_txGood++;
 //	Serial.println("PACKETSENT");
     }
+
     // Must look for PAYLOADREADY, not CRCOK, since only PAYLOADREADY occurs _after_ AES decryption
     // has been done
     if (_mode == RHModeRx && (irqflags2 & RH_RF69_IRQFLAGS2_PAYLOADREADY))
