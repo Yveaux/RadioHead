@@ -173,9 +173,9 @@ RadioHead/examples/raspi/rf95/rf95_mesh_server1/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server1/rf95_mesh_server1.cpp
 RadioHead/examples/lorafileops/lorafileops_client/lorafileops_client.cpp
 RadioHead/examples/lorafileops/lorafileops_server/lorafileops_server.cpp
-RadioHead/examples/sx126x/stm32wlx_client/stmwl32wlx_client.ino
-RadioHead/examples/sx126x/stm32wlx_server/stmwl32wlx_server.ino
-RadioHead/examples/sx126x/stm32wlx_continuous/stmwl32wlx_continuous.ino
+RadioHead/examples/sx126x/stm32wlx_client/stm32wlx_client.ino
+RadioHead/examples/sx126x/stm32wlx_server/stm32wlx_server.ino
+RadioHead/examples/sx126x/stm32wlx_continuous/stm32wlx_continuous.ino
 RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp
