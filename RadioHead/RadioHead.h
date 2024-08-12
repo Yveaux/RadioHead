@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.122.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.123.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -188,8 +188,8 @@ Any Manager may be used with any Driver.
 
 A range of processors and platforms are supported:
 
-- Arduino and the Arduino IDE (version 1.0 to 1.8.1 and later)
-Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero and possibly others from http://arduino.cc/, 
+- Arduino and the Arduino IDE (version 1.0 to 1.8.1 and 2.1.1 and later)
+Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero, Minima and possibly others from http://arduino.cc/, 
   Also similar boards such as 
  - Moteino http://lowpowerlab.com/moteino/ 
  - Anarduino Mini http://www.anarduino.com/mini/ 
@@ -1186,6 +1186,9 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Fixed an error in the header lengths in RH_TCP, which could result in the last octet
 	     of the payload being lost. checkForEvents() now returns false instead of exit() in case of IO failure<br>
 
+\version 1.123 2023-08-07
+             Added support for Arduino Uno R4 Minima.
+
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1433,7 +1436,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 122
+#define RH_VERSION_MINOR 123
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

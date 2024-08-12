@@ -102,7 +102,7 @@ void RHHardwareSPI::begin()
    else
        frequency = 1000000;
 
-#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(NRF52) || defined (ARDUINO_ARCH_RP2040)
+#if ((RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined (__arm__) && (defined(ARDUINO_SAM_DUE) || defined(ARDUINO_ARCH_SAMD))) || defined(ARDUINO_ARCH_NRF52) || defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_ARCH_STM32L0) || defined(NRF52) || defined (ARDUINO_ARCH_RP2040)
     // Arduino Due in 1.5.5 has its own BitOrder :-(
     // So too does Arduino Zero
     // So too does rogerclarkmelbourne/Arduino_STM32
