@@ -27,7 +27,7 @@
   // And stm32duino    
   HardwareTimer timer(1);
 
-#elif defined(ARDUINO_UNOR4_MINIMA)
+#elif defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
   #include "FspTimer.h"
   FspTimer ask_timer;
 
@@ -436,7 +436,7 @@ void RH_ASK::timerSetup()
     irq_set_enabled(RH_ASK_PICO_ALARM_IRQ, true);
     set_pico_alarm(_speed);
     
- #elif defined(ARDUINO_UNOR4_MINIMA)
+ #elif defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
     uint8_t timer_type = GPT_TIMER;
     int8_t tindex = FspTimer::get_available_timer(timer_type);
     if (tindex < 0)
@@ -821,7 +821,7 @@ void interrupt()
     thisASKDriver->handleTimerInterrupt();
 }
 
-#elif  defined(ARDUINO_UNOR4_MINIMA)
+#elif  defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
 // callback method used by timer
 void timer_callback(timer_callback_args_t __attribute((unused)) *p_args)
 {
