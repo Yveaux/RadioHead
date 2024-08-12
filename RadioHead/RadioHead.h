@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.132.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.133.zip
 
 You can always find the latest version of the documentation at
 http://www.airspayce.com/mikem/arduino/RadioHead
@@ -1246,6 +1246,8 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Fixed problem with SX126x where a packet recieved with a CRC error would leave the chip in standby mode
 	     but RH_SX126x thought it was still in RX mode. Reported by kalev.<br>
 	     
+\version 1.133 2024-07-08
+             Revisit SX126x RX CRC error handling with the assistance of kalev.
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1494,7 +1496,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 132
+#define RH_VERSION_MINOR 133
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

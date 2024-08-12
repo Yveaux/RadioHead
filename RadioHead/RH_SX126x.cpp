@@ -202,8 +202,9 @@ void RH_SX126x::handleInterrupt()
 	// CrcErr HeaderErr
 	_rxBad++;
         clearRxBuf();
-	// If there was an error, the SX126x is now in standby mode. Need to put it back in RX mode
-	setModeRx();
+	// If there was an error, the SX126x is now in standby mode. Need to force RH state back to idle too
+	_mode = RHModeIdle;
+//	setModeRx(); // Keep trying?
     }
     else if (_mode == RHModeRx && (interrupts & RH_SX126x_IRQ_RX_DONE))
     {
