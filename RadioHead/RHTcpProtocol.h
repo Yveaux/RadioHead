@@ -53,6 +53,7 @@ typedef struct
 typedef struct
 {
     uint32_t        length; ///< Number of octets following, in network byte order
+    // 5 octets of header to follow for total of 9 octets
     uint8_t         type;   ///< == RH_TCP_MESSAGE_TYPE_PACKET
     uint8_t         to;     ///< Node address of the recipient
     uint8_t         from;   ///< Node address of the sender

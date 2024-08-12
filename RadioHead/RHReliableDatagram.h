@@ -27,7 +27,9 @@
 /// genuine retries will potentially be deduped. Note that this should not be enabled
 /// if you will receive messages from devices using older versions of this library that
 /// do not support the RETRY header. If you do, deduping of messages will be broken.
-#define RH_ENABLE_EXPLICIT_RETRY_DEDUP 0
+#ifndef RH_ENABLE_EXPLICIT_RETRY_DEDUP
+ #define RH_ENABLE_EXPLICIT_RETRY_DEDUP 0
+#endif
 
 /// the default retry timeout in milliseconds
 #define RH_DEFAULT_TIMEOUT 200

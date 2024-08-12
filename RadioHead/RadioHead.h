@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.121.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.122.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -105,7 +105,6 @@ Works with Semtech SX1276/77/78/79, Modtronix inAir4 and inAir9,
 and HopeRF RFM95/96/97/98 and other similar LoRa capable radios.
 Supports Long Range (LoRa) with spread spectrum frequency hopping, large payloads etc.
 FSK/GFSK/OOK modes are not (yet) supported.
-
 Also works with the same chips on Linux using LoRa-file-ops Linux driver ioctls to
 transmit and receive RadioHead compatible messages. 
 Requires a modified version of LoRa-file-ops driver to be installed,
@@ -150,6 +149,8 @@ testing of Manager classes on Linux and without need for real radios or other tr
 - RHEncryptedDriver
 Adds encryption and decryption to any RadioHead transport driver, using any encrpytion cipher
 supported by ArduinoLibs Cryptographic Library http://rweather.github.io/arduinolibs/crypto.html
+which also supports the newly adopted ASCON lightweight cryptography standard for IoT, as announced by 
+National Institute of Standards and Technology (NIST).
 
 Drivers can be used on their own to provide unaddressed, unreliable datagrams. 
 All drivers have the same identical API.
@@ -188,7 +189,8 @@ Any Manager may be used with any Driver.
 A range of processors and platforms are supported:
 
 - Arduino and the Arduino IDE (version 1.0 to 1.8.1 and later)
-Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero etc. http://arduino.cc/, Also similar boards such as 
+Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero and possibly others from http://arduino.cc/, 
+  Also similar boards such as 
  - Moteino http://lowpowerlab.com/moteino/ 
  - Anarduino Mini http://www.anarduino.com/mini/ 
  - RedBearLab Blend V1.0 http://redbearlab.com/blend/ (with Arduino 1.0.5 and RedBearLab Blend Add-On version 20140701) 
@@ -436,7 +438,7 @@ It is not to be confused with any other similar marks covering other goods and s
 
 \par Copyright
 
-This software is Copyright (C) 2011-2021 Mike McCauley. Use is subject to license
+This software is Copyright (C) 2011-2022 Mike McCauley. Use is subject to license
 conditions. The main licensing options available are GPL V3 or Commercial:
 
 \par Open Source Licensing GPL V3
@@ -1171,8 +1173,18 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     https://github.com/starnight/LoRa/tree/file-ops <br>
 
 \version 1.121 2022-02-02
-             Restored RH_RF95 code to clear the IRQ flags (twice).
+             Restored RH_RF95 code to clear the IRQ flags (twice).<br>
 
+\version 1.122 2023-05-20
+             Added RHRouter::getNextValidRoutingTableEntry() contributed by w...<br>
+	     Various compatibility imnprovements for STM32L0 etc from Calin Radoni.<br>
+	     Added ability to overriding the value of RH_ENABLE_EXPLICIT_RETRY_DEDUP
+	     via a compiler arg. Example from PlatformIO:
+	     build_flags =
+	      -D"RH_ENABLE_EXPLICIT_RETRY_DEDUP=1"
+	      Contributed by Justin Newitter.<br>
+	     Fixed an error in the header lengths in RH_TCP, which could result in the last octet
+	     of the payload being lost. checkForEvents() now returns false instead of exit() in case of IO failure<br>
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1421,7 +1433,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 121
+#define RH_VERSION_MINOR 122
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1613,12 +1625,16 @@ these examples and explanations and extend them to suit your needs.
  #define Serial SerialUSB
  #define RH_HAVE_SERIAL
 
-#elif (RH_PLATFORM == RH_PLATFORM_STM32L0)  // https://github.com/GrumpyOldPizza/ArduinoCore-stm32l0
+#elif (RH_PLATFORM == RH_PLATFORM_STM32L0)
  #include <Arduino.h>
  #include <SPI.h>
- #include <stm32l0_gpio.h>
- #include <stm32l0_exti.h>
- #include <stm32l0_rtc.h>
+ // Can define this in platformio.ini						   
+ #ifndef RH_EXCLUDE_STM32L0_INCLUDES
+  // https://github.com/GrumpyOldPizza/ArduinoCore-stm32l0
+  #include <stm32l0_gpio.h>
+  #include <stm32l0_exti.h>
+  #include <stm32l0_rtc.h>
+ #endif
  #define RH_HAVE_HARDWARE_SPI
  #define RH_HAVE_SERIAL 
 
@@ -1894,6 +1910,22 @@ these examples and explanations and extend them to suit your needs.
 
 // Specifies an invalid IO pin selection
 #define RH_INVALID_PIN       0xff
+
+// Here we have some system wide macroses you can define to alter the baviour of RadioHead
+// in various ways. The Ardiono IDE has no way to configure such things at compile time so
+// on that pltform you are forced to edit these macros here.
+// On platformio you can add them to platformio.ini like, say:
+// -D RH_ACK_DELAY=10`
+
+// Uncomment this to add a delay before acknowledgement in RHReliableDatagram.
+// In some networks with mixed processor speeds, may need this delay to prevent a
+// fast processor sending an ack before the receiver is ready for it.
+// The time is in milliseconds
+// #define  RH_ACK_DELAY 10
+
+// RH_Uncomment this to control which timer used by RH_ASK in some platforms like
+// STM32:
+// #define  RH_HW_TIMER TIM21`
 
 // Uncomment this is to enable Encryption (see RHEncryptedDriver):
 // But ensure you have installed the Crypto directory from arduinolibs first:

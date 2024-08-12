@@ -15,7 +15,12 @@
 
 #elif defined(BOARD_NAME)
   // ST's Arduino Core STM32, https://github.com/stm32duino/Arduino_Core_STM32
+ #if defined(RH_HW_TIMER)
+ // Can define your own timer name based on macros defs passed to compiler eg in platformio.ini
+  HardwareTimer timer(RH_HW_TIMER);
+ #else
   HardwareTimer timer(TIM1);
+ #endif
     
 #elif defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32F1) || defined(ARDUINO_ARCH_STM32F3) || defined(ARDUINO_ARCH_STM32F4)
   // Roger Clark Arduino STM32, https://github.com/rogerclarkmelbourne/Arduino_STM32

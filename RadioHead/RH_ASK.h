@@ -155,6 +155,9 @@
 /// - Transceivers
 ///  - DR3100 (433.92MHz)
 ///
+/// \par Interoperation with other systems
+/// RH_ASK is reported to be supported by RTL-SDR https://www.rtl-sdr.com/tag/rtl_433/
+///
 /// \par Connecting to Arduino
 ///
 /// Most transmitters can be connected to Arduino like this:

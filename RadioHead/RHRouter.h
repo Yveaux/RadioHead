@@ -222,6 +222,15 @@ public:
     /// routing table using Serial
     void printRoutingTable();
 
+    /// Method for iterating through the current routing table
+    /// \param [inout] RTE_p If a valid entry is found, the entry is copied to this structure
+    ///    caller is responsible for alloocating and deallocating the structure.
+    /// \param [inout] lastIndex_p points to the index to start searching from. Set to the
+    ///   index of the next valid route found. Set this to -1 to start the search.
+    /// \return false if next entry is valid, true if finished with table.
+    bool getNextValidRoutingTableEntry(RoutingTableEntry *RTE_p, int *lastIndex_p); //blase 7/27/20 
+
+
     /// Sends a message to the destination node. Initialises the RHRouter message header 
     /// (the SOURCE address is set to the address of this node, HOPS to 0) and calls 
     /// route() which looks up in the routing table the next hop to deliver to and sends the 

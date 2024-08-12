@@ -100,6 +100,47 @@ RHRouter::RoutingTableEntry* RHRouter::getRouteTo(uint8_t dest)
 }
 
 ////////////////////////////////////////////////////////////////////
+//blase 7/27/20
+//allows one to scan through the routing table.
+bool RHRouter::getNextValidRoutingTableEntry(RoutingTableEntry *RTE_p, int *lastIndex_p)
+{
+  bool retval = false; // default
+  bool stop = false;
+  uint8_t startIndex;
+  
+  if (*lastIndex_p < 0)
+      startIndex = 0;
+  else
+      startIndex = *lastIndex_p + 1;
+  
+  if (startIndex >= RH_ROUTING_TABLE_SIZE)
+  {
+    return true; // finished, safety.
+  }
+  else
+  {
+    uint8_t i = startIndex;
+    do
+    {
+      if (_routes[i].state == Valid)
+      {
+        *RTE_p = _routes[i];
+        *lastIndex_p = i;
+        retval = true; //found one
+        stop = true;
+      }
+      else
+      {
+        i++;
+        if (i >= RH_ROUTING_TABLE_SIZE)
+	    stop = true; // no more entries
+      }
+    } while (!stop);
+  }
+  return retval;
+}
+
+////////////////////////////////////////////////////////////////////
 void RHRouter::deleteRoute(uint8_t index)
 {
     // Delete a route by copying following routes on top of it

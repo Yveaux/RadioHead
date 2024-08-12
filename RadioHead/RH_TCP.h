@@ -148,7 +148,8 @@ private:
     bool connectToServer();
 
     /// Check for new messages from the ether simulator server
-    void checkForEvents();
+    /// \return true if no faults (not necessarily if there was an event)
+    bool checkForEvents();
 
     /// Clear the receive buffer
     void clearRxBuf();

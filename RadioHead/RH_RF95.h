@@ -838,7 +838,7 @@ public:
     /// When false, does not send CRC in outgoing packets and does not require a CRC to be
     /// present on incoming packets. However if a CRC is present, it must be correct.
     /// Normally this should be left on (the default)
-    /// so that packets with a bad CRC are rejected. If turned off you wil be much more likely to receive
+    /// so that packets with a bad CRC are rejected. If turned off you will be much more likely to receive
     /// false noise packets.
     /// \param[in] on bool, true enables CRCs in incoming and outgoing packets, false disables them
     void setPayloadCRC(bool on);

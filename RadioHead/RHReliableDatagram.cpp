@@ -140,6 +140,15 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
 	    // Its a normal message not an ACK
 	    if (_to ==_thisAddress)
 	    {
+		// In some networks with mixed processor speeds, may need to delay
+		// the ack with a define in say platformio.ini:
+		#if defined(RH_ACK_DELAY)
+		// a fast processor should wait a little before sending the acknowledge message
+		unsigned long ts = millis();
+		while ((millis() - ts) <= RH_ACK_DELAY)
+		    YIELD;
+                #endif
+
 	        // Its for this node and
 		// Its not a broadcast, so ACK it
 		// Acknowledge message with ACK set in flags and ID set to received ID

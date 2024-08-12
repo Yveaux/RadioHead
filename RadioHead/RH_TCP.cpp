@@ -111,11 +111,14 @@ void RH_TCP::clearRxBuf()
     _rxBufLen = 0;
 }
 
-void RH_TCP::checkForEvents()
+bool RH_TCP::checkForEvents()
 {
     #define RH_TCP_SOCKETBUF_LEN 500
     static uint8_t socketBuf[RH_TCP_SOCKETBUF_LEN]; // Room for several messages
     static uint16_t socketBufLen = 0;
+
+    if (_socket < 0)
+	return false;
 
     // Read at most the amount of space we have left in the buffer
     ssize_t count = read(_socket, socketBuf + socketBufLen, sizeof(socketBuf) - socketBufLen);
@@ -124,14 +127,18 @@ void RH_TCP::checkForEvents()
 	if (errno != EAGAIN)
 	{
 	    fprintf(stderr,"RH_TCP::checkForEvents read error: %s\n", strerror(errno));
-	    exit(1);
+	    close(_socket);
+	    _socket = -1;
+	    return false;
 	}
     }
     else if (count == 0)
     {
 	// End of file
 	fprintf(stderr,"RH_TCP::checkForEvents unexpected end of file on read\n");
-	exit(1);
+	close(_socket);
+	_socket = -1;
+	return false;
     }
     else
     {
@@ -145,7 +152,9 @@ void RH_TCP::checkForEvents()
 	    {
 		// Bogus length
 		fprintf(stderr, "RH_TCP::checkForEvents read ridiculous length: %d. Corrupt message stream? Aborting\n", len);
-		exit(1);
+		close(_socket);
+		_socket = -1;
+		return false;
 	    }
 	    if (socketBufLen >= len + sizeof(message->length))
 	    {
@@ -176,6 +185,7 @@ void RH_TCP::checkForEvents()
 	    }
 	}
     }
+    return true; // No faults
 }
 
 void RH_TCP::validateRxBuf()
@@ -194,7 +204,8 @@ bool RH_TCP::available()
 {
     if (_socket < 0)
 	return false;
-    checkForEvents();
+    if (checkForEvents())
+	return false;        // Som sort of IO failre
     if (_rxBufFull)
     {
 	validateRxBuf();
@@ -290,14 +301,14 @@ bool RH_TCP::sendPacket(const uint8_t* data, uint8_t len)
     if (_socket < 0)
 	return false;
     RHTcpPacket m;
-    m.length = htonl(len + 4);
+    m.length = htonl(len + 5); // 5 octets of header
     m.type  = RH_TCP_MESSAGE_TYPE_PACKET;
     m.to    = _txHeaderTo;
     m.from  = _txHeaderFrom;
     m.id    = _txHeaderId;
     m.flags = _txHeaderFlags;
     memcpy(m.payload, data, len);
-    ssize_t sent = write(_socket, &m, len + 8);
+    ssize_t sent = write(_socket, &m, len + 9); // length + 5 octets header
     return sent > 0;
 }
 
