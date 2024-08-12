@@ -236,12 +236,12 @@ private:
     uint8_t*                _buffer;
 };
 
-/// @example nrf24_encrypted_client.pde
-/// @example nrf24_encrypted_server.pde
-/// @example rf95_encrypted_client.pde
-/// @example rf95_encrypted_server.pde
-/// @example serial_encrypted_reliable_datagram_client.pde
-/// @example serial_encrypted_reliable_datagram_server.pde
+/// @example nrf24_encrypted_client.ino
+/// @example nrf24_encrypted_server.ino
+/// @example rf95_encrypted_client.ino
+/// @example rf95_encrypted_server.ino
+/// @example serial_encrypted_reliable_datagram_client.ino
+/// @example serial_encrypted_reliable_datagram_server.ino
 
 
 #else // RH_ENABLE_ENCRYPTION_MODULE

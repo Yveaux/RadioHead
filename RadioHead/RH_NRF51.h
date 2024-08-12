@@ -293,10 +293,10 @@ private:
 #endif
 };
 
-/// @example nrf51_client.pde
-/// @example nrf51_server.pde
-/// @example nrf51_reliable_datagram_client.pde
-/// @example nrf51_reliable_datagram_server.pde
-/// @example nrf51_audio_tx.pde
-/// @example nrf51_audio_rx.pde
+/// @example nrf51_client.ino
+/// @example nrf51_server.ino
+/// @example nrf51_reliable_datagram_client.ino
+/// @example nrf51_reliable_datagram_server.ino
+/// @example nrf51_audio_tx.ino
+/// @example nrf51_audio_rx.ino
 #endif 

@@ -138,7 +138,7 @@ void RHHardwareSPI::begin()
     // Save the settings for use in transactions
    _settings = SPISettings(frequency, bitOrder, dataMode);
    SPI.begin();
-    
+
 #else // SPI_HAS_TRANSACTION
     
     // Sigh: there are no common symbols for some of these SPI options across all platforms
@@ -217,10 +217,13 @@ void RHHardwareSPI::begin()
 	    break;
 
     }
+    
     SPI.setClockDivider(divider);
+
     SPI.begin();
     // Teensy requires it to be set _after_ begin()
     SPI.setClockDivider(divider);
+
 
 #elif (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
     spi_mode dataMode;

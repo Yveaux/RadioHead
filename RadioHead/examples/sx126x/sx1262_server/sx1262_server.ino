@@ -1,27 +1,14 @@
-// stm32wlx_server.ino
+// sx1262_server.ino
 // -*- mode: C++ -*-
 // Example sketch showing how to create a simple messageing server
-// with the RH_SX126X class. RH_SX126X class does not provide for addressing or
-// reliability, so you should only use on its own RH_SX126X if you do not need the higher
-// level messaging abilities.
-// It is designed to work with the other example stm32wlx_client or rf95_client
-// (dont forget to make sure the madulation schemes and frequencies are the same).
-//
-// In order to use the Arduino IDE to program the Wio-E5, you must
-// install the stm32duino package using these instructions:
-//   https://community.st.com/t5/stm32-mcus/stm32-arduino-stm32duino-tutorial/ta-p/49649
-// Tested with Wio-E5 mini. In Arduino, select:
-//   Tools -> Board -> STM32 MCU based boards -> LoRa boards
-//   Tools -> Board part number -> LoRa-E5 mini
-//   Tools -> U(S)ART support -> Enabled (generic Serial)
-//
-// Program with eg ST-LINK V2 (a red USB dongle). See the instructions in RH_STM32WLx.h
+// with the RH_SX126x class and a basic SX1262 module connected to an Arduino compatible processor
+// It is designed to work with the examples stm32wlx_client and sx1262_client.
+// Tested with G-Nice LoRa1262-915 and Teensy 3.1
 
-#include <RH_STM32WLx.h>
+#include <SPI.h>
+#include <RH_SX126x.h>
 
-// Single instance of the driver. The defaults will work for Seed WiO-E5 mini board, and other boards 
-// equipped with Seeed LoRa-E5 modules, such as NUCLEO_WL55JC1
-RH_STM32WLx driver;
+RH_SX126x driver(SS, 7, 8, 9); // NSS, DIO1, BUSY, NRESET
 
 void setup() 
 {

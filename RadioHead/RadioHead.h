@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.128.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.129.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -137,7 +137,9 @@ https://docs.platformio.org/en/latest/platforms/ststm32.html#arduino-stm32l0-con
 
 - RH_SX126x
 Works with Semtech SX1261/2/8 LoRa capable transceivers.
-Can be confgigured to automatically controls any digital output pins required to control external RF swicthes or amplifiers.
+Can be confgigured to automatically controls any digital output pins required to control external RF switches or amplifiers.
+Tested with NiceRF LoRa1268-915 and Teensy 3.1.
+https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
 
 - RH_STM32WLx
 Works with STM32WLE5xx and STM32WLE4xx family processors that include a SX1261/2 multi power amplifier transceiver.
@@ -1221,6 +1223,12 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 
 \version 1.128 2024-01-12
              Added missing sx126x examples to distribution.
+
+\version 1.129
+             Rename all .pde sketches to .ino
+	     Significant changes to RH_SX126x to support other modules such as the NiceRF LoRa1262 family.
+	     https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
+	     Sample client and server sketches demonstrating use, compatible with Teensy and other 3.3V compatible Arduinos.
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1469,7 +1477,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 128
+#define RH_VERSION_MINOR 129
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

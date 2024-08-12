@@ -182,7 +182,7 @@ public:
     /// Sets the flag determining if the node will participate in routing.
     /// if isa_router is true, the node will be a full participant. If false the node
     /// will only respond to
-    /// packets directed to its address. The default is true.
+    /// packets directed to its address, and act only as a leaf node in the network. The default is true.
     /// \param[in] isa_router true or false
     void setIsaRouter(bool isa_router);
 
@@ -343,9 +343,9 @@ private:
     RoutingTableEntry    _routes[RH_ROUTING_TABLE_SIZE];
 };
 
-/// @example rf22_router_client.pde
-/// @example rf22_router_server1.pde
-/// @example rf22_router_server2.pde
-/// @example rf22_router_server3.pde
+/// @example rf22_router_client.ino
+/// @example rf22_router_server1.ino
+/// @example rf22_router_server2.ino
+/// @example rf22_router_server3.ino
 #endif
 

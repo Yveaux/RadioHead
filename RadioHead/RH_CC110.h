@@ -890,7 +890,7 @@ private:
     bool                _is27MHz;
 };
 
-/// @example cc110_client.pde
-/// @example cc110_server.pde
+/// @example cc110_client.ino
+/// @example cc110_server.ino
 
 #endif

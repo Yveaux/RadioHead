@@ -39,12 +39,15 @@ PROGMEM static const RH_SX126x::ModemConfig MODEM_CONFIG_TABLE[] =
     { RH_SX126x::PacketTypeLoRa, RH_SX126x_LORA_SF_2048, RH_SX126x_LORA_BW_125_0, RH_SX126x_LORA_CR_4_5, RH_SX126x_LORA_LOW_DATA_RATE_OPTIMIZE_ON, 0, 0, 0, 0},
 };
 
-RH_SX126x::RH_SX126x(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi, RadioPinConfig* radioPinConfig)
+RH_SX126x::RH_SX126x(uint8_t slaveSelectPin, uint8_t interruptPin,  uint8_t busyPin, uint8_t resetPin,
+		     RHGenericSPI& spi, RadioPinConfig* radioPinConfig)
     :
     RHSPIDriver(slaveSelectPin, spi),
     _rxBufValid(0)
 {
     _interruptPin = interruptPin;
+    _busyPin = busyPin;
+    _resetPin = resetPin;
     _myInterruptIndex = 0xff; // Not allocated yet
     _enableCRC = true;
     // There should be (but may not be) a configuration structure toi tell us how to manage the
@@ -57,7 +60,6 @@ bool RH_SX126x::init()
     if (!RHSPIDriver::init())
 	return false;
 
-
 #ifdef RH_USE_MUTEX
     if (RH_MUTEX_INIT(lock) != 0)
     { 
@@ -69,7 +71,22 @@ bool RH_SX126x::init()
     if (!setupInterruptHandler())
 	return false;
 
-    
+    // Reset the radio, if we know the reset pin:
+    if (_resetPin != RH_INVALID_PIN)
+    {
+	pinMode(_resetPin, OUTPUT);
+	digitalWrite(_resetPin, HIGH);
+	digitalWrite(_resetPin, LOW);
+	delay(2);
+	digitalWrite(_resetPin, HIGH);
+	// Expect to be busy for about 1ms after this
+	delay(200); // After reset: else can get runt transmission during startup
+    }
+
+    // Configure the BUSY pin if available
+    if (_busyPin != RH_INVALID_PIN)
+	pinMode(_busyPin, INPUT);
+
     // No way to check the device type :-(
     // Can read data like 'SX1261 TKF 1A11', at register 0x0320 RH_SX126x_REG_VERSION_STRING but it does not change for SX1261
     
@@ -77,19 +94,22 @@ bool RH_SX126x::init()
     uint8_t status = getStatus();
     if (status == 0x00 || status == 0xff) // Should never get this: probably not connected by SPI
         return false;
-
     setModeIdle();
+    
     setRegulatorMode(RH_SX126x_REGULATOR_DC_DC); // == SMPS mode
     clearDeviceErrors();
     setRxFallbackMode(RH_SX126x_RX_TX_FALLBACK_MODE_STDBY_RC);
     calibrate(RH_SX126x_CALIBRATE_ALL); // All blocks get (re)calibrated when setFrequency() is called with calibrate true
     // This LoRa Sync word 0x1424 is compatible with single byte 0x12 default for RH_RF95.
     // https://forum.lora-developers.semtech.com/t/sx1272-and-sx1262-lora-sync-word-compatibility/988/13
-    setLoRaSyncWord(0x1424); 
-    setDIO2AsRfSwitchCtrl(false); // Dont use DIO2 as RF control for Wio-E5, which uses separate pins
-    setTCXO(1.7, 5000); // MUST do this (in standby mode) else get no output. volts, us
+    setLoRaSyncWord(0x1424);
+
+    // You may need to change these after init to suit your radio and its wiring:
+    setDIO2AsRfSwitchCtrl(true); // Use the radios DIO2 pin control the transmitter. This is common in 3rd party RF modules
+    setTCXO(3.3, 100); // Enable the TCXO. Typical values for the control voltage and delay
+
     // These are the interrupts we are willing to pocess
-    uint16_t interrupts =
+    const uint16_t interrupts =
 	  RH_SX126x_IRQ_CAD_DETECTED
 	| RH_SX126x_IRQ_CAD_DONE
 	| RH_SX126x_IRQ_CRC_ERR
@@ -106,7 +126,7 @@ bool RH_SX126x::init()
     setFrequency(915.0);
     // Lowish power
     setTxPower(13);
-    
+
     return true;
 }
 
@@ -152,7 +172,7 @@ bool RH_SX126x::setupInterruptHandler()
 		return false; // Too many devices, not enough interrupt vectors
 	}
 	_deviceForInterrupt[_myInterruptIndex] = this;
-	
+
 	if (_myInterruptIndex == 0)
 	    attachInterrupt(interruptNumber, isr0, RISING);
 	else if (_myInterruptIndex == 1)
@@ -289,6 +309,7 @@ bool RH_SX126x::available()
 
 void RH_SX126x::clearRxBuf()
 {
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     _rxBufValid = false;
     _bufLen = 0;
@@ -320,7 +341,7 @@ bool RH_SX126x::send(const uint8_t* data, uint8_t len)
 
     waitPacketSent(); // Make sure we dont interrupt an outgoing message
     setModeIdle();
-
+    
     if (!waitCAD()) 
 	return false;  // Check channel activity
 
@@ -328,15 +349,25 @@ bool RH_SX126x::send(const uint8_t* data, uint8_t len)
     // The headers
     uint8_t headers[RH_SX126x_HEADER_LEN] = {_txHeaderTo, _txHeaderFrom, _txHeaderId, _txHeaderFlags };
     writeBuffer(0, headers, sizeof(headers));
-    
+
     // The message data
     writeBuffer(RH_SX126x_HEADER_LEN, data, len);
     setPacketParametersLoRa(len + RH_SX126x_HEADER_LEN); // Tell modem how much to send
-
+    
     RH_MUTEX_LOCK(lock); // Multithreading support
     setModeTx(); // Start the transmitter
     RH_MUTEX_UNLOCK(lock);
-    
+
+    // Hmmmm, some chips fail to enter TX mode the first time,and need to be tried again
+    // Why?
+    if (getStatus() == 0x2a)
+    {
+	// Retry Tx mode directly
+	RH_MUTEX_LOCK(lock); // Multithreading support
+	setTx(RH_SX126x_RX_TIMEOUT_NONE); // Timeout 0
+	RH_MUTEX_UNLOCK(lock);
+    }
+	
     // when Tx is done, interruptHandler will fire and radio mode will return to STANDBY
     return true;
 }
@@ -412,6 +443,7 @@ void RH_SX126x::setModeTx()
     {
 	modeWillChange(RHModeTx);
 	setTx(RH_SX126x_RX_TIMEOUT_NONE); // Timeout 0
+	// Expect to be busy for about 0.5ms
 	_mode = RHModeTx;
     }
 }
@@ -482,23 +514,35 @@ int RH_SX126x::lastSNR()
 
 //////////////////////////////////////////////////
 // Specialised SPI routines.
-// This device has slightly different SPI behaviour.
+// This device has slightly unusual SPI behaviour: including no RH_SPI_WRITE_MASK, so need to rewrite
+// most SPI access functions
 
-void  RH_SX126x::beginTransaction()
+bool RH_SX126x::waitUntilNotBusy()
 {
-    _spi.beginTransaction();
-}
-
-void  RH_SX126x::endTransaction()
-{
-    _spi.endTransaction();
+    uint8_t busy_timeout_cnt = 0;
+    if (_busyPin == RH_INVALID_PIN)
+	return false;
+    
+    while (digitalRead(_busyPin))
+    {
+	delay(1);
+	busy_timeout_cnt++;
+		
+	if (busy_timeout_cnt > 10) // Should be configurable
+	{
+	    Serial.println("ERROR: waitUntilNotBusy TIMEOUT");
+	    return false;
+	}
+    }
+    return true; // OK
 }
 
 uint8_t RH_SX126x::getStatus()
 {
+    waitUntilNotBusy();
     uint8_t status;
     ATOMIC_BLOCK_START;
-    beginTransaction();  
+    beginTransaction();
     _spi.transfer(RH_SX126x_CMD_GET_STATUS);
     status = _spi.transfer(RH_SX126x_CMD_NOP);
     endTransaction();
@@ -508,6 +552,7 @@ uint8_t RH_SX126x::getStatus()
 
 bool RH_SX126x::sendCommand(uint8_t command, uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
 #if 0
     Serial.print("sendCommand ");
     Serial.print(command, HEX);
@@ -519,7 +564,7 @@ bool RH_SX126x::sendCommand(uint8_t command, uint8_t data[], uint8_t len)
     }
     Serial.println("");
 #endif
-    
+
     ATOMIC_BLOCK_START;
     beginTransaction();
     _spi.transfer(command);
@@ -527,6 +572,7 @@ bool RH_SX126x::sendCommand(uint8_t command, uint8_t data[], uint8_t len)
         _spi.transfer(data[i]);
     endTransaction();
     ATOMIC_BLOCK_END;
+
     return true;
 }
 
@@ -539,6 +585,7 @@ bool RH_SX126x::sendCommand(uint8_t command, uint8_t value)
 
 bool RH_SX126x::sendCommand(uint8_t command)
 {
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
     _spi.transfer(command);
@@ -549,6 +596,7 @@ bool RH_SX126x::sendCommand(uint8_t command)
 
 bool RH_SX126x::getCommand(uint8_t command, uint8_t data[], uint8_t len)
 { 
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
     _spi.transfer(command);
@@ -562,6 +610,7 @@ bool RH_SX126x::getCommand(uint8_t command, uint8_t data[], uint8_t len)
 
 bool RH_SX126x::readRegisters(uint16_t address, uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
     _spi.transfer(RH_SX126x_CMD_READ_REGISTER);
@@ -585,6 +634,7 @@ uint8_t RH_SX126x::readRegister(uint16_t address)
 
 bool RH_SX126x::writeRegisters(uint16_t address, uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
 #if 0
     Serial.print("writeRegisters ");
     Serial.print(address, HEX);
@@ -618,6 +668,7 @@ bool RH_SX126x::writeRegister(uint16_t address, uint8_t data)
 
 bool RH_SX126x::writeBuffer(uint8_t offset, const uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
     // A bit different to sendCommand because of offset
     ATOMIC_BLOCK_START;
     beginTransaction();
@@ -637,6 +688,7 @@ bool RH_SX126x::writeBuffer(uint8_t offset, const char* text)
 
 bool RH_SX126x::readBuffer(uint8_t offset, uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
     // This is a bit different from getCommand, because of offset
     ATOMIC_BLOCK_START;
     beginTransaction();
@@ -674,7 +726,7 @@ bool RH_SX126x::setTxPower(int8_t power)
     bool lp_supported = findRadioPinConfigEntry(RadioPinConfigMode_TX_LOW_POWER) != nullptr;
     bool hp_supported = findRadioPinConfigEntry(RadioPinConfigMode_TX_HIGH_POWER) != nullptr;
     bool useHP = false; // Whether we are to use the high or low power amp
-    
+
     // REVISIT: needs more work for reduced powers
     // Depends on if 1261 or 1262 or 1268
     if (hp_supported && lp_supported)
@@ -692,14 +744,12 @@ bool RH_SX126x::setTxPower(int8_t power)
 	power = constrain(power, -17, 15);
 	useHP = false;
     }
-    else if (hp_supported && !lp_supported) 
+    else // Assume only HP is available
     {
 	// -9 to +22 dBm
 	power = constrain(power, -9, 22);
 	useHP = true;
     }
-    else
-	return false;
     
     // Adjust for optimal settings per Table 13-1
     // CAUTION: needs to change for SX1268
@@ -1002,7 +1052,11 @@ bool RH_SX126x::setRx(uint32_t timeout)
         {static_cast<uint8_t>(timeout >> 16),
          static_cast<uint8_t>(timeout >> 8),
          static_cast<uint8_t>(timeout)};
-    return sendCommand(RH_SX126x_CMD_SET_RX, settings, sizeof(settings));
+    // Sigh, on some chips it doesnt enter RX mode on the first try, so try again.
+    // Why?
+    bool status = sendCommand(RH_SX126x_CMD_SET_RX, settings, sizeof(settings));
+    status = sendCommand(RH_SX126x_CMD_SET_RX, settings, sizeof(settings));
+    return status;
 }
 
 bool RH_SX126x::setCad()
@@ -1068,6 +1122,13 @@ uint16_t RH_SX126x::getIrqStatus()
     return ((uint16_t)status[0] << 8) | status[1];
 }
 
+uint8_t RH_SX126x::getPacketType()
+{
+    uint8_t ptype[1];
+    getCommand(RH_SX126x_CMD_GET_PKT_TYPE, ptype, sizeof(ptype));
+    return ptype[0];
+}
+
 void RH_SX126x::setInvertIQ(bool invertIQ)
 {
     _invertIQ = invertIQ;
@@ -1096,11 +1157,13 @@ bool RH_SX126x::setRadioPinsForMode(RadioPinConfigMode mode)
 
     for (uint8_t i = 0; i < RH_SX126x_MAX_RADIO_CONTROL_PINS ; i++)
     {
-//	Serial.print("set pin ");
-//	Serial.print(_radioPinConfig->pinNumber[i]);
-//	Serial.print(" to ");
-//	Serial.print(entry->pinState[i]);
-//	Serial.println("");
+#if 0
+	Serial.print("set pin ");
+	Serial.print(_radioPinConfig->pinNumber[i]);
+	Serial.print(" to ");
+	Serial.print(entry->pinState[i]);
+	Serial.println("");
+#endif
 	if (_radioPinConfig->pinNumber[i] != RH_INVALID_PIN)
 	    digitalWrite(_radioPinConfig->pinNumber[i], entry->pinState[i]);
     }

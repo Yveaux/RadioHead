@@ -561,8 +561,7 @@
 \brief Driver to send and receive unaddressed, unreliable datagrams via a
 Semtech SX126X family LoRa capable radio transceiver.
 
-Works with STM32WLE5JC (tested with Seeed WiO-E5 min)) and probably
-discrete SX1261, SX1262 (not tested here).
+Works with NiceRF LoRa1262-915 and Teensy 3.1. Will probably work with any other SX1262 module.
 
 \par Overview
 
@@ -709,7 +708,38 @@ ignore most or all of these issues.
 
 No range tests have yet been conducted.
 
+\par Connecting SX126x modules to Arduino
 
+Note, if you are using a STM32WLE5JC, see the intructions for that in RH_STM32WLx.h
+
+Connecting a NiceRF LoRa1262-915 to a Teensy 3.1:
+
+https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
+
+We got one on a breakout board
+which already has a small helical antenna connected. The module appears to contain a 3.3V TCXO, nd an antenna switch connected to DIO2
+You should be able to use a
+similar pinout for any 3.3V Arduino compatible board.
+
+
+\code
+                Teensy 3.1    G-Nice RF LoRa1262-915
+                GND----------GND   (Ground)
+                3V3----------VCC   (3.3V in)
+            pin D7-----------DIO1  (radio interrupt request out, active high)
+	    pin D8-----------BUSY  (radio busy output, active high)
+            pin D9-----------NRESET (radio reset in: pulled low for 2ms at startup)
+         SS pin D10----------NSS   (chip select in)
+        SCK pin D13----------SCK   (SPI clock in)
+       MOSI pin D11----------MOSI  (SPI Data in)
+       MISO pin D12----------MISO  (SPI Data out)
+                
+With these connections you can then use the constructor:
+
+RH_SX126x driver(SS, 7, 8, 9);
+
+
+\endcode
 
 
 */
@@ -826,11 +856,17 @@ public:
     /// See http://arduino.cc/en/Reference/attachInterrupt for more details.
     /// On Chipkit Uno32, pins 38, 2, 7, 8, 35.
     /// On other boards, any digital pin may be used.
+    /// \param[in] busyPin Pin number of pin connected to the radio's busy pin. The radio sets the busy pin high while it is busy
+    /// If this is not set to RH_INVALID_PIN (the default) then this module will wait for the busy pin to go low before
+    /// initialting the next SPI transfer. It is strongly recommended that you use this.
+    /// \param[in] resetPin Pin number of the pin connected to the radio's reset pin. If this is not set to RH_INVALID_PIN (the default) then this module will
+    /// assert the reset pin low for 2 ms during init() in order to reset the radio. It is strongly recommended that you use this
     /// \param[in] spi Pointer to the SPI interface object to use.
     /// \param[in] radioPinConfig pinter to a strucure that describes what pins are to be automatically set when changing
     /// the radio mode. This can be used to configure any external RF switches, RF amplifiers etc.
     ///                Defaults to the standard Arduino hardware SPI interface
-    RH_SX126x(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 2, RHGenericSPI& spi = hardware_spi, RadioPinConfig* radioPinConfig = nullptr);
+    RH_SX126x(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 2, uint8_t busyPin = RH_INVALID_PIN, uint8_t resetPin = RH_INVALID_PIN,
+	      RHGenericSPI& spi = hardware_spi, RadioPinConfig* radioPinConfig = nullptr);
     
     /// Initialise the Driver transport hardware and software.
     /// Leaves the radio in idle mode,
@@ -967,20 +1003,19 @@ public:
     /// a continuous carrier wave to air.
     bool setTxContinuous();
     
+    /// Read and return the radio status byte
+    uint8_t getStatus();
+
 protected:
 
     ///////////////////////////////////////////////////////////////////
-    // Follows low level functions for communicating with the SX126x
+    // Follow are low level functions for communicating with the SX126x
     // Caution should be used if accessing them in subclasses
 
-    /// Signals the beginning of an SPI transaction to the radio
-    void beginTransaction();
-
-    /// Signals the end of an SPI transaction to the radio
-    void endTransaction();
-
-    /// Read and return the radio status byte
-    uint8_t getStatus();
+    /// Wait until the busy pin (if speecified in the contructor) is no longer low
+    /// On timeout, prints an error to eSerial and returns false. Else returns true.
+    virtual bool waitUntilNotBusy();
+    
 
     /// Send a command with multi-byte data to the radio
     bool sendCommand(uint8_t command, uint8_t data[], uint8_t len);
@@ -1098,9 +1133,11 @@ protected:
     /// Clear the radio IRQ state
     bool clearIrqStatus(uint16_t mask);
 
-    
     /// Return the radio IRQ state
     uint16_t getIrqStatus();
+
+    /// return the current packet type
+    uint8_t getPacketType();
 
     /// From SX1262_datasheet.pdf: "When exchanging LoRa® packets with inverted IQ polarity,
     /// some packet losses may be observed for longer packet". THis function enables the workaround described in that section
@@ -1195,10 +1232,14 @@ private:
     /// Remember what PA type is required, depending on device type and radio pin configurations
     RadioPinConfigMode  _requiredPAMode = RadioPinConfigMode_IDLE; // One of PinConfigMode_TX_LOW_POWER PinConfigMode_TX_HIGH_POWER
 
+    /// Pin number of the radio BUSY pin, if available, else RH_INVALID_PIN
+    uint8_t             _busyPin;
+
+    /// Pin number of the radio NRESET pin, if available, else RH_INVALID_PIN
+    uint8_t             _resetPin;
 };
 
-/// @example stm32wlx_client.ino
-/// @example stm32wlx_server.ino
-/// @example stm32wlx_continuous.ino
+/// @example sx1262_client.ino
+/// @example sx1262_server.ino
 
 #endif

@@ -921,13 +921,13 @@ private:
     
 };
 
-/// @example rf95_client.pde
-/// @example rf95_client.pde
-/// @example rf95_server.pde
-/// @example rf95_encrypted_client.pde
-/// @example rf95_encrypted_server.pde
-/// @example rf95_reliable_datagram_client.pde
-/// @example rf95_reliable_datagram_server.pde
+/// @example rf95_client.ino
+/// @example rf95_client.ino
+/// @example rf95_server.ino
+/// @example rf95_encrypted_client.ino
+/// @example rf95_encrypted_server.ino
+/// @example rf95_reliable_datagram_client.ino
+/// @example rf95_reliable_datagram_server.ino
 
 #endif
 

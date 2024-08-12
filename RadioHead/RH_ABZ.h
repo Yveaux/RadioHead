@@ -192,7 +192,7 @@ private:
 
 };
 
-/// @example abz_client.pde
-/// @example abz_server.pde
+/// @example abz_client.ino
+/// @example abz_server.ino
 
 #endif

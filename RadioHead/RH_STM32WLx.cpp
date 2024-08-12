@@ -50,8 +50,22 @@ static RHSUBGHZSPI subghzspi;
 
 RH_STM32WLx::RH_STM32WLx()
     :
-    RH_SX126x(RH_INVALID_PIN, RH_INVALID_PIN, subghzspi, &radioPinConfig)
+    RH_SX126x(RH_INVALID_PIN, RH_INVALID_PIN, RH_INVALID_PIN, RH_INVALID_PIN, subghzspi, &radioPinConfig)
 {
+    SubGhz.setResetActive(true);
+    delay(2);
+    SubGhz.setResetActive(false);
+    delay(200); // After reset: else can get runt transmission during startup FIXME: wait until ready? No doesnt work
+}
+
+// Override the init() function becaue we need to adjust some things afterwards to suit this radio module
+bool RH_STM32WLx::init()
+{
+    bool ret = RH_SX126x::init(); // In STDBY mode after this
+    
+    setDIO2AsRfSwitchCtrl(false); // Dont use DIO2 as RF control for Wio-E5, which uses separate pins  FIXME: not correct for NICERF
+    setTCXO(1.7, 5000); // MUST do this (in standby mode) else get no output. volts, us
+    return ret;
 }
 
 bool RH_STM32WLx::setupInterruptHandler()
@@ -64,8 +78,6 @@ bool RH_STM32WLx::setupInterruptHandler()
     SubGhz.attachInterrupt([this]() {
 	handleInterrupt();
     });
-    SubGhz.setResetActive(false);
-    delay(200); // After reset: else can get runt transmission during startup FIXME: wait until ready? No doesnt work
 
     return true;
 }

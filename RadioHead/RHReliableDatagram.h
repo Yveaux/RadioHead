@@ -216,8 +216,8 @@ private:
     uint8_t _seenIds[256];
 };
 
-/// @example rf22_reliable_datagram_client.pde
-/// @example rf22_reliable_datagram_server.pde
+/// @example rf22_reliable_datagram_client.ino
+/// @example rf22_reliable_datagram_server.ino
 
 #endif
 

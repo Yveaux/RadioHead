@@ -1155,10 +1155,10 @@ private:
 
 };
 
-/// @example rf24_client.pde
-/// @example rf24_server.pde
-/// @example rf24_lowpower_client.pde
-/// @example rf24_reliable_datagram_client.pde
-/// @example rf24_reliable_datagram_server.pde
+/// @example rf24_client.ino
+/// @example rf24_server.ino
+/// @example rf24_lowpower_client.ino
+/// @example rf24_reliable_datagram_client.ino
+/// @example rf24_reliable_datagram_server.ino
 
 #endif

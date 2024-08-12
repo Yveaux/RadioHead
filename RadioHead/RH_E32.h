@@ -446,8 +446,8 @@ private:
 
 };
 
-/// @example e32_client.pde
-/// @example e32_server.pde
+/// @example e32_client.ino
+/// @example e32_server.ino
 
 #endif
 

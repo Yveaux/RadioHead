@@ -32,7 +32,6 @@ bool RHSPIDriver::init()
 
     deselectSlave();
 
-
     // This delay is needed for ATMega and maybe some others, but
     // 100ms is too long for STM32L0, and somehow can cause the USB interface to fail
     // in some versions of the core.
@@ -111,8 +110,8 @@ void RHSPIDriver::spiUsingInterrupt(uint8_t interruptNumber)
 void  RHSPIDriver::beginTransaction()
 {
     _spi.beginTransaction();
-    selectSlave();}
-
+    selectSlave();
+}
 
 void  RHSPIDriver::endTransaction()
 {

@@ -100,7 +100,7 @@ byte from the as-shipped value of 0xBB (Level 1 read protection) to
 
 - Wio-E5 mini as shipped
 - STLink/V2 or STLink/V2 emulator (we used the Adafruit 2548
-    https://www.adafruit.com/product/2548)
+    https://www.adafruit.com/product/2548). Its an emulator (a red cased USB dongle)
 - Host computer with USB ports (Linux, Mac or Windows)
 - STM32CubeProgrammer software
   https://www.st.com/en/development-tools/stm32cubeprog.html
@@ -110,11 +110,11 @@ byte from the as-shipped value of 0xBB (Level 1 read protection) to
 2. Wire the STLink/V2 to the Wio-E5 pins with the jumper wires
    provided. This will provide both power and
    communications with the STM32WLE5JC:
-   Wio-E5      STLink/V2
-   3.3V	       3.3V
-   GND	       GND
-   DIO	       SWDIO
-   CLK	       SWCLK
+   Wio-E5      STLink/V2 (writing on the end shows the pinout)   
+   3.3V	       3.3V         
+   GND	       GND          
+   DIO	       SWDIO        
+   CLK	       SWCLK        
 3. Plug the STLink/V2 into a USB port. Red light should appear on the STLink/V2.
 4. Run STM32CubeProgrammer (appears in Ubuntu Applications menu if installed on Linux with wine)
 5. At the top right you should see ST-LINK selected, and below that,
@@ -139,19 +139,21 @@ list', then 'Open in update mode'
 Good! The STM32WLE5JC firmware can now be written and read as we need (note
 that the factory supplied LoRaWan firmware has now been erased), by
 either STM32CubeProgrammer or Arduino IDE (2.1.1 or later) via the
-STLink/V2, so leave it connected.
+STLink/V2, so leave it connected
 
 In order to use the Arduino IDE to program the Wio-E5, you must
 install the stm32duino package using these instructions:
    https://community.st.com/t5/stm32-mcus/stm32-arduino-stm32duino-tutorial/ta-p/49649
 
+Leave STLink/V2 connected but close STM32CubeProgrammer
 In Arduino IDE: select the following menu options:
 Tools -> Board -> STM32 MCU based boards -> LoRa boards
 Tools -> Board part number -> LoRa-E5 mini
 Tools -> U(S)ART support -> Enabled (generic Serial)
-You will then be able to edit and upload directly from the Arduino
+You will then be able to edit and upload directly from Arduino IDE through the STLink/V2
 You can connect the Wio-E5 USB-C to your hosts USB port and use
-Arduino IDE to monitor the serial output to Serial.
+Arduino IDE to monitor the serial output to Serial
+(Note: programming does not occur over the USB connection).
 
 There are other options for programming the STM32WLE5JC,
 including STM32CubeIDE from ST. We did not test them.
@@ -182,7 +184,13 @@ public:
     // Contructor
     RH_STM32WLx();
 
+    // Override the init() function becaue we need to adjust some things afterwards to suit this radio module
+    virtual bool init();
+
 protected:
+    // Override this because waiting is built in to the SUBGhz driver
+    virtual bool waitUntilNotBusy() { return true;};
+    
     /// Do whatever is necesary to establish the interrupt handler.
     /// This device has special requirements for setting up the interupt handler
     /// through the SUBGHZSPI interface so we override

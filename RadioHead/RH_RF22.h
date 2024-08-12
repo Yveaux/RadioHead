@@ -1407,8 +1407,8 @@ protected:
     uint32_t            _lastPreambleTime;
 };
 
-/// @example rf22_client.pde
-/// @example rf22_server.pde
+/// @example rf22_client.ino
+/// @example rf22_server.ino
 /// @example rf22_cw.ino
 
 #endif 

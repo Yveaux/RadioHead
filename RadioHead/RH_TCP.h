@@ -28,9 +28,9 @@
 /// \code
 /// cd whatever/RadioHead 
 /// # build the client for Linux:
-/// tools/simBuild examples/simulator/simulator_reliable_datagram_client/simulator_reliable_datagram_client.pde
+/// tools/simBuild examples/simulator/simulator_reliable_datagram_client/simulator_reliable_datagram_client.ino
 /// # build the server for Linux:
-/// tools/simBuild examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.pde
+/// tools/simBuild examples/simulator/simulator_reliable_datagram_server/simulator_reliable_datagram_server.ino
 /// # in one window, run the simulator server:
 /// tools/etherSimulator.pl
 /// # in another window, run the server
@@ -188,7 +188,7 @@ private:
 
 };
 
-/// @example simulator_reliable_datagram_client.pde
-/// @example simulator_reliable_datagram_server.pde
+/// @example simulator_reliable_datagram_client.ino
+/// @example simulator_reliable_datagram_server.ino
 
 #endif

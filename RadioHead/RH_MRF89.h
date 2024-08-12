@@ -641,7 +641,7 @@ private:
 
 };
 
-/// @example mrf89_client.pde
-/// @example mrf89_server.pde
+/// @example mrf89_client.ino
+/// @example mrf89_server.ino
 
 #endif

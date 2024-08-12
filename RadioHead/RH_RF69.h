@@ -1043,10 +1043,10 @@ protected:
     uint32_t            _lastPreambleTime;
 };
 
-/// @example rf69_client.pde
-/// @example rf69_server.pde
-/// @example rf69_reliable_datagram_client.pde
-/// @example rf69_reliable_datagram_server.pde
+/// @example rf69_client.ino
+/// @example rf69_server.ino
+/// @example rf69_reliable_datagram_client.ino
+/// @example rf69_reliable_datagram_server.ino
 
 
 #endif

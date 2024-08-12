@@ -636,12 +636,12 @@ private:
     bool                _rxBufValid;
 };
 
-/// @example nrf24_client.pde
-/// @example nrf24_server.pde
-/// @example nrf24_encrypted_client.pde
-/// @example nrf24_encrypted_server.pde
-/// @example nrf24_reliable_datagram_client.pde
-/// @example nrf24_reliable_datagram_server.pde
+/// @example nrf24_client.ino
+/// @example nrf24_server.ino
+/// @example nrf24_encrypted_client.ino
+/// @example nrf24_encrypted_server.ino
+/// @example nrf24_reliable_datagram_client.ino
+/// @example nrf24_reliable_datagram_server.ino
 /// @example RasPiRH.cpp
 
 #endif 

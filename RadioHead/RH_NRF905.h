@@ -416,9 +416,9 @@ private:
     bool                _rxBufValid;
 };
 
-/// @example nrf905_client.pde
-/// @example nrf905_server.pde
-/// @example nrf905_reliable_datagram_client.pde
-/// @example nrf905_reliable_datagram_server.pde
+/// @example nrf905_client.ino
+/// @example nrf905_server.ino
+/// @example nrf905_reliable_datagram_client.ino
+/// @example nrf905_reliable_datagram_server.ino
 
 #endif

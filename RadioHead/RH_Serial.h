@@ -136,8 +136,8 @@
 /// /dev/ttyUSB0 and /dev/ttyUSB1.
 /// Build the example RHReliableDatagram client and server programs:
 /// \code
-/// tools/simBuild examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.pde 
-/// tools/simBuild examples/serial/serial_reliable_datagram_client/serial_reliable_datagram_client.pde
+/// tools/simBuild examples/serial/serial_reliable_datagram_server/serial_reliable_datagram_server.ino 
+/// tools/simBuild examples/serial/serial_reliable_datagram_client/serial_reliable_datagram_client.ino
 /// \endcode
 /// In one window run the server, specifying the device to use as an environment variable:
 /// \code
@@ -268,10 +268,10 @@ protected:
     uint16_t        _txFcs;
 };
 
-/// @example serial_reliable_datagram_client.pde
-/// @example serial_reliable_datagram_server.pde
-/// @example serial_gateway.pde
-/// @example serial_encrypted_reliable_datagram_client.pde
-/// @example serial_encrypted_reliable_datagram_server.pde
+/// @example serial_reliable_datagram_client.ino
+/// @example serial_reliable_datagram_server.ino
+/// @example serial_gateway.ino
+/// @example serial_encrypted_reliable_datagram_client.ino
+/// @example serial_encrypted_reliable_datagram_server.ino
 
 #endif

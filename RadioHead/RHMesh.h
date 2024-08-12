@@ -255,10 +255,10 @@ private:
 
 };
 
-/// @example rf22_mesh_client.pde
-/// @example rf22_mesh_server1.pde
-/// @example rf22_mesh_server2.pde
-/// @example rf22_mesh_server3.pde
+/// @example rf22_mesh_client.ino
+/// @example rf22_mesh_server1.ino
+/// @example rf22_mesh_server2.ino
+/// @example rf22_mesh_server3.ino
 
 #endif
 

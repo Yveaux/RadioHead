@@ -445,8 +445,8 @@ protected:
 
 };
 
-/// @example ask_reliable_datagram_client.pde
-/// @example ask_reliable_datagram_server.pde
-/// @example ask_transmitter.pde
-/// @example ask_receiver.pde
+/// @example ask_reliable_datagram_client.ino
+/// @example ask_reliable_datagram_server.ino
+/// @example ask_transmitter.ino
+/// @example ask_receiver.ino
 #endif

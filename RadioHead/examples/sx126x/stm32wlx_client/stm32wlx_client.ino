@@ -33,7 +33,7 @@ void setup()
   // driver.setFrequency(868.0);
 
   // You can change the modulation parameters with eg
-  // driver.setModemConfig(RH_SX126X::Bw500Cr45Sf128);
+  // driver.setModemConfig(RH_SX126x::LoRa_Bw125Cr45Sf2048);
   
   // You can change the power level in dBm
 //  driver.setTxPower(14);
