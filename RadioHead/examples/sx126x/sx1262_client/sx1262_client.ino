@@ -2,7 +2,7 @@
 // -*- mode: C++ -*-
 // Example sketch showing how to create a simple messageing client
 // with the RH_SX126x class and a basic SX1262 module connected to an Arduino compatible processor
-// It is designed to work with the examples stm32wlx_server and sx1262_server.
+// It is designed to work with the examples sx1262_server and sx1262_server.
 // Tested with G-Nice LoRa1262-915 and Teensy 3.1
 
 #include <SPI.h>

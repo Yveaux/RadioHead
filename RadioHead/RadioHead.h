@@ -9,9 +9,13 @@ This is the RadioHead Packet Radio library for embedded microprocessors.
 It provides a complete object-oriented library for sending and receiving packetized messages
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
+\par Download
+
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.131.zip
-You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.132.zip
+
+You can always find the latest version of the documentation at
+http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
 http://groups.google.com/group/radiohead-arduino
@@ -1238,6 +1242,10 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Fixed problem with failed compilation in RH_ASK.cpp, when used with ESP 32 board library version 3.o or greated because
 	     the Espressif library timer API changed.<br>
 	     
+\version 1.132 2024-07-08
+             Fixed problem with SX126x where a packet recieved with a CRC error would leave the chip in standby mode
+	     but RH_SX126x thought it was still in RX mode. Reported by kalev.<br>
+	     
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1486,7 +1494,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 131
+#define RH_VERSION_MINOR 132
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
