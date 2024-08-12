@@ -187,6 +187,7 @@
 #define RH_SX126x_REG_LR_HEADER_CR_MASK          ( 0x07UL << SX126X_REG_LR_HEADER_CR_POS )
 
 // The address of the register holding the CRC configuration extracted from a received LoRa header
+#define RH_SX126x_REG_FREQ_ERROR                 0x076B
 #define RH_SX126x_REG_LR_HEADER_CRC              0x076B
 #define RH_SX126x_REG_LR_HEADER_CRC_POS          ( 4U )
 #define RH_SX126x_REG_LR_HEADER_CRC_MASK         ( 0x01UL << SX126X_REG_LR_HEADER_CRC_POS )
@@ -1015,6 +1016,27 @@ public:
     /// Read and return the radio status byte
     uint8_t getStatus();
 
+    /// Return the last interrupt mask, for debugging
+    uint16_t lastIrq() {return _lastirq;};
+
+    /// Return true if an interrupt has occurred since the last clearIflag(). For debugging
+    bool getIflag() {return _iflag;};
+
+    /// Reset the interrupt flag. For debugging
+    void clearIflag() {_iflag=false;};
+
+    /// REsets the last interrupt mask. For debugging
+    void clearLastIrq() {_lastirq=0;};
+
+    /// Enable or disable the ability to detect CRC errors
+    void enableCrcErrorIrq(bool enable);
+
+    /// Tells the driver to enable RAW mode, which prevents the transmissions of the 4 byte address header.
+    void enableRawMode(bool enable);
+
+    /// Returns the frequency error from the last received packet
+    float getFrequencyError();    
+
 protected:
 
     ///////////////////////////////////////////////////////////////////
@@ -1246,6 +1268,26 @@ private:
 
     /// Pin number of the radio NRESET pin, if available, else RH_INVALID_PIN
     uint8_t             _resetPin;
+
+    /// Currently selected bandwidth, required for frequencey error calculations
+    float               _bandwidth = 0.0;
+
+    /// Whether we are in raw mode, bypassing address bytes prefix
+    bool                _raw = false;
+
+    /// Vale of the last interrupt flags, for debugging
+    volatile uint16_t   _lastirq;
+
+    /// Whether an interupt has occurred since the last clearIflag(). For debugging
+    volatile bool       _iflag = false;
+    
+    // These are the interrupts we are willing to process
+    uint16_t            _irqMask = RH_SX126x_IRQ_CAD_DETECTED
+                                    | RH_SX126x_IRQ_CAD_DONE
+                                    | RH_SX126x_IRQ_CRC_ERR
+                                    | RH_SX126x_IRQ_HEADER_ERR
+                                    | RH_SX126x_IRQ_RX_DONE
+                                    | RH_SX126x_IRQ_TX_DONE;
 };
 
 /// @example sx1262_client.ino

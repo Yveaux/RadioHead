@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.133.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.134.zip
 
 You can always find the latest version of the documentation at
 http://www.airspayce.com/mikem/arduino/RadioHead
@@ -1249,6 +1249,18 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 \version 1.133 2024-07-08
              Revisit SX126x RX CRC error handling with the assistance of kalev.
 	     
+\version 1.134 2024-07-10
+             Improvements to SX126x contributed by kalev:<br>
+	     1. Save IRQ flags for debugging outside interrupt handler.
+	     every time the handler is invoked save IRQ flags and rise _iflag.<br>
+	     2. runtime set on/off IRQ mask. This gives possibility to
+	     investigate erroneous packets. <br>
+	     3. introduce raw mode send and receive for debugging.<br>
+	     4. add getFrequencyError() If receiver and sender
+	     main clock frequencies are off ( usually when pairing sx126x and 
+	     sx127x ) it's difficult to adjust other party's ( usually sx127x ) frequency.<br>
+	     
+	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1496,7 +1508,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 133
+#define RH_VERSION_MINOR 134
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

@@ -108,15 +108,8 @@ bool RH_SX126x::init()
     setDIO2AsRfSwitchCtrl(true); // Use the radios DIO2 pin control the transmitter. This is common in 3rd party RF modules
     setTCXO(3.3, 100); // Enable the TCXO. Typical values for the control voltage and delay
 
-    // These are the interrupts we are willing to pocess
-    const uint16_t interrupts =
-	  RH_SX126x_IRQ_CAD_DETECTED
-	| RH_SX126x_IRQ_CAD_DONE
-	| RH_SX126x_IRQ_CRC_ERR
-	| RH_SX126x_IRQ_HEADER_ERR
-	| RH_SX126x_IRQ_RX_DONE
-	| RH_SX126x_IRQ_TX_DONE;
-    setDioIrqParams(interrupts, interrupts, RH_SX126x_IRQ_NONE, RH_SX126x_IRQ_NONE);
+    // These are the interrupts we are willing to process
+    setDioIrqParams(_irqMask, _irqMask, RH_SX126x_IRQ_NONE, RH_SX126x_IRQ_NONE);
 
     // Set up default configuration
     setModemConfig(LoRa_Bw125Cr45Sf128); // Radio default
@@ -128,6 +121,20 @@ bool RH_SX126x::init()
     setTxPower(13);
 
     return true;
+}
+
+void RH_SX126x::enableCrcErrorIrq(bool enable)
+{
+    if ( enable )
+        _irqMask |= RH_SX126x_IRQ_CRC_ERR;        
+    else
+        _irqMask &= ~RH_SX126x_IRQ_CRC_ERR;
+    setDioIrqParams(_irqMask, _irqMask, RH_SX126x_IRQ_NONE, RH_SX126x_IRQ_NONE);    
+}
+
+void RH_SX126x::enableRawMode(bool enable)
+{
+    _raw = enable;   
 }
 
 // Some subclasses may need to override
@@ -194,6 +201,8 @@ void RH_SX126x::handleInterrupt()
 {
     RH_MUTEX_LOCK(lock); // Multithreading support
     uint16_t interrupts = getIrqStatus();
+    _lastirq = interrupts;
+    _iflag = true; // Debugging
     clearIrqStatus(interrupts);
 //    Serial.print("int: ");
 //    Serial.println(interrupts, HEX);
@@ -321,15 +330,18 @@ void RH_SX126x::clearRxBuf()
 
 bool RH_SX126x::recv(uint8_t* buf, uint8_t* len)
 {
+    uint8_t hdr_len = RH_SX126x_HEADER_LEN;
     if (!available())
 	return false;
+    if ( _raw )
+	hdr_len = 0;
     if (buf && len)
     {
 	ATOMIC_BLOCK_START;
 	// Skip the 4 headers that are at the beginning of the rxBuf
-	if (*len > _bufLen-RH_SX126x_HEADER_LEN)
-	    *len = _bufLen-RH_SX126x_HEADER_LEN;
-	memcpy(buf, _buf+RH_SX126x_HEADER_LEN, *len);
+	if (*len > _bufLen-hdr_len)
+	    *len = _bufLen-hdr_len;
+	memcpy(buf, _buf+hdr_len, *len);
 	ATOMIC_BLOCK_END;
     }
     clearRxBuf(); // This message accepted and cleared
@@ -350,13 +362,22 @@ bool RH_SX126x::send(const uint8_t* data, uint8_t len)
 
     setBufferBaseAddress(0, 0);
     // The headers
+    if ( _raw )
+    {
+    // The message data
+    writeBuffer(0, data, len);
+    setPacketParametersLoRa(len); // Tell modem how much to send
+    }
+    else
+    {
     uint8_t headers[RH_SX126x_HEADER_LEN] = {_txHeaderTo, _txHeaderFrom, _txHeaderId, _txHeaderFlags };
     writeBuffer(0, headers, sizeof(headers));
 
     // The message data
     writeBuffer(RH_SX126x_HEADER_LEN, data, len);
     setPacketParametersLoRa(len + RH_SX126x_HEADER_LEN); // Tell modem how much to send
-    
+    }
+
     RH_MUTEX_LOCK(lock); // Multithreading support
     setModeTx(); // Start the transmitter
     RH_MUTEX_UNLOCK(lock);
@@ -854,7 +875,41 @@ bool RH_SX126x::setRxFallbackMode(uint8_t mode)
 bool RH_SX126x::setModulationParameters(uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4, uint8_t p5, uint8_t p6, uint8_t p7, uint8_t p8)
 {
     _lorabw500 = (p2 == RH_SX126x_LORA_BW_500_0); // Need to remember this for modulation quality workaround
-    
+    switch(p2)
+    {
+    case RH_SX126x_LORA_BW_7_8:
+	_bandwidth = 7.8;
+	break;
+    case RH_SX126x_LORA_BW_10_4:
+	_bandwidth = 10.4;
+	break;
+    case RH_SX126x_LORA_BW_15_6:
+	_bandwidth = 15.6;
+	break;
+    case RH_SX126x_LORA_BW_20_8:
+	_bandwidth = 20.8;
+	break;
+    case RH_SX126x_LORA_BW_31_25:
+	_bandwidth = 31.25;
+	break;
+    case RH_SX126x_LORA_BW_41_7:
+	_bandwidth = 41.7;
+	break;
+    case RH_SX126x_LORA_BW_62_5:
+	_bandwidth = 62.5;
+	break;
+    case RH_SX126x_LORA_BW_125_0:
+	_bandwidth = 125.0;
+	break;
+    case RH_SX126x_LORA_BW_250_0:
+	_bandwidth = 250.0;
+	break;
+    case RH_SX126x_LORA_BW_500_0:
+	_bandwidth = 500.0;
+	break;
+    default:
+	_bandwidth = 0;
+    }
     uint8_t params[] = {p1, p2, p3, p4, p5, p6, p7, p8};
     return sendCommand(RH_SX126x_CMD_SET_MODULATION_PARAMS, params, sizeof(params));
 }
@@ -867,7 +922,7 @@ bool RH_SX126x::setModulationParametersLoRa(uint8_t sf, float bw, uint8_t cr, bo
     sendCommand(RH_SX126x_CMD_SET_PKT_TYPE, RH_SX126x_PACKET_TYPE_LORA);
 
     // REVISIT: could automatically calculate LDRO based on symbollength = (1 << SF) / BW 
-    
+    _bandwidth = bw;    
     // sf must be 5 to 12
     // bw must be 0.0 to 510.0
     // cr must be 5 - 8 inclusive (represents 4/5, 4/6, 4/7, 4/8 respectively)
@@ -1084,18 +1139,18 @@ bool RH_SX126x::setCad()
 
 bool RH_SX126x::setRxBoostMode(bool boost, bool retain)
 {
-  if (boost)
-    writeRegister(RH_SX126x_REG_RXGAIN, RH_SX126x_RX_GAIN_BOOSTED);
-  else
-    writeRegister(RH_SX126x_REG_RXGAIN, RH_SX126x_RX_GAIN_POWER_SAVING);  
-
-  if (retain)
-  {
-    // Include this register in the retention memory
-    uint8_t settings[] = {0x01, 0x08, 0xac};
-    writeRegisters(RH_SX126x_REG_RETENTION_LIST_BASE_ADDRESS, settings, sizeof(settings));
-  }
-  return true;
+    if (boost)
+	writeRegister(RH_SX126x_REG_RXGAIN, RH_SX126x_RX_GAIN_BOOSTED);
+    else
+	writeRegister(RH_SX126x_REG_RXGAIN, RH_SX126x_RX_GAIN_POWER_SAVING);  
+    
+    if (retain)
+    {
+	// Include this register in the retention memory
+	uint8_t settings[] = {0x01, 0x08, 0xac};
+	writeRegisters(RH_SX126x_REG_RETENTION_LIST_BASE_ADDRESS, settings, sizeof(settings));
+    }
+    return true;
 }
 
 bool RH_SX126x::setRegulatorMode(uint8_t mode)
@@ -1198,4 +1253,35 @@ RH_SX126x::RadioPinConfigEntry* RH_SX126x::findRadioPinConfigEntry(RadioPinConfi
 	    return &_radioPinConfig->configState[i]; // Found the one we want
     }
     return nullptr; // Table too big, Not found
+}
+
+float RH_SX126x::getFrequencyError()
+{
+  // check packetType
+    
+    if( _packetType != PacketTypeLoRa)
+        return(0.0);
+    
+    // read the raw frequency error register values
+    uint8_t regBytes[3] = {0};
+    regBytes[0] = readRegister(RH_SX126x_REG_FREQ_ERROR);
+    regBytes[1] = readRegister(RH_SX126x_REG_FREQ_ERROR + 1);
+    regBytes[2] = readRegister(RH_SX126x_REG_FREQ_ERROR + 2);
+    uint32_t tmp = ((uint32_t) regBytes[0] << 16) | ((uint32_t) regBytes[1] << 8) | regBytes[2];
+    tmp &= 0x0FFFFF;
+    
+    float error = 0;
+    
+    // check the first bit
+    if (tmp & 0x80000) {
+	// frequency error is negative
+        tmp |= (uint32_t) 0xFFF00000;
+        tmp = ~tmp + 1;
+        error = 1.55 * (float) tmp / (1600.0 / _bandwidth) * -1.0;
+    }
+    else
+    {
+        error = 1.55 * (float) tmp / (1600.0 / _bandwidth);
+    }
+    return(error);
 }
