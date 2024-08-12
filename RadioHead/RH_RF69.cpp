@@ -117,6 +117,7 @@ bool RH_RF69::init()
     // This also tests whether we are really connected to a device
     // My test devices return 0x24
     _deviceType = spiRead(RH_RF69_REG_10_VERSION);
+    Serial.println( _deviceType);
     if (_deviceType == 00 ||
 	_deviceType == 0xff)
 	return false;

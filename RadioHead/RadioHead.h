@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.125.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.126.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -170,7 +170,7 @@ length messages, but if you need more than that, the following
 Managers are provided:
 
 - RHDatagram
-Addressed, unreliable variable length messages, with optional broadcast facilities.
+  Addressed, unreliable variable length messages, with optional broadcast facilities.
 
 - RHReliableDatagram
   Addressed, reliable, retransmitted, acknowledged variable length messages.
@@ -935,8 +935,8 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Update commercial licensing, remove binpress.
 \version 1.87 2018-10-06
              RH_RF22 now resets all registers to default state before initialisation commences. Suggested by Wothke.<br>
-	     Added RH_ENABLE_EXPLICIT_RETRY_DEDUP which improves the handling of duplicate detection especiually
-	     in the case where a transmitter periodically wakes up and start tranmitting from the first sequence number.
+	     Added RH_ENABLE_EXPLICIT_RETRY_DEDUP which improves the handling of duplicate detection especially
+	     in the case where a transmitter periodically wakes up and start transmitting from the first sequence number.
 	     Patch courtesy Justin Newitter. Thanks.
 \version 1.88 2018-11-13
              Updated to support ATTiny using instructions in
@@ -1196,6 +1196,11 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Improved support for Arduino Uno R4: ATOMIC_BLOCK_START and ATOMIC_BLOCK_END are no 
 	     longer defined since they hang on R4, and are not necessary since they have SPI_HAS_TRANSACTION
 
+\version 1.126 2023-11-24
+             ESP8266 support now uses IRAM_ATTR instead of ICACHE_RAM_ATTR. This should work fine with core 2.7.4 and later.<br>
+	     Changes to definitions of ATOMIC_BLOCK_START and ATOMIC_BLOCK_END for RH_PLATFORM_ESP32: Previous
+	     use of XTOS_DISABLE_ALL_INTERRUPTS not suported for ESP32C3. Now uses ATOMIC_ENTER_CRITICAL()
+	     and ATOMIC_EXIT_CRITICAL() which appear to be supported for all platforms in Arduino esp32 package.<br>
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1444,7 +1449,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 125
+#define RH_VERSION_MINOR 126
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1761,8 +1766,16 @@ these examples and explanations and extend them to suit your needs.
  #define ATOMIC_BLOCK_END xt_wsr_ps(__savedPS);}
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
 // jPerotto see hardware/esp32/1.0.4/tools/sdk/include/esp32/xtensa/xruntime.h
- #define ATOMIC_BLOCK_START uint32_t volatile register ilevel = XTOS_DISABLE_ALL_INTERRUPTS;
- #define ATOMIC_BLOCK_END XTOS_RESTORE_INTLEVEL(ilevel);
+// No, not supported on ESP32C3
+// #define ATOMIC_BLOCK_START uint32_t volatile register ilevel = XTOS_DISABLE_ALL_INTERRUPTS;
+// #define ATOMIC_BLOCK_END XTOS_RESTORE_INTLEVEL(ilevel);
+// This compiles for all ESP32 but is it correct?
+// #define ATOMIC_BLOCK_START int RH_ATOMIC_state = portSET_INTERRUPT_MASK_FROM_ISR();
+// #define ATOMIC_BLOCK_END portCLEAR_INTERRUPT_MASK_FROM_ISR(RH_ATOMIC_state);
+// These appear to be defined for all ESP32 type:
+  #include "freertos/atomic.h"
+ #define ATOMIC_BLOCK_START ATOMIC_ENTER_CRITICAL()
+ #define ATOMIC_BLOCK_END ATOMIC_EXIT_CRITICAL()
 #else 
  // TO BE DONE:
  #define ATOMIC_BLOCK_START
@@ -1862,7 +1875,8 @@ these examples and explanations and extend them to suit your needs.
 #if (RH_PLATFORM == RH_PLATFORM_ESP8266)
     // interrupt handler and related code must be in RAM on ESP8266,
     // according to issue #46.
-    #define RH_INTERRUPT_ATTR ICACHE_RAM_ATTR
+    // 2023-09-19: ESP8266 is now compatible with ESP 32 and uses IRAM_ATTR
+    #define RH_INTERRUPT_ATTR IRAM_ATTR
 						   
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
     #define RH_INTERRUPT_ATTR IRAM_ATTR
