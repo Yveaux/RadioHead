@@ -330,7 +330,7 @@ public:
     void           setModeTx();
 
     /// dont call this it used by the interrupt handler
-    RH_INTERRUPT_ATTR void            handleTimerInterrupt();
+    void RH_INTERRUPT_ATTR            handleTimerInterrupt();
 
     /// Returns the current speed in bits per second
     /// \return The current speed in bits per second

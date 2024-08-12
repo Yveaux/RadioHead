@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.130.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.131.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -276,7 +276,7 @@ Including Diecimila, Uno, Mega, Leonardo, Yun, Due, Zero, Minima and possibly ot
   https://learn.adafruit.com/adafruit-feather-m0-basic-proto/using-with-arduino-ide
 
 - ESP32 built using Arduino IDE 1.8.9 or later using the ESP32 toolchain installed per
-  https://github.com/espressif/arduino-esp32
+  https://github.com/espressif/arduino-esp32 or from the Arduino IDE Board Manager. Tested up to version 3.0.2.
   The internal 2.4GHz radio is not yet supported. Tested with RFM22 using SPI interface. 
   Uses the VSPI SPI bus by default.
   You can enable use of the alternative HSPI bus for SPI by defining RH_ESP32_USE_HSPI in RadioHead.h.
@@ -1231,8 +1231,13 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     Sample client and server sketches demonstrating use, compatible with Teensy and other 3.3V compatible Arduinos.
 
 \version 1.130 2024-04-12
-             Adjustments to RHHardwareSPI fopr compatibility with RAKwireless RAK4360/RAK4361, contributed by gfja...
-	     Fixed a preprocessor typo in unused code in RHHardwarerSPI.cpp, reported by brodymahoney.
+             Adjustments to RHHardwareSPI fopr compatibility with RAKwireless RAK4360/RAK4361, contributed by gfja.
+	     Fixed a preprocessor typo in unused code in RHHardwareSPI.cpp, reported by brodymahoney.
+
+\version 1.131 2024-07-02
+             Fixed problem with failed compilation in RH_ASK.cpp, when used with ESP 32 board library version 3.o or greated because
+	     the Espressif library timer API changed.<br>
+	     
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1481,7 +1486,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 130
+#define RH_VERSION_MINOR 131
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

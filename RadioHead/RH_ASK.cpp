@@ -560,10 +560,18 @@ void RH_ASK::timerSetup()
 //    timer0_write(ESP.getCycleCount() + 41660000);
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
     void RH_INTERRUPT_ATTR esp32_timer_interrupt_handler(); // Forward declaration
+ #if ESP_ARDUINO_VERSION_MAJOR >= 3
+    // Sigh, this changed, apparently in version 3.
+    timer = timerBegin(_speed * 8);
+    timerAttachInterrupt(timer, &esp32_timer_interrupt_handler);
+    timerAlarm(timer, 1, true, 0);
+ #else
+    // Prior to version 3
     timer = timerBegin(0, 80, true); // Alarm value will be in in us
     timerAttachInterrupt(timer, &esp32_timer_interrupt_handler, true);
     timerAlarmWrite(timer, 1000000 / _speed / 8, true);
     timerAlarmEnable(timer);
+ #endif
 #endif
 
 }
@@ -887,7 +895,7 @@ void RH_INTERRUPT_ATTR esp8266_timer_interrupt_handler()
     thisASKDriver->handleTimerInterrupt();
 }
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
-void IRAM_ATTR esp32_timer_interrupt_handler()
+void RH_INTERRUPT_ATTR esp32_timer_interrupt_handler()
 {
     thisASKDriver->handleTimerInterrupt();
 }
