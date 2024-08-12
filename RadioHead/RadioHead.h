@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.134.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.135.zip
 
 You can always find the latest version of the documentation at
 http://www.airspayce.com/mikem/arduino/RadioHead
@@ -1260,6 +1260,9 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     main clock frequencies are off ( usually when pairing sx126x and 
 	     sx127x ) it's difficult to adjust other party's ( usually sx127x ) frequency.<br>
 	     
+\version 1.135 2024-07-12
+             Fixed a problem in RHSPIDriver: if the Slave Select pin was set to 0xff, then it would still drive the
+	     SS pin. This broke use of EEPROM on STM32wl. Reported and fixed by Craig Zych.
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1508,7 +1511,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 134
+#define RH_VERSION_MINOR 135
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

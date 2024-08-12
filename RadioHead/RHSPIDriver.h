@@ -41,6 +41,7 @@ public:
     /// Constructor
     /// \param[in] slaveSelectPin The controler pin to use to select the desired SPI device. This pin will be driven LOW
     /// during SPI communications with the SPI device that uis iused by this Driver.
+    /// If slaveSelectPin is 0xff, then the pin will not be initialised or activated by this class.
     /// \param[in] spi Reference to the SPI interface to use. The default is to use a default built-in Hardware interface.
     RHSPIDriver(uint8_t slaveSelectPin = SS, RHGenericSPI& spi = hardware_spi);
     

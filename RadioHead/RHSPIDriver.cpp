@@ -122,10 +122,12 @@ void  RHSPIDriver::endTransaction()
 // Some platforms (ABZ) need to override just selectSlave and deselectSlave
 void RHSPIDriver::selectSlave()
 {
-    digitalWrite(_slaveSelectPin, LOW);
+    if (_slaveSelectPin != 0xff)
+	digitalWrite(_slaveSelectPin, LOW);
 }
     
 void RHSPIDriver::deselectSlave()
 {
-    digitalWrite(_slaveSelectPin, HIGH);
+    if (_slaveSelectPin != 0xff)
+	digitalWrite(_slaveSelectPin, HIGH);
 }
