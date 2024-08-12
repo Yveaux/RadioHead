@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.124.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.125.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1190,7 +1190,12 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
              Added support for Arduino Uno R4 Minima.
 
 \version 1.124 2023-08-09
-             Extended suport for Arduino Uno R4 to Arduino Uno R4 WIFI
+             Extended support for Arduino Uno R4 to Arduino Uno R4 WIFI
+
+\version 1.125 2023-08-14
+             Improved support for Arduino Uno R4: ATOMIC_BLOCK_START and ATOMIC_BLOCK_END are no 
+	     longer defined since they hang on R4, and are not necessary since they have SPI_HAS_TRANSACTION
+
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1439,7 +1444,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 124
+#define RH_VERSION_MINOR 125
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1726,8 +1731,8 @@ these examples and explanations and extend them to suit your needs.
  #else
   #include <util/atomic.h>
  #endif
- #if defined(ARDUINO_ARCH_MBED_RP2040)
-  // Standard arduino ATOMIC block crashes on MBED version of Pico as at 2021-08-12						   
+ #if defined(ARDUINO_ARCH_MBED_RP2040) || defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
+  // Standard arduino ATOMIC block crashes on MBED version of Pico as at 2021-08-12						   // and ius not available/required for UNO R4
   #define ATOMIC_BLOCK_START {
   #define ATOMIC_BLOCK_END }						   
  #else
