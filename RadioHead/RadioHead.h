@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.129.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.130.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -1224,11 +1224,15 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 \version 1.128 2024-01-12
              Added missing sx126x examples to distribution.
 
-\version 1.129
+\version 1.129 2024-03-21
              Rename all .pde sketches to .ino
 	     Significant changes to RH_SX126x to support other modules such as the NiceRF LoRa1262 family.
 	     https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
 	     Sample client and server sketches demonstrating use, compatible with Teensy and other 3.3V compatible Arduinos.
+
+\version 1.130 2024-04-12
+             Adjustments to RHHardwareSPI fopr compatibility with RAKwireless RAK4360/RAK4361, contributed by gfja...
+	     Fixed a preprocessor typo in unused code in RHHardwarerSPI.cpp, reported by brodymahoney.
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1477,7 +1481,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 129
+#define RH_VERSION_MINOR 130
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

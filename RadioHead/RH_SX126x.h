@@ -737,9 +737,18 @@ similar pinout for any 3.3V Arduino compatible board.
 With these connections you can then use the constructor:
 
 RH_SX126x driver(SS, 7, 8, 9);
-
-
 \endcode
+
+RAKwireless RAK4360/RAK4361
+
+RHHardwareSPI uses the default LoRa radio SPI pins as defined by the platform. You can use the contructor:
+
+\code
+RH_SX126x driver(42, 47, 46, 38); // NSS, DIO1, BUSY, NRESET
+\endcode
+
+
+
 
 
 */

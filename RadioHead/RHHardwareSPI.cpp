@@ -29,6 +29,9 @@ HardwareSPI SPI(1);
 #elif (RH_PLATFORM == RH_PLATFORM_ESP32 && defined(RH_ESP32_USE_HSPI))
  SPIClass SPI_HSPI(HSPI);
  #define SPI SPI_HSPI
+#elif defined(RAK4630) // RAKwireless RAK4630
+ extern SPIClass SPI_LORA(NRF_SPIM2, 45, 43, 44);
+ #define SPI SPI_LORA
 #endif
 
 // Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
@@ -364,7 +367,7 @@ void RHHardwareSPI::begin()
 //      SPI.setClockSpeed(1, MHZ);
       SPI.begin();
 
-#elif (RH_PLATFORM == (RH_PLATFORM_ESP8266) || (RH_PLATFORM == RH_PLATFORM_ESP32)
+#elif RH_PLATFORM == (RH_PLATFORM_ESP8266) || (RH_PLATFORM == RH_PLATFORM_ESP32)
      // Requires SPI driver for ESP8266 from https://github.com/esp8266/Arduino/tree/master/libraries/SPI
      // Which ppears to be in Arduino Board Manager ESP8266 Community version 2.1.0
      // Contributed by David Skinner
