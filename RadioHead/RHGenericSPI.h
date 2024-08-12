@@ -23,7 +23,7 @@
 /// software implementation is included.
 ///
 /// Do not directly use this class: it must be subclassed and the following abstract functions at least 
-/// must be implmented:
+/// must be implemented:
 /// - begin()
 /// - end() 
 /// - transfer()

@@ -45,6 +45,10 @@ RadioHead/RH_MRF89.cpp
 RadioHead/RH_MRF89.h
 RadioHead/RH_RF95.cpp
 RadioHead/RH_RF95.h
+RadioHead/RH_SX126x.h
+RadioHead/RH_SX126x.cpp
+RadioHead/RH_STM32WLx.h
+RadioHead/RH_STM32WLx.cpp
 RadioHead/RH_TCP.cpp
 RadioHead/RH_TCP.h
 RadioHead/RHRouter.cpp
@@ -58,6 +62,8 @@ RadioHead/RHSPIDriver.h
 RadioHead/RHTcpProtocol.h
 RadioHead/RHNRFSPIDriver.cpp
 RadioHead/RHNRFSPIDriver.h
+RadioHead/RHSUBGHZSPI.h
+RadioHead/RHSUBGHZSPI.cpp
 RadioHead/RHutil
 RadioHead/RHutil/atomic.h
 RadioHead/RHutil/simulator.h
@@ -167,6 +173,9 @@ RadioHead/examples/raspi/rf95/rf95_mesh_server1/Makefile
 RadioHead/examples/raspi/rf95/rf95_mesh_server1/rf95_mesh_server1.cpp
 RadioHead/examples/lorafileops/lorafileops_client/lorafileops_client.cpp
 RadioHead/examples/lorafileops/lorafileops_server/lorafileops_server.cpp
+RadioHead/examples/sx126x/stm32wlx_client/stmwl32wlx_client.ino
+RadioHead/examples/sx126x/stm32wlx_server/stmwl32wlx_server.ino
+RadioHead/examples/sx126x/stm32wlx_continuous/stmwl32wlx_continuous.ino
 RadioHead/tools/etherSimulator.pl
 RadioHead/tools/chain.conf
 RadioHead/tools/simMain.cpp

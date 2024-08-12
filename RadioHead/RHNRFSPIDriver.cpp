@@ -35,11 +35,9 @@ uint8_t RHNRFSPIDriver::spiCommand(uint8_t command)
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     status = _spi.transfer(command);
 #else
-    _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    beginTransaction();
     status = _spi.transfer(command);
-    digitalWrite(_slaveSelectPin, HIGH);
-    _spi.endTransaction();
+    endTransaction();
 #endif
     ATOMIC_BLOCK_END;
     return status;
@@ -52,12 +50,10 @@ uint8_t RHNRFSPIDriver::spiRead(uint8_t reg)
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     val = _spi.transfer2B(reg, 0); // Send the address, discard the status, The written value is ignored, reg value is read
 #else
-    _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    beginTransaction();
     _spi.transfer(reg); // Send the address, discard the status
     val = _spi.transfer(0); // The written value is ignored, reg value is read
-    digitalWrite(_slaveSelectPin, HIGH);
-    _spi.endTransaction();
+    endTransaction();
 #endif
     ATOMIC_BLOCK_END;
     return val;
@@ -70,8 +66,7 @@ uint8_t RHNRFSPIDriver::spiWrite(uint8_t reg, uint8_t val)
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     status = _spi.transfer2B(reg, val);
 #else
-    _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    beginTransaction();
     status = _spi.transfer(reg); // Send the address
     _spi.transfer(val); // New value follows
 #if (RH_PLATFORM == RH_PLATFORM_ARDUINO) && defined(__arm__) && defined(CORE_TEENSY)
@@ -80,8 +75,7 @@ uint8_t RHNRFSPIDriver::spiWrite(uint8_t reg, uint8_t val)
     // write working. This delay gixes time for the clock to return low.
 delayMicroseconds(5);
 #endif
-    digitalWrite(_slaveSelectPin, HIGH);
-    _spi.endTransaction();
+    endTransaction();
 #endif
     ATOMIC_BLOCK_END;
     return status;
@@ -94,13 +88,11 @@ uint8_t RHNRFSPIDriver::spiBurstRead(uint8_t reg, uint8_t* dest, uint8_t len)
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     status = _spi.spiBurstRead(reg, dest, len);
 #else
-    _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    beginTransaction();
     status = _spi.transfer(reg); // Send the start address
     while (len--)
 	*dest++ = _spi.transfer(0);
-    digitalWrite(_slaveSelectPin, HIGH);
-    _spi.endTransaction();
+    endTransaction();
 #endif
     ATOMIC_BLOCK_END;
     return status;
@@ -113,13 +105,11 @@ uint8_t RHNRFSPIDriver::spiBurstWrite(uint8_t reg, const uint8_t* src, uint8_t l
 #if (RH_PLATFORM == RH_PLATFORM_MONGOOSE_OS)
     status = _spi.spiBurstWrite(reg, src, len);
 #else
-    _spi.beginTransaction();
-    digitalWrite(_slaveSelectPin, LOW);
+    beginTransaction();
     status = _spi.transfer(reg); // Send the start address
     while (len--)
 	_spi.transfer(*src++);
-    digitalWrite(_slaveSelectPin, HIGH);
-    _spi.endTransaction();
+    endTransaction();
 #endif
     ATOMIC_BLOCK_END;
     return status;
@@ -133,5 +123,17 @@ void RHNRFSPIDriver::setSlaveSelectPin(uint8_t slaveSelectPin)
 void RHNRFSPIDriver::spiUsingInterrupt(uint8_t interruptNumber)
 {
     _spi.usingInterrupt(interruptNumber);
+}
+
+void  RHNRFSPIDriver::beginTransaction()
+{
+    _spi.beginTransaction();
+    digitalWrite(_slaveSelectPin, LOW);
+}
+
+void  RHNRFSPIDriver::endTransaction()
+{
+    digitalWrite(_slaveSelectPin, HIGH);
+    _spi.endTransaction();
 }
 

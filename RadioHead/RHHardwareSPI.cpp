@@ -12,6 +12,9 @@
 RHHardwareSPI hardware_spi;
 
 
+// This is very ugly and there should be a better way. Problem is that
+// not all types hardware/platform dependent of SPI classes have the
+// same name, so its hard to abstract it away on a per-instance basis
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // Maple etc
 // Declare an SPI interface to use
 HardwareSPI SPI(1);
@@ -27,7 +30,6 @@ HardwareSPI SPI(1);
  SPIClass SPI_HSPI(HSPI);
  #define SPI SPI_HSPI
 #endif
-
 
 // Arduino Due has default SPI pins on central SPI headers, and not on 10, 11, 12, 13
 // as per other Arduinos

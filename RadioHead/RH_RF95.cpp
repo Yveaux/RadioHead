@@ -14,7 +14,6 @@ RH_DECLARE_MUTEX(lock);
 // Each interrupt can be handled by a different instance of RH_RF95, allowing you to have
 // 2 or more LORAs per Arduino
 RH_RF95* RH_RF95::_deviceForInterrupt[RH_RF95_NUM_INTERRUPTS] = {0, 0, 0};
-uint8_t RH_RF95::_interruptCount = 0; // Index into _deviceForInterrupt for next device
 
 // These are indexed by the values of ModemConfigChoice
 // Stored in flash (program) memory to save SRAM
@@ -52,21 +51,9 @@ bool RH_RF95::init()
     	return false;
     }
 #endif
-    // For some subclasses (eg RH_ABZ)  we dont want to set up interrupt
-    int interruptNumber = NOT_AN_INTERRUPT;
-    if (_interruptPin != RH_INVALID_PIN)
-    {
-	// Determine the interrupt number that corresponds to the interruptPin
-	interruptNumber = digitalPinToInterrupt(_interruptPin);
-	if (interruptNumber == NOT_AN_INTERRUPT)
-	    return false;
-#ifdef RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
-	interruptNumber = _interruptPin;
-#endif
 
-    // Tell the low level SPI interface we will use SPI within this interrupt
-	spiUsingInterrupt(interruptNumber);
-    }
+    if (!setupInterruptHandler())
+	return false;
 
     // No way to check the device type :-(
     
@@ -80,39 +67,6 @@ bool RH_RF95::init()
 	return false; // No device present?
     }
 
-
-    if (_interruptPin != RH_INVALID_PIN)
-    {
-	// Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
-	// ARM M4 requires the below. else pin interrupt doesn't work properly.
-	// On all other platforms, its innocuous, belt and braces
-	pinMode(_interruptPin, INPUT); 
-	
-	// Set up interrupt handler
-	// Since there are a limited number of interrupt glue functions isr*() available,
-	// we can only support a limited number of devices simultaneously
-	// ON some devices, notably most Arduinos, the interrupt pin passed in is actually the 
-	// interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
-	// yourself based on knwledge of what Arduino board you are running on.
-	if (_myInterruptIndex == 0xff)
-	{
-	    // First run, no interrupt allocated yet
-	    if (_interruptCount <= RH_RF95_NUM_INTERRUPTS)
-		_myInterruptIndex = _interruptCount++;
-	    else
-		return false; // Too many devices, not enough interrupt vectors
-	}
-	_deviceForInterrupt[_myInterruptIndex] = this;
-	
-	if (_myInterruptIndex == 0)
-	    attachInterrupt(interruptNumber, isr0, RISING);
-	else if (_myInterruptIndex == 1)
-	    attachInterrupt(interruptNumber, isr1, RISING);
-	else if (_myInterruptIndex == 2)
-	    attachInterrupt(interruptNumber, isr2, RISING);
-	else
-	    return false; // Too many devices, not enough interrupt vectors
-    }
     
     // Set up FIFO
     // We configure so that we can use the entire 256 byte FIFO for either receive
@@ -129,7 +83,8 @@ bool RH_RF95::init()
     setModeIdle();
 
     // Set up default configuration
-    // No Sync Words in LORA mode.
+    // No Sync Words in LORA mode. ACTUALLY thats not correct, and for tehRF95, the default LoRaSync Word is 0x12
+    // (ie a private network) and it can be changed at RH_RF95_REG_39_SYNC_WORD
     setModemConfig(Bw125Cr45Sf128); // Radio default
 //    setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
     setPreambleLength(8); // Default is 8
@@ -138,6 +93,60 @@ bool RH_RF95::init()
     // Lowish power
     setTxPower(13);
 
+    return true;
+}
+
+bool RH_RF95::setupInterruptHandler()
+{
+    // For some subclasses (eg RH_ABZ)  we dont want to set up interrupt
+    int interruptNumber = NOT_AN_INTERRUPT;
+    if (_interruptPin != RH_INVALID_PIN)
+    {
+	// Determine the interrupt number that corresponds to the interruptPin
+	interruptNumber = digitalPinToInterrupt(_interruptPin);
+	if (interruptNumber == NOT_AN_INTERRUPT)
+	    return false;
+#ifdef RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
+	interruptNumber = _interruptPin;
+#endif
+
+    // Tell the low level SPI interface we will use SPI within this interrupt
+	spiUsingInterrupt(interruptNumber);
+    }
+
+    if (_interruptPin != RH_INVALID_PIN)
+    {
+	// Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
+	// ARM M4 requires the below. else pin interrupt doesn't work properly.
+	// On all other platforms, its innocuous, belt and braces
+	pinMode(_interruptPin, INPUT); 
+	
+	// Set up interrupt handler
+	// Since there are a limited number of interrupt glue functions isr*() available,
+	// we can only support a limited number of devices simultaneously
+	// ON some devices, notably most Arduinos, the interrupt pin passed in is actually the 
+	// interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
+	// yourself based on knwledge of what Arduino board you are running on.
+	if (_myInterruptIndex == 0xff)
+	{
+	    static uint8_t interruptCount = 0; // Index into _deviceForInterrupt for next device
+	    // First run, no interrupt allocated yet
+	    if (interruptCount <= RH_RF95_NUM_INTERRUPTS)
+		_myInterruptIndex = interruptCount++;
+	    else
+		return false; // Too many devices, not enough interrupt vectors
+	}
+	_deviceForInterrupt[_myInterruptIndex] = this;
+	
+	if (_myInterruptIndex == 0)
+	    attachInterrupt(interruptNumber, isr0, RISING);
+	else if (_myInterruptIndex == 1)
+	    attachInterrupt(interruptNumber, isr1, RISING);
+	else if (_myInterruptIndex == 2)
+	    attachInterrupt(interruptNumber, isr2, RISING);
+	else
+	    return false; // Too many devices, not enough interrupt vectors
+    }
     return true;
 }
 
@@ -687,7 +696,6 @@ void RH_RF95::setLowDatarate()
 	spiWrite(RH_RF95_REG_26_MODEM_CONFIG3, current | RH_RF95_LOW_DATA_RATE_OPTIMIZE);
     else
 	spiWrite(RH_RF95_REG_26_MODEM_CONFIG3, current);
-   
 }
  
 void RH_RF95::setPayloadCRC(bool on)
@@ -704,7 +712,7 @@ void RH_RF95::setPayloadCRC(bool on)
  
 uint8_t RH_RF95::getDeviceVersion()
 {
-	_deviceVersion = spiRead(RH_RF95_REG_42_VERSION);
-	return _deviceVersion;
+    _deviceVersion = spiRead(RH_RF95_REG_42_VERSION);
+    return _deviceVersion;
 }
 

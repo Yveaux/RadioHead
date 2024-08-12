@@ -91,6 +91,14 @@ public:
     void spiUsingInterrupt(uint8_t interruptNumber);
 
 protected:
+    /// Signal the start of an SPI transaction that must not be interrupted by other SPI actions
+    /// In subclasses that support transactions this will ensure that other SPI transactions
+    /// are blocked until this one is completed by endTransaction().
+    virtual void beginTransaction();
+
+    /// Signal the end of an SPI transaction
+    virtual void endTransaction();
+
     /// Reference to the RHGenericSPI instance to use to trasnfer data with teh SPI device
     RHGenericSPI&       _spi;
 

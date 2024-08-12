@@ -10,7 +10,7 @@ It provides a complete object-oriented library for sending and receiving packeti
 via a variety of common data radios and other transports on a range of embedded microprocessors.
 
 The version of the package that this documentation refers to can be downloaded 
-from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.126.zip
+from http://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.127.zip
 You can find the latest version of the documentation at http://www.airspayce.com/mikem/arduino/RadioHead
 
 You can also find online help and discussion at 
@@ -128,11 +128,22 @@ Works with a range of inexpensive ASK (amplitude shift keying) RF transceivers s
 (also known as ST-RX04-ASK) receiver; TX-C1 transmitter and DR3100 transceiver; FS1000A/XY-MK-5V transceiver;
 HopeRF RFM83C / RFM85. Supports ASK (OOK).
 
-- RH_ABZ Works with EcoNode SmartTrap, Tlera Grasshopper and family. Almost any board equipped with a muRata cmwx1zzabz module
+- RH_ABZ
+Works with EcoNode SmartTrap, Tlera Grasshopper and family. Almost any board equipped with a muRata cmwx1zzabz module
 should work. Tested with EcoNode SmartTrap, Arduino 1.8.9, GrumpyOldPizza Arduino Core for STM32L0.
 When building for EcoNode SmartTrap in Arduino IDE, select board type Grasshopper-L082CZ.
 This chip and GrumpyOldPizza Arduino Core for STM32L0 are now supported by PlatformIO: 
 https://docs.platformio.org/en/latest/platforms/ststm32.html#arduino-stm32l0-configuration-system
+
+- RH_SX126x
+Works with Semtech SX1261/2/8 LoRa capable transceivers.
+Can be confgigured to automatically controls any digital output pins required to control external RF swicthes or amplifiers.
+
+- RH_STM32WLx
+Works with STM32WLE5xx and STM32WLE4xx family processors that include a SX1261/2 multi power amplifier transceiver.
+Automatically manages the dedicated SPI interface and interrupt, and the internal SPI slave select and reset pins to the radio.
+Examples provided. Requires the stm32duino package using these instructions:
+https://community.st.com/t5/stm32-mcus/stm32-arduino-stm32duino-tutorial/ta-p/49649
 
 - RH_Serial
 Works with RS232, RS422, RS485, RS488 and other point-to-point and multidropped serial connections, 
@@ -1202,6 +1213,12 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     use of XTOS_DISABLE_ALL_INTERRUPTS not suported for ESP32C3. Now uses ATOMIC_ENTER_CRITICAL()
 	     and ATOMIC_EXIT_CRITICAL() which appear to be supported for all platforms in Arduino esp32 package.<br>
 
+\version 1.127 2024-01-07
+             Added support for SX126x family radios, and also for the STM32WLE5xx and STM32WLE4xx families of ARM procedssors that
+	     have a SX126x radio built in, and as used in the LoRa-E5-HF module (which is used in WiO-E5 mini development board),
+	     the LoRa-E5-LF module and the NUCLEO_WL55JC1 development board. Tested with WiO-E5 mini development board, but no standalone
+	     SPI versions of this radio.
+	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1449,7 +1466,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 126
+#define RH_VERSION_MINOR 127
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1
@@ -1542,6 +1559,9 @@ these examples and explanations and extend them to suit your needs.
   // Raspi Pico
   #define RH_ASK_PICO_ALARM_IRQ TIMER_IRQ_1
   #define RH_ASK_PICO_ALARM_NUM 1
+ #elif defined(ARDUINO_LORA_E5_MINI)
+  // WiO-E5 mini, or boards conating Seeed LoRa-E5-LF or LoRa-E5-HF, processor is STM32WLE5JC
+  #include <SubGhz.h>
  #endif
 #elif (RH_PLATFORM == RH_PLATFORM_ATTINY)
   #include <Arduino.h>
